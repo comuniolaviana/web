@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palmarés - ComunioLaviana</title>
+<style>
+:root{--green:#1f6b3a;--light:#e8f5ec;--bg:#f4f6f8;--text:#1f2937}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,#174f2c,#1f6b3a);color:white;padding:28px 16px;text-align:center}
+header h1{margin:0;font-size:34px}
+header p{margin:8px 0 0;opacity:.92}
+.menu{display:flex;justify-content:center;gap:10px;padding:14px 12px 0;flex-wrap:wrap}
+.menu a{text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:bold;background:white;color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.menu a.activo{background:var(--green);color:white}
+main{max-width:1150px;margin:28px auto;padding:0 12px 40px}
+.card,details{background:white;border-radius:14px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);overflow:hidden}
+.card h2,summary{margin:0;padding:16px 18px;background:var(--light);color:var(--green);font-size:21px;font-weight:bold}
+.content,.inside{padding:18px}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.hero{background:linear-gradient(180deg,#fffdf5,#fff);border:1px solid #eadca3;border-radius:14px;padding:18px;text-align:center}
+.hero .big{font-size:30px;font-weight:800;color:var(--green)}
+.hero .small{margin-top:6px;color:#4b5563}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 12px;border-bottom:1px solid #e5e7eb;text-align:left}
+th{background:#f9fafb;position:sticky;top:0}
+.num{text-align:right;white-space:nowrap}
+.pos{width:70px;font-weight:bold}
+.scroll{overflow-x:auto}
+details summary{cursor:pointer;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"＋";float:right}
+details[open] summary::after{content:"−"}
+.note{background:#fff7d6;border-left:5px solid #d4a017;padding:12px 14px;border-radius:8px;margin-top:14px}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:bold;font-size:13px}
+@media(max-width:700px){header h1{font-size:27px}th,td{font-size:13px;padding:9px 7px}.menu a{font-size:13px;padding:9px 10px}}
+</style>
+</head>
+<body>
+<header><h1>👑 COMUNIOLAVIANA</h1><p>Palmarés, récords y clasificaciones históricas</p></header>
+
+<nav class="menu">
+  <a href="index.html">⚽ Cláusulas</a>
+  <a href="normas.html">📜 Normas</a>
+  <a href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
+  <a href="copa.html">🏆 Copa</a>
+  <a class="activo" href="palmares.html">👑 Palmarés</a>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2>🏛️ Hall of Fame</h2>
+  <div class="content hero-grid">
+    <div class="hero"><div class="big">🏆 Enol</div><div class="small">7 títulos de Liga</div></div>
+    <div class="hero"><div class="big">🏆 Nazaré</div><div class="small">2 Copas</div></div>
+    <div class="hero"><div class="big">📈 2474</div><div class="small">Récord de puntos: Enol, 2024/25</div></div>
+    <div class="hero"><div class="big">⭐ Jesús</div><div class="small">Campeón vigente de Liga</div></div>
+    <div class="hero"><div class="big">🥇 Eduardo</div><div class="small">Campeón vigente de Copa</div></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📜 Historial completo — Liga y Copa</h2>
+  <div class="content scroll">
+    <table>
+      <thead><tr><th>Temporada</th><th>🥇 1.º</th><th class="num">Pts</th><th>🥈 2.º</th><th class="num">Pts</th><th>🥉 3.º</th><th class="num">Pts</th><th>🏆 Copa</th></tr></thead>
+      <tbody><tr><td>2012/13</td><td>Enol</td><td class='num'>1807</td><td>Belarmino</td><td class='num'>1700</td><td>Langostino</td><td class='num'>1654</td><td>—</td></tr>
+<tr><td>2013/14</td><td>Jorge</td><td class='num'>—</td><td>Efrén</td><td class='num'>—</td><td>Langostino</td><td class='num'>—</td><td>—</td></tr>
+<tr><td>2014/15</td><td>Jorge</td><td class='num'>—</td><td>Enol</td><td class='num'>—</td><td>Borja</td><td class='num'>—</td><td>—</td></tr>
+<tr><td>2015/16</td><td>Langostino</td><td class='num'>1921</td><td>Enol</td><td class='num'>1777</td><td>Efrén</td><td class='num'>1742</td><td>—</td></tr>
+<tr><td>2016/17</td><td>Nazaré</td><td class='num'>1891</td><td>Vicente</td><td class='num'>1810</td><td>David García</td><td class='num'>1749</td><td>—</td></tr>
+<tr><td>2017/18</td><td>Enol</td><td class='num'>1856</td><td>Esteban</td><td class='num'>1777</td><td>Vicente</td><td class='num'>1751</td><td>—</td></tr>
+<tr><td>2018/19</td><td>Langostino</td><td class='num'>2329</td><td>Nazaré</td><td class='num'>2202</td><td>Enol</td><td class='num'>2178</td><td>—</td></tr>
+<tr><td>2019/20</td><td>Enol</td><td class='num'>2241</td><td>Nazaré</td><td class='num'>1979</td><td>Vicente</td><td class='num'>1974</td><td>Ubaldo</td></tr>
+<tr><td>2020/21</td><td>Enol</td><td class='num'>2293</td><td>Ubaldo</td><td class='num'>2050</td><td>Nazaré</td><td class='num'>2040</td><td>Efrén</td></tr>
+<tr><td>2021/22</td><td>Enol</td><td class='num'>2063</td><td>Jonathan</td><td class='num'>2057</td><td>Ubaldo</td><td class='num'>1902</td><td>Nazaré</td></tr>
+<tr><td>2022/23</td><td>Nazaré</td><td class='num'>2015</td><td>Laureano</td><td class='num'>1994</td><td>Enol</td><td class='num'>1885</td><td>Jesús</td></tr>
+<tr><td>2023/24</td><td>Enol</td><td class='num'>2382</td><td>Ubaldo</td><td class='num'>2082</td><td>Jesús</td><td class='num'>2075</td><td>David García</td></tr>
+<tr><td>2024/25</td><td>Enol</td><td class='num'>2474</td><td>Nazaré</td><td class='num'>2376</td><td>Ubaldo</td><td class='num'>2354</td><td>Nazaré</td></tr>
+<tr><td>2025/26</td><td>Jesús Montoro</td><td class='num'>2144</td><td>Laureano</td><td class='num'>2114</td><td>Enol</td><td class='num'>2103</td><td>Eduardo Iglesias</td></tr></tbody>
+    </table>
+    <div class="note">Las temporadas sin puntuación conservada aparecen con “—”.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📊 Palmarés acumulado</h2>
+  <div class="content scroll">
+    <table>
+      <thead><tr><th>Jugador</th><th class="num">🏆 Ligas</th><th class="num">🥈 2.º</th><th class="num">🥉 3.º</th><th class="num">🏆 Copas</th><th class="num">Podios Liga</th></tr></thead>
+      <tbody><tr><td>Enol</td><td class='num'>7</td><td class='num'>2</td><td class='num'>3</td><td class='num'>—</td><td class='num'>12</td></tr>
+<tr><td>Nazaré</td><td class='num'>2</td><td class='num'>3</td><td class='num'>1</td><td class='num'>2</td><td class='num'>6</td></tr>
+<tr><td>Langostino</td><td class='num'>2</td><td class='num'>—</td><td class='num'>2</td><td class='num'>—</td><td class='num'>4</td></tr>
+<tr><td>Jorge</td><td class='num'>2</td><td class='num'>—</td><td class='num'>—</td><td class='num'>—</td><td class='num'>2</td></tr>
+<tr><td>Jesús</td><td class='num'>1</td><td class='num'>—</td><td class='num'>1</td><td class='num'>1</td><td class='num'>2</td></tr>
+<tr><td>Ubaldo</td><td class='num'>—</td><td class='num'>2</td><td class='num'>2</td><td class='num'>1</td><td class='num'>4</td></tr>
+<tr><td>Efrén</td><td class='num'>—</td><td class='num'>1</td><td class='num'>1</td><td class='num'>1</td><td class='num'>2</td></tr>
+<tr><td>David García</td><td class='num'>—</td><td class='num'>—</td><td class='num'>1</td><td class='num'>1</td><td class='num'>1</td></tr>
+<tr><td>Eduardo Iglesias</td><td class='num'>—</td><td class='num'>—</td><td class='num'>—</td><td class='num'>1</td><td class='num'>0</td></tr>
+<tr><td>Laureano</td><td class='num'>—</td><td class='num'>2</td><td class='num'>—</td><td class='num'>—</td><td class='num'>2</td></tr>
+<tr><td>Vicente</td><td class='num'>—</td><td class='num'>1</td><td class='num'>2</td><td class='num'>—</td><td class='num'>3</td></tr>
+<tr><td>Belarmino</td><td class='num'>—</td><td class='num'>1</td><td class='num'>—</td><td class='num'>—</td><td class='num'>1</td></tr>
+<tr><td>Esteban</td><td class='num'>—</td><td class='num'>1</td><td class='num'>—</td><td class='num'>—</td><td class='num'>1</td></tr>
+<tr><td>Jonathan</td><td class='num'>—</td><td class='num'>1</td><td class='num'>—</td><td class='num'>—</td><td class='num'>1</td></tr>
+<tr><td>Borja</td><td class='num'>—</td><td class='num'>—</td><td class='num'>1</td><td class='num'>—</td><td class='num'>1</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>🕰️ Archivo de clasificaciones históricas</h2>
+  <div class="content">
+    <p>Abre una temporada para consultar la clasificación final recuperada del archivo histórico.</p>
+    <span class="badge">Datos extraídos de capturas finales de temporada</span>
+  </div>
+</section>
+
+
+    <details>
+      <summary>2012/13</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Enol</td><td class='num'>1807</td></tr>
+<tr><td class='pos'>2</td><td>Belarmino</td><td class='num'>1700</td></tr>
+<tr><td class='pos'>3</td><td>Langostino</td><td class='num'>1654</td></tr>
+<tr><td class='pos'>4</td><td>Kurza SdeA</td><td class='num'>1420</td></tr>
+<tr><td class='pos'>5</td><td>Manchester City</td><td class='num'>1395</td></tr>
+<tr><td class='pos'>6</td><td>Pablo Sayeo</td><td class='num'>1365</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2015/16</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Langostino</td><td class='num'>1921</td></tr>
+<tr><td class='pos'>2</td><td>Enol</td><td class='num'>1777</td></tr>
+<tr><td class='pos'>3</td><td>Efrén</td><td class='num'>1742</td></tr>
+<tr><td class='pos'>4</td><td>Nazaré</td><td class='num'>1738</td></tr>
+<tr><td class='pos'>5</td><td>Vicente</td><td class='num'>1651</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2016/17</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Nazaré</td><td class='num'>1891</td></tr>
+<tr><td class='pos'>2</td><td>Vicente</td><td class='num'>1810</td></tr>
+<tr><td class='pos'>3</td><td>David García</td><td class='num'>1749</td></tr>
+<tr><td class='pos'>4</td><td>Efrén</td><td class='num'>1742</td></tr>
+<tr><td class='pos'>5</td><td>Borja</td><td class='num'>1686</td></tr>
+<tr><td class='pos'>6</td><td>Enol</td><td class='num'>1686</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2017/18</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Enol</td><td class='num'>1856</td></tr>
+<tr><td class='pos'>2</td><td>Esteban</td><td class='num'>1777</td></tr>
+<tr><td class='pos'>3</td><td>Vicente</td><td class='num'>1751</td></tr>
+<tr><td class='pos'>4</td><td>Borja</td><td class='num'>1626</td></tr>
+<tr><td class='pos'>5</td><td>Ubaldo</td><td class='num'>1605</td></tr>
+<tr><td class='pos'>6</td><td>David García</td><td class='num'>1568</td></tr>
+<tr><td class='pos'>7</td><td>Langostino</td><td class='num'>1557</td></tr>
+<tr><td class='pos'>8</td><td>Jorge</td><td class='num'>1528</td></tr>
+<tr><td class='pos'>9</td><td>Francisco Javier Jódar</td><td class='num'>1465</td></tr>
+<tr><td class='pos'>10</td><td>José Prieto</td><td class='num'>1449</td></tr>
+<tr><td class='pos'>11</td><td>Nazaré</td><td class='num'>1419</td></tr>
+<tr><td class='pos'>12</td><td>Efrén</td><td class='num'>1345</td></tr>
+<tr><td class='pos'>13</td><td>Miguel Casco</td><td class='num'>1297</td></tr>
+<tr><td class='pos'>14</td><td>Jonathan</td><td class='num'>1201</td></tr>
+<tr><td class='pos'>15</td><td>José</td><td class='num'>1037</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2018/19</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Langostino</td><td class='num'>2329</td></tr>
+<tr><td class='pos'>2</td><td>Nazaré</td><td class='num'>2202</td></tr>
+<tr><td class='pos'>3</td><td>Enol</td><td class='num'>2178</td></tr>
+<tr><td class='pos'>4</td><td>Esteban</td><td class='num'>2000</td></tr>
+<tr><td class='pos'>5</td><td>Jorge</td><td class='num'>1982</td></tr>
+<tr><td class='pos'>6</td><td>Diego Méndez</td><td class='num'>1952</td></tr>
+<tr><td class='pos'>7</td><td>Efrén</td><td class='num'>1888</td></tr>
+<tr><td class='pos'>8</td><td>Juan</td><td class='num'>1826</td></tr>
+<tr><td class='pos'>9</td><td>Vicente</td><td class='num'>1774</td></tr>
+<tr><td class='pos'>10</td><td>Stoika Txondo</td><td class='num'>1755</td></tr>
+<tr><td class='pos'>11</td><td>David García</td><td class='num'>1725</td></tr>
+<tr><td class='pos'>12</td><td>Ubaldo</td><td class='num'>1697</td></tr>
+<tr><td class='pos'>13</td><td>Jonathan</td><td class='num'>1636</td></tr>
+<tr><td class='pos'>14</td><td>Borja</td><td class='num'>1535</td></tr>
+<tr><td class='pos'>15</td><td>José</td><td class='num'>1514</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2019/20</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Enol</td><td class='num'>2241</td></tr>
+<tr><td class='pos'>2</td><td>Nazaré</td><td class='num'>1979</td></tr>
+<tr><td class='pos'>3</td><td>Vicente</td><td class='num'>1974</td></tr>
+<tr><td class='pos'>4</td><td>Rodolfo</td><td class='num'>1893</td></tr>
+<tr><td class='pos'>5</td><td>Esteban</td><td class='num'>1879</td></tr>
+<tr><td class='pos'>6</td><td>Diego Méndez</td><td class='num'>1809</td></tr>
+<tr><td class='pos'>7</td><td>Stoika Txondo</td><td class='num'>1751</td></tr>
+<tr><td class='pos'>8</td><td>Ubaldo</td><td class='num'>1736</td></tr>
+<tr><td class='pos'>9</td><td>Jorge</td><td class='num'>1650</td></tr>
+<tr><td class='pos'>10</td><td>Jonathan</td><td class='num'>1635</td></tr>
+<tr><td class='pos'>11</td><td>Borja</td><td class='num'>1627</td></tr>
+<tr><td class='pos'>12</td><td>José</td><td class='num'>1519</td></tr>
+<tr><td class='pos'>13</td><td>Efrén</td><td class='num'>1505</td></tr>
+<tr><td class='pos'>14</td><td>David García</td><td class='num'>1469</td></tr>
+<tr><td class='pos'>15</td><td>Miguel Casco</td><td class='num'>1271</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2021/22</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Enol</td><td class='num'>2063</td></tr>
+<tr><td class='pos'>2</td><td>Jonathan</td><td class='num'>2057</td></tr>
+<tr><td class='pos'>3</td><td>Ubaldo</td><td class='num'>1902</td></tr>
+<tr><td class='pos'>4</td><td>Vicente</td><td class='num'>1882</td></tr>
+<tr><td class='pos'>5</td><td>Nazaré</td><td class='num'>1789</td></tr>
+<tr><td class='pos'>6</td><td>José</td><td class='num'>1710</td></tr>
+<tr><td class='pos'>7</td><td>Borja</td><td class='num'>1707</td></tr>
+<tr><td class='pos'>8</td><td>Laureano</td><td class='num'>1670</td></tr>
+<tr><td class='pos'>9</td><td>Jorge</td><td class='num'>1656</td></tr>
+<tr><td class='pos'>10</td><td>Jesús Montoro</td><td class='num'>1612</td></tr>
+<tr><td class='pos'>11</td><td>Efrén</td><td class='num'>1585</td></tr>
+<tr><td class='pos'>12</td><td>Esteban</td><td class='num'>1566</td></tr>
+<tr><td class='pos'>13</td><td>Eduardo Iglesias</td><td class='num'>1467</td></tr>
+<tr><td class='pos'>14</td><td>Sergio Marcos</td><td class='num'>1464</td></tr>
+<tr><td class='pos'>15</td><td>David García</td><td class='num'>1453</td></tr>
+<tr><td class='pos'>16</td><td>Diego Méndez</td><td class='num'>1282</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2023/24</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Enol</td><td class='num'>2382</td></tr>
+<tr><td class='pos'>2</td><td>Ubaldo</td><td class='num'>2082</td></tr>
+<tr><td class='pos'>3</td><td>Jesús</td><td class='num'>2075</td></tr>
+<tr><td class='pos'>4</td><td>Laureano</td><td class='num'>2074</td></tr>
+<tr><td class='pos'>5</td><td>Efrén</td><td class='num'>2069</td></tr>
+<tr><td class='pos'>6</td><td>Langostino</td><td class='num'>2028</td></tr>
+<tr><td class='pos'>7</td><td>David García</td><td class='num'>2023</td></tr>
+<tr><td class='pos'>8</td><td>Nazaré</td><td class='num'>2004</td></tr>
+<tr><td class='pos'>9</td><td>Borja</td><td class='num'>1967</td></tr>
+<tr><td class='pos'>10</td><td>Jonathan</td><td class='num'>1944</td></tr>
+<tr><td class='pos'>11</td><td>Asturche</td><td class='num'>1913</td></tr>
+<tr><td class='pos'>12</td><td>Pablo</td><td class='num'>1825</td></tr>
+<tr><td class='pos'>13</td><td>Diego Méndez</td><td class='num'>1818</td></tr>
+<tr><td class='pos'>14</td><td>Esteban</td><td class='num'>1738</td></tr>
+<tr><td class='pos'>15</td><td>Jorge</td><td class='num'>1722</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2024/25</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Enol</td><td class='num'>2474</td></tr>
+<tr><td class='pos'>2</td><td>Nazaré</td><td class='num'>2376</td></tr>
+<tr><td class='pos'>3</td><td>Ubaldo</td><td class='num'>2354</td></tr>
+<tr><td class='pos'>4</td><td>Langostino</td><td class='num'>2309</td></tr>
+<tr><td class='pos'>5</td><td>Laureano</td><td class='num'>2290</td></tr>
+<tr><td class='pos'>6</td><td>Borja</td><td class='num'>2175</td></tr>
+<tr><td class='pos'>7</td><td>David García</td><td class='num'>2135</td></tr>
+<tr><td class='pos'>8</td><td>Efrén</td><td class='num'>2061</td></tr>
+<tr><td class='pos'>9</td><td>Pablo</td><td class='num'>2039</td></tr>
+<tr><td class='pos'>10</td><td>Jorge</td><td class='num'>2035</td></tr>
+<tr><td class='pos'>11</td><td>Diego Méndez</td><td class='num'>2003</td></tr>
+<tr><td class='pos'>12</td><td>Esteban</td><td class='num'>1999</td></tr>
+<tr><td class='pos'>13</td><td>Jesús Montoro</td><td class='num'>1969</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+    <details>
+      <summary>2025/26</summary>
+      <div class="inside">
+        <table class="ranking">
+          <thead><tr><th>Pos.</th><th>Manager</th><th class="num">Puntos</th></tr></thead>
+          <tbody><tr><td class='pos'>1</td><td>Jesús Montoro</td><td class='num'>2144</td></tr>
+<tr><td class='pos'>2</td><td>Laureano</td><td class='num'>2114</td></tr>
+<tr><td class='pos'>3</td><td>Enol</td><td class='num'>2103</td></tr>
+<tr><td class='pos'>4</td><td>Nazaré</td><td class='num'>2070</td></tr>
+<tr><td class='pos'>5</td><td>Ubaldo</td><td class='num'>2045</td></tr>
+<tr><td class='pos'>6</td><td>Borja</td><td class='num'>1955</td></tr>
+<tr><td class='pos'>7</td><td>Eduardo Iglesias</td><td class='num'>1928</td></tr>
+<tr><td class='pos'>8</td><td>Vizcaíno</td><td class='num'>1909</td></tr>
+<tr><td class='pos'>9</td><td>Pablo</td><td class='num'>1850</td></tr>
+<tr><td class='pos'>10</td><td>Jonathan</td><td class='num'>1830</td></tr>
+<tr><td class='pos'>11</td><td>Ordieres David</td><td class='num'>1792</td></tr>
+<tr><td class='pos'>12</td><td>Juanín Valencia</td><td class='num'>1768</td></tr>
+<tr><td class='pos'>13</td><td>Mateo</td><td class='num'>1762</td></tr>
+<tr><td class='pos'>14</td><td>Efrén</td><td class='num'>1752</td></tr>
+<tr><td class='pos'>15</td><td>Carlos1926</td><td class='num'>1702</td></tr>
+<tr><td class='pos'>16</td><td>Jorge</td><td class='num'>1667</td></tr>
+<tr><td class='pos'>17</td><td>Adrián Montes</td><td class='num'>1527</td></tr>
+<tr><td class='pos'>18</td><td>David García</td><td class='num'>1435</td></tr></tbody>
+        </table>
+      </div>
+    </details>
+    
+
+</main>
+</body>
+</html>

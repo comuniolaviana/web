@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reglamento de cláusulas - ComunioLaviana</title>
+<style>
+    body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#1f2937}
+    header{background:#1f6b3a;color:white;padding:24px 16px;text-align:center}
+    header h1{margin:0;font-size:32px}
+    header p{margin:8px 0 0}
+    .menu{display:flex;justify-content:center;gap:10px;padding:14px 12px 0;flex-wrap:wrap}
+    .menu a{display:inline-block;text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:bold;background:white;color:#1f6b3a;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .menu a.activo{background:#1f6b3a;color:white}
+    main{max-width:1100px;margin:30px auto;padding:0 12px 40px}
+    .card,details{background:white;border-radius:14px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);overflow:hidden}
+    .card h2,summary{margin:0;padding:16px 18px;background:#e8f5ec;color:#1f6b3a;font-size:21px;font-weight:bold}
+    summary{cursor:pointer;list-style:none}
+    summary::-webkit-details-marker{display:none}
+    .contenido{padding:18px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+    .dato{background:#f9fafb;border-radius:12px;padding:14px;border:1px solid #e5e7eb}
+    .dato strong{display:block;color:#1f6b3a;margin-bottom:5px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:11px 12px;border-bottom:1px solid #e5e7eb;text-align:left}
+    th{background:#f9fafb}
+    td.numero,th.numero{text-align:right}
+    .aviso{background:#fff7d6;border-left:5px solid #d4a017;padding:12px 14px;border-radius:8px;margin:14px 0}
+    .sancion{background:#fee2e2;border-left:5px solid #b91c1c;padding:12px 14px;border-radius:8px;margin:14px 0}
+    .ok{background:#dcfce7;border-left:5px solid #15803d;padding:12px 14px;border-radius:8px;margin:14px 0}
+    .tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:13px;font-weight:bold}
+    .verde{background:#dcfce7;color:#166534}
+    .rojo{background:#fee2e2;color:#991b1b}
+    .amarillo{background:#fef3c7;color:#92400e}
+    .campeon{font-size:34px;font-weight:bold;color:#1f6b3a}
+    .podio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center}
+    .podio>div{background:#f9fafb;border-radius:12px;padding:18px;border:1px solid #e5e7eb}
+    .cuadro{font-family:Consolas,monospace;white-space:pre;overflow-x:auto;background:#111827;color:#f9fafb;padding:18px;border-radius:12px;line-height:1.5}
+    @media(max-width:700px){
+      header h1{font-size:26px}
+      th,td{font-size:14px;padding:9px 8px}
+      .podio{grid-template-columns:1fr}
+      .menu a{font-size:14px;padding:9px 11px}
+    }
+</style>
+</head>
+<body>
+<header><h1>⚽ COMUNIOLAVIANA</h1><p>Normas y calendario de cláusulas 2026/27</p></header>
+
+  <nav class="menu">
+    <a href="index.html">⚽ Cláusulas</a>
+    <a href="normas.html">📜 Normas</a>
+    <a class="activo" href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
+    <a href="copa.html">🏆 Copa</a>
+    <a href="palmares.html">👑 Palmarés</a>
+  </nav>
+
+<main>
+
+<section class="card">
+  <h2>⏰ Horario y validación</h2>
+  <div class="contenido">
+    <p>El horario oficial para ejecutar cláusulas será de <strong>15:00 a 21:00 horas</strong>.</p>
+    <p>En caso de disputa sobre la hora de ejecución, será obligatorio presentar una captura que muestre la hora exacta de entrada. Sin esa prueba, la operación podrá anularse.</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📅 Calendario general 2026/27</h2>
+  <div class="contenido">
+    <table>
+      <thead><tr><th>Periodo</th><th>Días habilitados</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td>Pretemporada: 20 julio – 11 agosto 2026</td><td>Todos los días</td><td><span class="tag verde">Abiertas</span></td></tr>
+        <tr><td>Temporada ordinaria</td><td>Sábados y domingos</td><td><span class="tag verde">Abiertas</span></td></tr>
+        <tr><td>Semanas sin Liga por parón FIFA u otra incidencia</td><td>Jueves, viernes, sábado y domingo</td><td><span class="tag amarillo">Periodo especial</span></td></tr>
+        <tr><td>Navidad</td><td>Desde el inicio de la última jornada antes del parón hasta el inicio de la primera jornada tras el parón</td><td><span class="tag amarillo">Especial</span></td></tr>
+        <tr><td>24, 25 y 31 diciembre; 1 enero</td><td>No se ejecutan cláusulas</td><td><span class="tag rojo">Cerradas</span></td></tr>
+        <tr><td>22–25 abril 2027</td><td>Jueves a domingo, por fin de semana sin Liga</td><td><span class="tag verde">Abiertas</span></td></tr>
+        <tr><td>Fin de semana de la jornada 37</td><td>No se ejecutan cláusulas</td><td><span class="tag rojo">Cerradas</span></td></tr>
+        <tr><td>24–25 mayo 2027</td><td>Lunes y martes, tras finalizar completamente la jornada 37</td><td><span class="tag verde">Última ventana</span></td></tr>
+        <tr><td>Desde el 26 mayo 2027</td><td>Mercado de cláusulas cerrado</td><td><span class="tag rojo">Cerradas</span></td></tr>
+      </tbody>
+    </table>
+    <div class="aviso">LaLiga 2026/27 comienza el fin de semana del 14–16 de agosto; la final de Copa del Rey será el 24 de abril y la Supercopa se jugará del 2 al 7 de febrero.</div>
+  </div>
+</section>
+
+<details open>
+  <summary>🌍 Parones y periodos especiales</summary>
+  <div class="contenido">
+    <p>Cuando no haya jornada de Liga por parón FIFA, final de Copa u otra incidencia comunicada por la organización, las cláusulas se habilitarán durante <strong>jueves, viernes, sábado y domingo</strong> de esa semana.</p>
+  </div>
+</details>
+
+<details>
+  <summary>🎄 Navidad</summary>
+  <div class="contenido">
+    <p>Durante el parón navideño, las cláusulas permanecerán abiertas desde el comienzo de la última jornada antes del parón hasta el inicio de la primera jornada posterior.</p>
+    <div class="sancion"><strong>Excepciones:</strong> estarán cerradas los días 24, 25 y 31 de diciembre y el 1 de enero.</div>
+  </div>
+</details>
+
+<details>
+  <summary>🔒 Restricciones desde cuartos de Copa</summary>
+  <div class="contenido">
+    <p>A partir del inicio de los cuartos de final de la Copa, solo podrán ejecutar cláusulas:</p>
+    <ul>
+      <li>Los equipos que continúen vivos en la Copa.</li>
+      <li>Los equipos eliminados que estén a <strong>150 puntos o menos del tercer clasificado</strong>.</li>
+    </ul>
+    <p>No podrán ejecutarlas los equipos eliminados de Copa que estén a más de 150 puntos del tercer puesto.</p>
+    <div class="aviso">La finalidad es impedir que equipos sin objetivos deportivos interfieran en la lucha por Liga o Copa.</div>
+  </div>
+</details>
+
+</main>
+</body>
+</html>

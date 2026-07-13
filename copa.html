@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copa - ComunioLaviana</title>
+<style>
+:root{--green:#1f6b3a;--light:#e8f5ec;--bg:#f4f6f8;--text:#1f2937}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,#174f2c,#1f6b3a);color:white;padding:28px 16px;text-align:center}
+header h1{margin:0;font-size:34px}
+header p{margin:8px 0 0}
+.menu{display:flex;justify-content:center;gap:10px;padding:14px 12px 0;flex-wrap:wrap}
+.menu a{display:inline-block;text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:bold;background:white;color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.menu a.activo{background:var(--green);color:white}
+main{max-width:1200px;margin:30px auto;padding:0 12px 40px}
+.card,details{background:white;border-radius:14px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);overflow:hidden}
+.card h2,summary{margin:0;padding:16px 18px;background:var(--light);color:var(--green);font-size:21px;font-weight:bold}
+summary{cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+.contenido{padding:18px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.dato{background:#f9fafb;border-radius:12px;padding:14px;border:1px solid #e5e7eb}
+.dato strong{display:block;color:var(--green);margin-bottom:5px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 12px;border-bottom:1px solid #e5e7eb;text-align:left}
+th{background:#f9fafb}
+.aviso{background:#fff7d6;border-left:5px solid #d4a017;padding:12px 14px;border-radius:8px;margin:14px 0}
+.sancion{background:#fee2e2;border-left:5px solid #b91c1c;padding:12px 14px;border-radius:8px;margin:14px 0}
+.bracket-scroll{overflow-x:auto;padding-bottom:8px}
+.bracket{min-width:1050px;display:grid;grid-template-columns:260px 210px 210px 210px 180px;gap:24px;align-items:stretch;padding:8px}
+.round{display:flex;flex-direction:column;justify-content:space-around;gap:18px}
+.round-title{text-align:center;font-weight:bold;color:var(--green);margin-bottom:8px}
+.match{position:relative;background:#fff;border:2px solid #d1d5db;border-radius:12px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.team{padding:9px 12px;border-bottom:1px solid #e5e7eb;font-weight:bold}
+.team:last-child{border-bottom:none}
+.match::after{content:"";position:absolute;right:-25px;top:50%;width:25px;border-top:2px solid #9ca3af}
+.round:last-child .match::after{display:none}
+.final .match{border-color:#d4a017;background:#fffdf2}
+.trophy{text-align:center;font-size:42px;margin-bottom:8px}
+.legend{display:flex;gap:10px;flex-wrap:wrap}
+.tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:bold;font-size:13px}
+.podio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center}
+.podio>div{background:#f9fafb;border-radius:12px;padding:18px;border:1px solid #e5e7eb}
+.campeon{font-size:28px;font-weight:bold;color:var(--green)}
+@media(max-width:700px){
+  header h1{font-size:27px}
+  th,td{font-size:14px;padding:9px 8px}
+  .menu a{font-size:13px;padding:9px 10px}
+  .podio{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header><h1>🏆 COMUNIOLAVIANA</h1><p>Formato oficial de la Copa</p></header>
+
+<nav class="menu">
+  <a href="index.html">⚽ Cláusulas</a>
+  <a href="normas.html">📜 Normas</a>
+  <a href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
+  <a class="activo" href="copa.html">🏆 Copa</a>
+  <a href="palmares.html">👑 Palmarés</a>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2>🎯 Objetivo y formato</h2>
+  <div class="contenido">
+    <p>La Copa está diseñada para que todos los equipos mantengan opciones de conseguir un título hasta el final. Un lado del cuadro favorece a los peor clasificados y el otro reúne a los mejores equipos junto con los dos supervivientes de la previa.</p>
+    <div class="legend">
+      <span class="tag">18 participantes</span>
+      <span class="tag">Eliminatorias a doble partido</span>
+      <span class="tag">Sin valor doble fuera de casa</span>
+      <span class="tag">Ventaja al peor clasificado en empate final</span>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📅 Calendario de la Copa</h2>
+  <div class="contenido">
+    <table>
+      <thead><tr><th>Jornadas</th><th>Ronda</th><th>Formato</th></tr></thead>
+      <tbody>
+        <tr><td>J28–J30</td><td>Ronda previa Top 4</td><td>Liguilla a una vuelta</td></tr>
+        <tr><td>J31–J32</td><td>Octavos</td><td>Ida y vuelta</td></tr>
+        <tr><td>J33–J34</td><td>Cuartos</td><td>Ida y vuelta</td></tr>
+        <tr><td>J35–J36</td><td>Semifinales</td><td>Ida y vuelta</td></tr>
+        <tr><td>J37–J38</td><td>Final</td><td>Ida y vuelta</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<details open>
+  <summary>🔥 Ronda previa — Grupo Top 4</summary>
+  <div class="contenido">
+    <p>Los cuatro primeros clasificados al terminar la jornada 27 disputan una liguilla. Los dos mejores pasan a octavos como <strong>T1</strong> y <strong>T2</strong>.</p>
+    <div class="grid">
+      <div class="dato"><strong>J28</strong>1.º vs 4.º<br>2.º vs 3.º</div>
+      <div class="dato"><strong>J29</strong>1.º vs 3.º<br>2.º vs 4.º</div>
+      <div class="dato"><strong>J30</strong>1.º vs 2.º<br>3.º vs 4.º</div>
+    </div>
+    <p><strong>Puntuación:</strong> victoria 3 puntos, empate 1, derrota 0.</p>
+    <div class="aviso"><strong>Desempate clave:</strong> queda por delante el equipo peor clasificado en Liga.</div>
+  </div>
+</details>
+
+<section class="card">
+  <h2>🧩 Cuadro completo de la Copa</h2>
+  <div class="contenido bracket-scroll">
+    <div class="bracket">
+
+      <div class="round">
+        <div class="round-title">OCTAVOS</div>
+        <div class="match"><div class="team">11.º</div><div class="team">18.º</div></div>
+        <div class="match"><div class="team">14.º</div><div class="team">15.º</div></div>
+        <div class="match"><div class="team">12.º</div><div class="team">17.º</div></div>
+        <div class="match"><div class="team">13.º</div><div class="team">16.º</div></div>
+        <div class="match"><div class="team">5.º</div><div class="team">T1</div></div>
+        <div class="match"><div class="team">8.º</div><div class="team">9.º</div></div>
+        <div class="match"><div class="team">6.º</div><div class="team">T2</div></div>
+        <div class="match"><div class="team">7.º</div><div class="team">10.º</div></div>
+      </div>
+
+      <div class="round">
+        <div class="round-title">CUARTOS</div>
+        <div class="match"><div class="team">Ganador 11.º/18.º</div><div class="team">Ganador 14.º/15.º</div></div>
+        <div class="match"><div class="team">Ganador 12.º/17.º</div><div class="team">Ganador 13.º/16.º</div></div>
+        <div class="match"><div class="team">Ganador 5.º/T1</div><div class="team">Ganador 8.º/9.º</div></div>
+        <div class="match"><div class="team">Ganador 6.º/T2</div><div class="team">Ganador 7.º/10.º</div></div>
+      </div>
+
+      <div class="round">
+        <div class="round-title">SEMIFINALES</div>
+        <div class="match"><div class="team">QF-A1</div><div class="team">QF-A2</div></div>
+        <div class="match"><div class="team">QF-B1</div><div class="team">QF-B2</div></div>
+      </div>
+
+      <div class="round final">
+        <div class="round-title">FINAL</div>
+        <div class="match"><div class="team">Ganador SF-A</div><div class="team">Ganador SF-B</div></div>
+      </div>
+
+      <div class="round final">
+        <div class="trophy">🏆</div>
+        <div class="round-title">CAMPEÓN</div>
+        <div class="match"><div class="team">Campeón Copa 2026/27</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<details>
+  <summary>⚖️ Criterios de desempate</summary>
+  <div class="contenido">
+    <ol>
+      <li>Gana quien consiga más puntos en el global de ida y vuelta.</li>
+      <li>Si hay empate global, pasa quien haya sumado más puntos como local en el partido de ida.</li>
+      <li>Si continúa el empate, pasa el equipo peor clasificado en Liga en el momento del cruce.</li>
+    </ol>
+  </div>
+</details>
+
+<details>
+  <summary>🔒 Cláusulas durante la Copa</summary>
+  <div class="contenido">
+    <p>Las cláusulas siguen activas con normalidad hasta el inicio de los cuartos de final.</p>
+    <p>Desde cuartos, solo podrán utilizarlas:</p>
+    <ul>
+      <li>Los equipos que sigan vivos en la Copa.</li>
+      <li>Los equipos eliminados que estén a 150 puntos o menos del tercer clasificado.</li>
+    </ul>
+    <div class="sancion">Los equipos eliminados y situados a más de 150 puntos del tercer puesto quedarán fuera del sistema de cláusulas.</div>
+  </div>
+</details>
+
+<section class="card">
+  <h2>🏅 Última edición — Copa 2025/26</h2>
+  <div class="contenido podio">
+    <div><div class="campeon">🥇 Eduardo Iglesias</div><p>Campeón</p></div>
+    <div><div class="campeon">🥈 Vizcaíno</div><p>Subcampeón</p></div>
+    <div><div class="campeon">🥉 Borja</div><p>Tercer puesto</p></div>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

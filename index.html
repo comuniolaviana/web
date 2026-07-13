@@ -123,6 +123,70 @@
       color: white;
     }
 
+
+    .filtros {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .filtros-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #374151;
+    }
+
+    .campo input,
+    .campo select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      font-size: 15px;
+      background: white;
+    }
+
+    .limpiar {
+      border: none;
+      background: #1f6b3a;
+      color: white;
+      padding: 11px 15px;
+      border-radius: 9px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .resumen-filtro {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .sin-resultados {
+      background: #fff7d6;
+      color: #7c5c00;
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .contador {
+      font-size: 14px;
+      font-weight: normal;
+      color: #4b5563;
+    }
+
     @media (max-width: 700px) {
       header h1 {
         font-size: 26px;
@@ -136,6 +200,10 @@
 
       .seccion h2 {
         font-size: 19px;
+      }
+
+      .filtros-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -151,12 +219,36 @@
   <nav class="menu">
     <a class="activo" href="index.html">⚽ Cláusulas</a>
     <a href="normas.html">📜 Normas</a>
+    <a href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
+    <a href="copa.html">🏆 Copa</a>
+    <a href="palmares.html">👑 Palmarés</a>
   </nav>
 
-  <main>
+<main>
     <div id="actualizado" class="actualizado">
       Cargando datos...
     </div>
+
+
+    <section class="filtros">
+      <div class="filtros-grid">
+        <div class="campo">
+          <label for="buscar">🔍 Buscar jugador o propietario</label>
+          <input id="buscar" type="search" placeholder="Ej.: Nico Williams o Enol">
+        </div>
+
+        <div class="campo">
+          <label for="propietario">👤 Filtrar por propietario</label>
+          <select id="propietario">
+            <option value="">Todos los propietarios</option>
+          </select>
+        </div>
+
+        <button id="limpiar" class="limpiar" type="button">Limpiar</button>
+      </div>
+
+      <div id="resumenFiltro" class="resumen-filtro"></div>
+    </section>
 
     <div id="contenido"></div>
   </main>
@@ -169,15 +261,34 @@
       { clave: "delanteros", titulo: "⚽ Delanteros" }
     ];
 
+    let datosLiga = null;
+
+    function normalizar(texto) {
+      return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+    }
+
     function formatearNumero(numero) {
       return new Intl.NumberFormat("es-ES").format(numero);
+    }
+
+    function escaparHTML(texto) {
+      return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
     function crearTabla(titulo, jugadores) {
       const filas = jugadores.map(jugador => `
         <tr>
-          <td>${jugador.jugador}</td>
-          <td>${jugador.propietario}</td>
+          <td>${escaparHTML(jugador.jugador)}</td>
+          <td>${escaparHTML(jugador.propietario)}</td>
           <td class="numero">${formatearNumero(jugador.clausula)} €</td>
           <td class="numero">${formatearNumero(jugador.puntos)}</td>
         </tr>
@@ -185,8 +296,7 @@
 
       return `
         <section class="seccion">
-          <h2>${titulo}</h2>
-
+          <h2>${titulo} <span class="contador">(${jugadores.length})</span></h2>
           <div class="tabla-contenedor">
             <table>
               <thead>
@@ -197,33 +307,98 @@
                   <th class="numero">Puntos</th>
                 </tr>
               </thead>
-
-              <tbody>
-                ${filas}
-              </tbody>
+              <tbody>${filas}</tbody>
             </table>
           </div>
         </section>
       `;
     }
 
+    function cargarPropietarios(datos) {
+      const propietarios = new Set();
+
+      posiciones.forEach(posicion => {
+        (datos[posicion.clave] || []).forEach(jugador => {
+          if (jugador.propietario) propietarios.add(jugador.propietario);
+        });
+      });
+
+      const select = document.getElementById("propietario");
+
+      [...propietarios]
+        .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
+        .forEach(nombre => {
+          const opcion = document.createElement("option");
+          opcion.value = nombre;
+          opcion.textContent = nombre;
+          select.appendChild(opcion);
+        });
+    }
+
+    function renderizar() {
+      if (!datosLiga) return;
+
+      const texto = normalizar(document.getElementById("buscar").value);
+      const propietarioSeleccionado = document.getElementById("propietario").value;
+      let total = 0;
+      let bloques = "";
+
+      posiciones.forEach(posicion => {
+        const filtrados = (datosLiga[posicion.clave] || []).filter(jugador => {
+          const coincideTexto =
+            !texto ||
+            normalizar(jugador.jugador).includes(texto) ||
+            normalizar(jugador.propietario).includes(texto);
+
+          const coincidePropietario =
+            !propietarioSeleccionado ||
+            jugador.propietario === propietarioSeleccionado;
+
+          return coincideTexto && coincidePropietario;
+        });
+
+        if (filtrados.length > 0) {
+          total += filtrados.length;
+          bloques += crearTabla(posicion.titulo, filtrados);
+        }
+      });
+
+      document.getElementById("contenido").innerHTML =
+        bloques || `<div class="sin-resultados">No hay jugadores que coincidan con los filtros.</div>`;
+
+      let mensaje = `${total} jugador${total === 1 ? "" : "es"} mostrado${total === 1 ? "" : "s"}.`;
+
+      if (propietarioSeleccionado) {
+        mensaje += ` Propietario: ${propietarioSeleccionado}.`;
+      }
+
+      document.getElementById("resumenFiltro").textContent = mensaje;
+    }
+
+    document.getElementById("buscar").addEventListener("input", renderizar);
+    document.getElementById("propietario").addEventListener("change", renderizar);
+
+    document.getElementById("limpiar").addEventListener("click", () => {
+      document.getElementById("buscar").value = "";
+      document.getElementById("propietario").value = "";
+      renderizar();
+    });
+
     fetch("datos.json?v=" + Date.now())
       .then(respuesta => {
         if (!respuesta.ok) {
           throw new Error("No se pudo cargar datos.json");
         }
-
         return respuesta.json();
       })
       .then(datos => {
+        datosLiga = datos;
+
         document.getElementById("actualizado").textContent =
           "Última actualización: " + datos.actualizado;
 
-        const contenido = posiciones.map(posicion =>
-          crearTabla(posicion.titulo, datos[posicion.clave] || [])
-        ).join("");
-
-        document.getElementById("contenido").innerHTML = contenido;
+        cargarPropietarios(datos);
+        renderizar();
       })
       .catch(error => {
         document.getElementById("actualizado").textContent = "";
