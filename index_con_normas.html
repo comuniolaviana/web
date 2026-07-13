@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ComunioLaviana</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    header {
+      background: #1f6b3a;
+      color: white;
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 12px;
+    }
+
+    .actualizado {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .seccion {
+      background: white;
+      border-radius: 14px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .seccion h2 {
+      margin: 0;
+      padding: 16px;
+      background: #e8f5ec;
+      color: #1f6b3a;
+      font-size: 22px;
+    }
+
+    .tabla-contenedor {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    th {
+      background: #f9fafb;
+      font-size: 14px;
+    }
+
+    td.numero,
+    th.numero {
+      text-align: right;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 12px 0;
+      flex-wrap: wrap;
+    }
+
+    .menu a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      background: white;
+      color: #1f6b3a;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .menu a.activo {
+      background: #1f6b3a;
+      color: white;
+    }
+
+    @media (max-width: 700px) {
+      header h1 {
+        font-size: 26px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .seccion h2 {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>⚽ COMUNIOLAVIANA</h1>
+    <p>Cláusulas de rescisión</p>
+  </header>
+
+  <nav class="menu">
+    <a class="activo" href="index.html">⚽ Cláusulas</a>
+    <a href="normas.html">📜 Normas</a>
+  </nav>
+
+  <main>
+    <div id="actualizado" class="actualizado">
+      Cargando datos...
+    </div>
+
+    <div id="contenido"></div>
+  </main>
+
+  <script>
+    const posiciones = [
+      { clave: "porteros", titulo: "🧤 Porteros" },
+      { clave: "defensas", titulo: "🛡 Defensas" },
+      { clave: "medios", titulo: "🎯 Medios" },
+      { clave: "delanteros", titulo: "⚽ Delanteros" }
+    ];
+
+    function formatearNumero(numero) {
+      return new Intl.NumberFormat("es-ES").format(numero);
+    }
+
+    function crearTabla(titulo, jugadores) {
+      const filas = jugadores.map(jugador => `
+        <tr>
+          <td>${jugador.jugador}</td>
+          <td>${jugador.propietario}</td>
+          <td class="numero">${formatearNumero(jugador.clausula)} €</td>
+          <td class="numero">${formatearNumero(jugador.puntos)}</td>
+        </tr>
+      `).join("");
+
+      return `
+        <section class="seccion">
+          <h2>${titulo}</h2>
+
+          <div class="tabla-contenedor">
+            <table>
+              <thead>
+                <tr>
+                  <th>Jugador</th>
+                  <th>Propietario</th>
+                  <th class="numero">Cláusula</th>
+                  <th class="numero">Puntos</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                ${filas}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
+
+    fetch("datos.json?v=" + Date.now())
+      .then(respuesta => {
+        if (!respuesta.ok) {
+          throw new Error("No se pudo cargar datos.json");
+        }
+
+        return respuesta.json();
+      })
+      .then(datos => {
+        document.getElementById("actualizado").textContent =
+          "Última actualización: " + datos.actualizado;
+
+        const contenido = posiciones.map(posicion =>
+          crearTabla(posicion.titulo, datos[posicion.clave] || [])
+        ).join("");
+
+        document.getElementById("contenido").innerHTML = contenido;
+      })
+      .catch(error => {
+        document.getElementById("actualizado").textContent = "";
+
+        document.getElementById("contenido").innerHTML = `
+          <div class="error">
+            Todavía no se ha subido el archivo datos.json.
+          </div>
+        `;
+
+        console.error(error);
+      });
+  </script>
+
+</body>
+</html>
