@@ -98,6 +98,31 @@
       text-align: center;
     }
 
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 12px 0;
+      flex-wrap: wrap;
+    }
+
+    .menu a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      background: white;
+      color: #1f6b3a;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .menu a.activo {
+      background: #1f6b3a;
+      color: white;
+    }
+
     @media (max-width: 700px) {
       header h1 {
         font-size: 26px;
@@ -122,6 +147,11 @@
     <h1>⚽ COMUNIOLAVIANA</h1>
     <p>Cláusulas de rescisión</p>
   </header>
+
+  <nav class="menu">
+    <a class="activo" href="index.html">⚽ Cláusulas</a>
+    <a href="normas.html">📜 Normas</a>
+  </nav>
 
   <main>
     <div id="actualizado" class="actualizado">
