@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estadísticas - ComunioLaviana</title>
+<style>
+:root{--green:#1f6b3a;--light:#e8f5ec;--bg:#f4f6f8;--text:#1f2937}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,#174f2c,#1f6b3a);color:#fff;padding:28px 16px;text-align:center}
+header h1{margin:0;font-size:34px}
+header p{margin:8px 0 0}
+.menu{display:flex;justify-content:center;gap:10px;padding:14px 12px 0;flex-wrap:wrap}
+.menu a{text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:bold;background:#fff;color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.menu a.activo{background:var(--green);color:#fff}
+main{max-width:1150px;margin:28px auto;padding:0 12px 40px}
+.card{background:#fff;border-radius:14px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);overflow:hidden}
+.card h2{margin:0;padding:16px 18px;background:var(--light);color:var(--green);font-size:21px}
+.content{padding:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.kpi{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:18px;text-align:center}
+.kpi strong{display:block;font-size:31px;color:var(--green)}
+.kpi span{display:block;margin-top:6px;color:#4b5563}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 12px;border-bottom:1px solid #e5e7eb;text-align:left}
+th{background:#f9fafb}
+.num{text-align:right}
+.filtros{display:grid;grid-template-columns:1fr 260px auto;gap:12px;align-items:end}
+.campo label{display:block;margin-bottom:6px;font-size:13px;font-weight:bold}
+.campo input,.campo select{width:100%;padding:11px 12px;border:1px solid #d1d5db;border-radius:9px;font-size:15px}
+button{border:0;background:var(--green);color:#fff;padding:11px 15px;border-radius:9px;font-weight:bold;cursor:pointer}
+.historial{margin-top:18px}
+.movimiento{border-left:5px solid var(--green);background:#f9fafb;border-radius:10px;padding:13px 14px;margin-bottom:10px}
+.movimiento .fecha{font-size:13px;color:#6b7280}
+.movimiento .ruta{font-weight:bold;margin:4px 0}
+.aviso{background:#fff7d6;border-left:5px solid #d4a017;padding:12px 14px;border-radius:8px}
+.sin{padding:18px;text-align:center;color:#6b7280}
+@media(max-width:700px){
+ header h1{font-size:27px}
+ .menu a{font-size:13px;padding:9px 10px}
+ .filtros{grid-template-columns:1fr}
+ th,td{font-size:13px;padding:9px 7px}
+}
+</style>
+</head>
+<body>
+<header><h1>📊 COMUNIOLAVIANA</h1><p>Estadísticas públicas de equipos y mercado</p></header>
+
+<nav class="menu">
+  <a href="index.html">⚽ Cláusulas</a>
+  <a href="normas.html">📜 Normas</a>
+  <a href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
+  <a href="copa.html">🏆 Copa</a>
+  <a href="palmares.html">👑 Palmarés</a>
+  <a class="activo" href="estadisticas.html">📊 Estadísticas</a>
+</nav>
+
+<main>
+<section class="card">
+  <h2>Resumen</h2>
+  <div class="content kpis">
+    <div class="kpi"><strong id="totalEquipos">—</strong><span>Equipos</span></div>
+    <div class="kpi"><strong id="totalJugadores">—</strong><span>Jugadores en plantillas</span></div>
+    <div class="kpi"><strong id="totalMovimientos">—</strong><span>Movimientos de usuarios desde el 20/07</span></div>
+    <div class="kpi"><strong id="jugadoresTraspasados">—</strong><span>Jugadores con movimientos</span></div>
+  </div>
+</section>
+
+<div class="grid">
+  <section class="card">
+    <h2>👥 Jugadores actuales por equipo</h2>
+    <div class="content">
+      <table>
+        <thead><tr><th>Equipo</th><th class="num">Jugadores</th></tr></thead>
+        <tbody id="tablaPlantillas"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🔄 Usuarios con más movimientos</h2>
+    <div class="content">
+      <table>
+        <thead><tr><th>Equipo</th><th class="num">Movimientos</th></tr></thead>
+        <tbody id="tablaMovimientos"></tbody>
+      </table>
+      <div class="aviso">Cada compra o venta realizada por un usuario cuenta como un movimiento. Computer, equipomalo y errores no aparecen como equipos.</div>
+    </div>
+  </section>
+</div>
+
+<section class="card">
+  <h2>⚽ Jugadores más traspasados</h2>
+  <div class="content">
+    <table>
+      <thead><tr><th>Jugador</th><th class="num">Traspasos</th></tr></thead>
+      <tbody id="tablaJugadores"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📜 Historial de traspasos por jugador</h2>
+  <div class="content">
+    <div class="filtros">
+      <div class="campo">
+        <label for="buscarJugador">Buscar jugador</label>
+        <input id="buscarJugador" type="search" placeholder="Ej.: Oyarzabal">
+      </div>
+      <div class="campo">
+        <label for="seleccionarUsuario">Filtrar por usuario</label>
+        <select id="seleccionarUsuario"><option value="">Todos los usuarios</option></select>
+      </div>
+      <button id="limpiar" type="button">Limpiar</button>
+    </div>
+    <div id="historial" class="historial"></div>
+  </div>
+</section>
+</main>
+
+<script>
+let datos=null;
+
+function normalizar(texto){
+  return String(texto||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+}
+function escapar(texto){
+  return String(texto||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function numero(n){return new Intl.NumberFormat("es-ES").format(Number(n)||0)}
+function fechaES(f){
+  const [a,m,d]=f.split("-");
+  return `${d}/${m}/${a}`;
+}
+
+function pintar(){
+  document.getElementById("totalEquipos").textContent=datos.equipos.length;
+  document.getElementById("totalJugadores").textContent=numero(datos.totalJugadores);
+  document.getElementById("totalMovimientos").textContent=numero(datos.totalMovimientosUsuarios);
+  document.getElementById("jugadoresTraspasados").textContent=datos.jugadoresMasTraspasados.length;
+
+  const plantillas=[...datos.equipos].sort((a,b)=>b.jugadores-a.jugadores||a.propietario.localeCompare(b.propietario,"es"));
+  document.getElementById("tablaPlantillas").innerHTML=plantillas.map(x=>`<tr><td>${escapar(x.propietario)}</td><td class="num">${x.jugadores}</td></tr>`).join("");
+
+  const movimientos=[...datos.equipos].sort((a,b)=>b.movimientos-a.movimientos||a.propietario.localeCompare(b.propietario,"es"));
+  document.getElementById("tablaMovimientos").innerHTML=movimientos.map(x=>`<tr><td>${escapar(x.propietario)}</td><td class="num">${x.movimientos}</td></tr>`).join("");
+
+  const jugadores=datos.jugadoresMasTraspasados.slice(0,25);
+  document.getElementById("tablaJugadores").innerHTML=jugadores.length
+    ? jugadores.map(x=>`<tr><td>${escapar(x.jugador)}</td><td class="num">${x.traspasos}</td></tr>`).join("")
+    : `<tr><td colspan="2" class="sin">Todavía no hay traspasos registrados desde el 20/07/2026.</td></tr>`;
+
+  const usuarios=new Set();
+  datos.historial.forEach(x=>{
+    if(x.vendedor && !["computer","equipomalo"].includes(normalizar(x.vendedor))) usuarios.add(x.vendedor);
+    if(x.comprador && !["computer","equipomalo"].includes(normalizar(x.comprador))) usuarios.add(x.comprador);
+  });
+  const select=document.getElementById("seleccionarUsuario");
+  [...usuarios].sort((a,b)=>a.localeCompare(b,"es")).forEach(u=>{
+    const o=document.createElement("option");o.value=u;o.textContent=u;select.appendChild(o);
+  });
+
+  pintarHistorial();
+}
+
+function pintarHistorial(){
+  const texto=normalizar(document.getElementById("buscarJugador").value);
+  const usuario=document.getElementById("seleccionarUsuario").value;
+
+  const filas=datos.historial.filter(x=>{
+    const coincideJugador=!texto||normalizar(x.jugador).includes(texto);
+    const coincideUsuario=!usuario||x.vendedor===usuario||x.comprador===usuario;
+    return coincideJugador&&coincideUsuario;
+  }).slice(0,200);
+
+  document.getElementById("historial").innerHTML=filas.length
+    ? filas.map(x=>`
+      <article class="movimiento">
+        <div class="fecha">${fechaES(x.fecha)}</div>
+        <div class="ruta">${escapar(x.vendedor||"—")} → ${escapar(x.comprador||"—")}</div>
+        <div><strong>${escapar(x.jugador)}</strong>${x.precio ? ` · ${numero(x.precio)} €` : ""}</div>
+      </article>`).join("")
+    : `<div class="sin">No hay movimientos que coincidan con la búsqueda.</div>`;
+}
+
+document.getElementById("buscarJugador").addEventListener("input",pintarHistorial);
+document.getElementById("seleccionarUsuario").addEventListener("change",pintarHistorial);
+document.getElementById("limpiar").addEventListener("click",()=>{
+  document.getElementById("buscarJugador").value="";
+  document.getElementById("seleccionarUsuario").value="";
+  pintarHistorial();
+});
+
+fetch("estadisticas.json?v="+Date.now())
+  .then(r=>{if(!r.ok)throw new Error("No se pudo cargar estadisticas.json");return r.json()})
+  .then(d=>{datos=d;pintar()})
+  .catch(e=>{
+    document.querySelector("main").innerHTML=`<div class="aviso">Todavía no se ha generado estadisticas.json.</div>`;
+    console.error(e);
+  });
+</script>
+</body>
+</html>
