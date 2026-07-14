@@ -42,6 +42,36 @@
       .podio{grid-template-columns:1fr}
       .menu a{font-size:14px;padding:9px 11px}
     }
+
+.calendario-meses{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.mes{border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;background:white}
+.mes h3{margin:0;padding:13px;text-align:center;background:#f9fafb;color:#1f6b3a}
+.semana,.dias{display:grid;grid-template-columns:repeat(7,1fr)}
+.semana div{padding:7px 2px;text-align:center;font-size:12px;font-weight:bold;color:#6b7280}
+.dia{min-height:48px;border:0;border-top:1px solid #f0f1f3;border-right:1px solid #f0f1f3;padding:5px;font-size:13px;cursor:pointer;position:relative}
+.dia.vacio{cursor:default;background:#fafafa}
+.dia.abierto{background:#dcfce7;color:#166534;font-weight:bold}
+.dia.cerrado{background:#fee2e2;color:#991b1b}
+.dia.especial{background:#fef3c7;color:#92400e;font-weight:bold}
+.dia.hoy{outline:3px solid #2563eb;outline-offset:-3px}
+.leyenda-calendario{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0;font-size:14px}
+.leyenda-calendario span{display:inline-flex;align-items:center;gap:6px}
+.cuadro-color{width:15px;height:15px;border-radius:4px;display:inline-block}
+.detalle-dia{margin-top:16px;padding:14px;border-radius:10px;background:#f9fafb;border:1px solid #e5e7eb}
+.estado-hoy{padding:16px;border-radius:12px;font-size:18px;font-weight:bold;margin-bottom:18px;text-align:center}
+.estado-hoy.abierto{background:#dcfce7;color:#166534}
+.estado-hoy.cerrado{background:#fee2e2;color:#991b1b}
+.estado-hoy.especial{background:#fef3c7;color:#92400e}
+
+
+.calendario-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0 18px}
+.calendario-filtros{display:flex;gap:8px;flex-wrap:wrap}
+.calendario-filtros button,.boton-hoy{border:0;border-radius:999px;padding:9px 12px;font-weight:bold;cursor:pointer;background:#eef2f7;color:#374151}
+.calendario-filtros button.activo,.boton-hoy{background:#1f6b3a;color:white}
+.proxima-apertura{padding:12px 14px;border-radius:10px;background:#eef6ff;border-left:5px solid #2563eb;color:#1e3a8a;margin-bottom:14px}
+.dia.oculto{opacity:.12}
+.dia .evento{display:block;font-size:9px;line-height:1.1;margin-top:3px;font-weight:bold}
+
 </style>
 </head>
 <body>
@@ -86,6 +116,43 @@
   </div>
 </section>
 
+
+
+<section class="card">
+  <h2>🗓️ Calendario interactivo de cláusulas 2026/27</h2>
+  <div class="contenido">
+    <div id="estadoHoy" class="estado-hoy"></div>
+    <div id="proximaApertura" class="proxima-apertura"></div>
+
+    <div class="leyenda-calendario">
+      <span><i class="cuadro-color" style="background:#dcfce7"></i> Abiertas</span>
+      <span><i class="cuadro-color" style="background:#fef3c7"></i> Periodo especial</span>
+      <span><i class="cuadro-color" style="background:#fee2e2"></i> Cerradas</span>
+      <span><i class="cuadro-color" style="background:white;border:2px solid #2563eb"></i> Hoy</span>
+    </div>
+
+    <div class="calendario-toolbar">
+      <div class="calendario-filtros">
+        <button type="button" data-filtro="todos" class="activo">Todos</button>
+        <button type="button" data-filtro="abierto">Solo abiertos</button>
+        <button type="button" data-filtro="especial">Solo especiales</button>
+        <button type="button" data-filtro="cerrado">Solo cerrados</button>
+      </div>
+      <button id="irHoy" class="boton-hoy" type="button">Ir a hoy</button>
+    </div>
+
+    <div id="calendarioMeses" class="calendario-meses"></div>
+
+    <div id="detalleDia" class="detalle-dia">
+      Pulsa sobre cualquier día para ver el motivo.
+    </div>
+
+    <div class="aviso">
+      Navidad 2026/27: el 18 de diciembre permanece cerrado. El periodo especial comienza el 19. También están cerrados el 24, 25 y 31 de diciembre y el 1 de enero.
+    </div>
+  </div>
+</section>
+
 <details open>
   <summary>🌍 Parones y periodos especiales</summary>
   <div class="contenido">
@@ -115,5 +182,175 @@
 </details>
 
 </main>
+
+
+<script>
+const meses=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const dias=["L","M","X","J","V","S","D"];
+const f=s=>{const[a,m,d]=s.split("-").map(Number);return new Date(a,m-1,d)};
+const clave=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+const especiales=[
+  [f("2026-07-20"),f("2026-08-11"),"Pretemporada: cláusulas abiertas todos los días.","PRE"],
+  [f("2026-09-24"),f("2026-09-27"),"Parón FIFA: cláusulas abiertas de jueves a domingo.","FIFA"],
+  [f("2026-10-01"),f("2026-10-04"),"Parón FIFA: cláusulas abiertas de jueves a domingo.","FIFA"],
+  [f("2026-11-12"),f("2026-11-15"),"Parón FIFA: cláusulas abiertas de jueves a domingo.","FIFA"],
+  [f("2026-12-19"),f("2027-01-03"),"Periodo especial de Navidad.","NAV"],
+  [f("2027-03-25"),f("2027-03-28"),"Parón FIFA: cláusulas abiertas de jueves a domingo.","FIFA"],
+  [f("2027-04-22"),f("2027-04-25"),"Fin de semana sin Liga por la final de Copa.","COPA"],
+  [f("2027-05-24"),f("2027-05-25"),"Última ventana extraordinaria tras la jornada 37.","FINAL"]
+];
+
+const cierres={
+  "2026-08-12":"Cerrado antes del inicio de Liga.",
+  "2026-08-13":"Cerrado antes del inicio de Liga.",
+  "2026-12-18":"Cerrado. El periodo especial de Navidad comienza el 19 de diciembre.",
+  "2026-12-24":"Cerrado por Nochebuena.",
+  "2026-12-25":"Cerrado por Navidad.",
+  "2026-12-31":"Cerrado por Nochevieja.",
+  "2027-01-01":"Cerrado por Año Nuevo.",
+  "2027-05-22":"Jornada 37: cláusulas cerradas.",
+  "2027-05-23":"Jornada 37: cláusulas cerradas."
+};
+
+function estado(fecha){
+  const k=clave(fecha);
+  if(cierres[k]) return {e:"cerrado",m:cierres[k],etiqueta:"CERRADO"};
+  if(fecha>=f("2027-05-26")) return {e:"cerrado",m:"Mercado cerrado hasta la siguiente temporada.",etiqueta:"FIN"};
+
+  for(const [inicio,fin,motivo,etiqueta] of especiales){
+    if(fecha>=inicio && fecha<=fin) return {e:"especial",m:motivo,etiqueta};
+  }
+
+  const ds=fecha.getDay();
+  if(ds===0 || ds===6){
+    return {e:"abierto",m:"Temporada ordinaria: cláusulas abiertas los sábados y domingos.",etiqueta:"ABIERTO"};
+  }
+
+  return {e:"cerrado",m:"Temporada ordinaria: solo sábados y domingos.",etiqueta:"CERRADO"};
+}
+
+function fmt(d){
+  return d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+}
+
+function crearMes(anio,m){
+  const box=document.createElement("section");
+  box.className="mes";
+  box.dataset.mes=`${anio}-${String(m+1).padStart(2,"0")}`;
+  box.innerHTML=`<h3>${meses[m]} ${anio}</h3><div class="semana">${dias.map(x=>`<div>${x}</div>`).join("")}</div>`;
+
+  const grid=document.createElement("div");
+  grid.className="dias";
+
+  const first=new Date(anio,m,1);
+  const off=(first.getDay()+6)%7;
+  const total=new Date(anio,m+1,0).getDate();
+
+  for(let i=0;i<off;i++){
+    const v=document.createElement("div");
+    v.className="dia vacio";
+    grid.appendChild(v);
+  }
+
+  for(let n=1;n<=total;n++){
+    const d=new Date(anio,m,n);
+    const info=estado(d);
+    const b=document.createElement("button");
+    b.type="button";
+    b.className=`dia ${info.e}`;
+    b.dataset.estado=info.e;
+    b.innerHTML=`<span>${n}</span><span class="evento">${info.etiqueta}</span>`;
+
+    if(d.toDateString()===new Date().toDateString()) b.classList.add("hoy");
+
+    b.onclick=()=>{
+      document.getElementById("detalleDia").innerHTML=`<strong>${fmt(d)}</strong><br>${info.m}`;
+    };
+
+    grid.appendChild(b);
+  }
+
+  box.appendChild(grid);
+  return box;
+}
+
+function construirCalendario(){
+  const cal=document.getElementById("calendarioMeses");
+  cal.innerHTML="";
+  let y=2026,m=6;
+
+  while(y<2027 || (y===2027 && m<=4)){
+    cal.appendChild(crearMes(y,m));
+    m++;
+    if(m===12){m=0;y++}
+  }
+}
+
+function aplicarFiltro(filtro){
+  document.querySelectorAll(".dia[data-estado]").forEach(dia=>{
+    dia.classList.toggle("oculto",filtro!=="todos" && dia.dataset.estado!==filtro);
+  });
+}
+
+function proximaAperturaDesde(fecha){
+  const cursor=new Date(fecha);
+  cursor.setDate(cursor.getDate()+1);
+
+  while(cursor<=f("2027-05-30")){
+    const info=estado(cursor);
+    if(info.e==="abierto" || info.e==="especial") return {fecha:new Date(cursor),info};
+    cursor.setDate(cursor.getDate()+1);
+  }
+
+  return null;
+}
+
+function actualizarEstadoHoy(){
+  const hoy=new Date();
+  const caja=document.getElementById("estadoHoy");
+  const proxima=document.getElementById("proximaApertura");
+
+  if(hoy<f("2026-07-20") || hoy>f("2027-05-30")){
+    caja.className="estado-hoy cerrado";
+    caja.textContent="Este calendario corresponde a la temporada 2026/27.";
+    proxima.textContent="Consulta el calendario completo para ver todas las ventanas.";
+    return;
+  }
+
+  const info=estado(hoy);
+  caja.className=`estado-hoy ${info.e}`;
+  const titulo=info.e==="abierto"?"🟢 HOY ABIERTAS":info.e==="especial"?"🟡 HOY PERIODO ESPECIAL":"🔴 HOY CERRADAS";
+  caja.innerHTML=`${titulo}<br><small>${info.m}</small>`;
+
+  if(info.e==="cerrado"){
+    const siguiente=proximaAperturaDesde(hoy);
+    proxima.innerHTML=siguiente
+      ? `<strong>Próxima apertura:</strong> ${fmt(siguiente.fecha)}.<br>${siguiente.info.m}`
+      : "No quedan más ventanas esta temporada.";
+  }else{
+    proxima.textContent="El mercado está disponible hoy dentro del horario oficial.";
+  }
+}
+
+construirCalendario();
+actualizarEstadoHoy();
+
+document.querySelectorAll("[data-filtro]").forEach(boton=>{
+  boton.addEventListener("click",()=>{
+    document.querySelectorAll("[data-filtro]").forEach(b=>b.classList.remove("activo"));
+    boton.classList.add("activo");
+    aplicarFiltro(boton.dataset.filtro);
+  });
+});
+
+document.getElementById("irHoy").addEventListener("click",()=>{
+  const hoy=new Date();
+  const objetivo=document.querySelector(`[data-mes="${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,"0")}"]`);
+  if(objetivo) objetivo.scrollIntoView({behavior:"smooth",block:"start"});
+});
+</script>
+
+
 </body>
 </html>
