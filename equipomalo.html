@@ -421,8 +421,8 @@ function pintarEstado(){
 
   caja.className="estado "+(actualizadoHoy?"ok":"warning");
   caja.textContent=actualizadoHoy
-    ? "🟢 Datos actualizados hoy. Puedes utilizar directamente las cláusulas mostradas."
-    : "🟠 Datos no actualizados hoy. Comprueba el valor actual del jugador y realiza el cálculo manual.";
+    ? "🟢 ✓ ACTUALIZADO HOY. Puedes utilizar directamente la cláusula mostrada."
+    : "🔴 ✕ NO ACTUALIZADO HOY. Comprueba el valor actual del jugador y realiza el cálculo manual.";
 
   document.getElementById("ultimaActualizacion").innerHTML=
     `<p><strong>Última actualización:</strong> ${datos.actualizado}</p>`;
@@ -481,8 +481,8 @@ function abrirFicha(jugador){
   const estado=document.getElementById("fichaEstado");
   estado.className="ficha-estado "+(actualizadoHoy?"ok":"warning");
   estado.textContent=actualizadoHoy
-    ? "🟢 Actualizado hoy: "+datos.actualizado
-    : "🟠 No actualizado hoy: comprobar el valor manualmente. Última actualización: "+datos.actualizado;
+    ? "🟢 ✓ ACTUALIZADO HOY · "+datos.actualizado
+    : "🔴 ✕ NO ACTUALIZADO HOY · comprobar el valor manualmente. Última actualización: "+datos.actualizado;
 
   document.getElementById("modal").classList.add("abierto");
   document.getElementById("modal").setAttribute("aria-hidden","false");
@@ -509,17 +509,16 @@ document.getElementById("copiar").addEventListener("click",async()=>{
   if(!jugadorActivo) return;
 
   const texto=[
-    "💀 EQUIPO MALO",
-    jugadorActivo.jugador,
-    "Equipo: "+jugadorActivo.equipo,
-    "Posición: "+nombrePosicion(jugadorActivo.posicion),
-    "Puntos: "+numero(jugadorActivo.puntos),
-    "Valor: "+numero(jugadorActivo.valor)+" €",
-    "Multiplicador: × "+multiplicador(jugadorActivo.valor).toFixed(2).replace(".",","),
-    "Cláusula: "+numero(clausula(jugadorActivo.valor))+" €",
-    "Última actualización: "+datos.actualizado,
-    "Horario: todos los días de 12:00 a 00:00.",
-    "La operación debe ejecutarse ese mismo día y no puede cancelarse."
+    "📣 CLÁUSULA EQUIPO MALO",
+    "",
+    `JUGADOR: ${jugadorActivo.jugador}`,
+    "PROPIETARIO: EQUIPO MALO",
+    `VALOR ACTUAL: ${numero(jugadorActivo.valor)} €`,
+    `MULTIPLICADOR: × ${multiplicador(jugadorActivo.valor).toFixed(2).replace(".",",")}`,
+    `IMPORTE DE LA CLÁUSULA: ${numero(clausula(jugadorActivo.valor))} €`,
+    esHoy(datos.actualizado)
+      ? "🟢 ✓ ACTUALIZADO HOY"
+      : "🔴 ✕ NO ACTUALIZADO HOY. REVISAR VALOR Y CALCULAR MANUALMENTE."
   ].join("\n");
 
   try{
