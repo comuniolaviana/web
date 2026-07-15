@@ -543,14 +543,11 @@
     <article class="ficha-jugador">
       <div class="ficha-cabecera">
         <h2 id="fichaNombre"></h2>
-        <p id="fichaEquipo"></p>
       </div>
 
       <div class="ficha-cuerpo">
         <div class="ficha-grid">
           <div class="ficha-dato"><span>Propietario</span><strong id="fichaPropietario"></strong></div>
-          <div class="ficha-dato"><span>Posición</span><strong id="fichaPosicion"></strong></div>
-          <div class="ficha-dato"><span>Valor actual</span><strong id="fichaValor"></strong></div>
           <div class="ficha-dato"><span>Puntos</span><strong id="fichaPuntos"></strong></div>
         </div>
 
@@ -721,11 +718,7 @@
       jugadorFichaActivo = jugador;
 
       document.getElementById("fichaNombre").textContent = jugador.jugador || "Jugador";
-      document.getElementById("fichaEquipo").textContent = jugador.equipo || "Equipo no disponible";
       document.getElementById("fichaPropietario").textContent = jugador.propietario || "—";
-      document.getElementById("fichaPosicion").textContent = nombrePosicion(jugador.posicion) || "—";
-      document.getElementById("fichaValor").textContent =
-        `${formatearNumero(jugador.valor || 0)} €`;
       document.getElementById("fichaPuntos").textContent =
         formatearNumero(jugador.puntos || 0);
       document.getElementById("fichaClausula").textContent =
