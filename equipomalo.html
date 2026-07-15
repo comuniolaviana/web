@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipo Malo - ComunioLaviana</title>
+<style>
+:root{
+  --green:#1f6b3a;
+  --green-dark:#174f2c;
+  --bg:#f4f6f8;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --warning:#fff7d6;
+  --warning-text:#7c5c00;
+  --danger:#fee2e2;
+  --danger-text:#991b1b;
+  --ok:#dcfce7;
+  --ok-text:#166534;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:white;
+  padding:26px 16px;
+  text-align:center;
+}
+header h1{margin:0;font-size:32px}
+header p{margin:8px 0 0}
+.menu{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:14px 12px 0;
+  flex-wrap:wrap;
+}
+.menu a{
+  text-decoration:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:bold;
+  background:white;
+  color:var(--green);
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.menu a.activo{background:var(--green);color:white}
+main{max-width:1050px;margin:28px auto;padding:0 12px 40px}
+.card{
+  background:white;
+  border-radius:14px;
+  margin-bottom:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  overflow:hidden;
+}
+.card h2{
+  margin:0;
+  padding:16px 18px;
+  background:#e8f5ec;
+  color:var(--green);
+  font-size:21px;
+}
+.content{padding:18px}
+.estado{
+  padding:15px 16px;
+  border-radius:11px;
+  font-weight:bold;
+  margin-bottom:14px;
+}
+.estado.ok{background:var(--ok);color:var(--ok-text)}
+.estado.warning{background:var(--warning);color:var(--warning-text)}
+.norma{
+  background:var(--danger);
+  color:var(--danger-text);
+  border-left:5px solid #b91c1c;
+  padding:14px 16px;
+  border-radius:10px;
+  margin-top:14px;
+  line-height:1.55;
+}
+.horario{
+  background:#eef6ff;
+  color:#1e3a8a;
+  border-left:5px solid #2563eb;
+  padding:14px 16px;
+  border-radius:10px;
+  font-weight:bold;
+}
+.filtros{
+  display:grid;
+  grid-template-columns:1fr 230px auto;
+  gap:12px;
+  align-items:end;
+}
+.campo label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:bold;
+}
+.campo input,.campo select{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #d1d5db;
+  border-radius:9px;
+  font-size:15px;
+  background:white;
+}
+button{
+  border:0;
+  background:var(--green);
+  color:white;
+  padding:11px 15px;
+  border-radius:9px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(245px,1fr));
+  gap:14px;
+  margin-top:18px;
+}
+.jugador{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:13px;
+  padding:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+.jugador h3{margin:0 0 7px;color:var(--green)}
+.jugador .meta{color:var(--muted);font-size:14px;line-height:1.45}
+.jugador .precio{
+  margin:12px 0 4px;
+  font-size:22px;
+  font-weight:bold;
+}
+.jugador .clausula{
+  font-size:18px;
+  font-weight:bold;
+  color:var(--green);
+  margin-bottom:12px;
+}
+.jugador button{width:100%}
+.sin{
+  text-align:center;
+  padding:25px;
+  color:var(--muted);
+}
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  padding:16px;
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+}
+.modal.abierto{display:flex}
+.ficha{
+  width:min(430px,100%);
+  background:linear-gradient(180deg,#ffffff,#f7faf8);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 22px 60px rgba(0,0,0,.35);
+}
+.ficha-cabecera{
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:white;
+  padding:23px 20px;
+  text-align:center;
+}
+.ficha-cabecera h2{margin:0;font-size:29px}
+.ficha-cabecera p{margin:7px 0 0}
+.ficha-cuerpo{padding:20px}
+.ficha-datos{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.dato{
+  background:#f9fafb;
+  border:1px solid #e5e7eb;
+  border-radius:11px;
+  padding:11px;
+}
+.dato span{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.dato strong{font-size:16px}
+.ficha-precio{
+  margin:16px 0;
+  border-radius:14px;
+  padding:16px;
+  text-align:center;
+  background:#e8f5ec;
+  color:var(--green);
+}
+.ficha-precio span{display:block;font-size:13px}
+.ficha-precio strong{display:block;font-size:34px;margin-top:5px}
+.ficha-estado{
+  border-radius:10px;
+  padding:12px;
+  font-weight:bold;
+  text-align:center;
+  margin-bottom:12px;
+}
+.ficha-estado.ok{background:var(--ok);color:var(--ok-text)}
+.ficha-estado.warning{background:var(--warning);color:var(--warning-text)}
+.ficha-norma{
+  font-size:13px;
+  line-height:1.45;
+  color:var(--danger-text);
+  background:var(--danger);
+  border-radius:10px;
+  padding:12px;
+}
+.ficha-acciones{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:0 20px 20px;
+}
+.secundario{background:#eef2f7;color:#374151}
+.tabla-multiplicadores{
+  width:100%;
+  border-collapse:collapse;
+}
+.tabla-multiplicadores th,.tabla-multiplicadores td{
+  padding:10px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+}
+.tabla-multiplicadores th{background:#f9fafb}
+@media(max-width:700px){
+  header h1{font-size:26px}
+  .menu a{font-size:13px;padding:9px 10px}
+  .filtros{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  .ficha-datos{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💀 EQUIPO MALO</h1>
+  <p>Consulta y calcula la cláusula especial de cada jugador</p>
+</header>
+
+<nav class="menu">
+  <a href="index.html">⚽ Cláusulas</a>
+  <a href="normas.html">📜 Normas</a>
+  <a href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
+  <a href="copa.html">🏆 Copa</a>
+  <a href="palmares.html">👑 Palmarés</a>
+  <a href="estadisticas.html">📊 Estadísticas</a>
+  <a href="fairplay.html">🛡️ Fair Play</a>
+  <a class="activo" href="equipomalo.html">💀 Equipo Malo</a>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2>Información importante</h2>
+  <div class="content">
+    <div id="estadoActualizacion" class="estado"></div>
+    <div id="ultimaActualizacion"></div>
+
+    <div class="horario">
+      Horario del Equipo Malo: todos los días, de 12:00 a 00:00 horas.
+    </div>
+
+    <div class="norma">
+      Una vez comunicada la compra, la operación debe ejecutarse dentro del juego durante ese mismo día y, como máximo, antes de las 00:00 horas. La operación no puede cancelarse.
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Buscar jugador</h2>
+  <div class="content">
+    <div class="filtros">
+      <div class="campo">
+        <label for="buscar">Jugador o equipo</label>
+        <input id="buscar" type="search" placeholder="Ej.: Isi Palazón o Valencia">
+      </div>
+
+      <div class="campo">
+        <label for="posicion">Posición</label>
+        <select id="posicion">
+          <option value="">Todas</option>
+          <option value="1.Portero">Porteros</option>
+          <option value="2.Defensa">Defensas</option>
+          <option value="3.Medio">Medios</option>
+          <option value="4.Delantero">Delanteros</option>
+        </select>
+      </div>
+
+      <button id="limpiar" type="button">Limpiar</button>
+    </div>
+
+    <div id="jugadores" class="grid"></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Multiplicadores especiales</h2>
+  <div class="content">
+    <table class="tabla-multiplicadores">
+      <thead>
+        <tr><th>Valor de mercado</th><th>Multiplicador</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>160.000 € – 500.000 €</td><td>× 3,00</td></tr>
+        <tr><td>501.000 € – 999.999 €</td><td>× 2,00</td></tr>
+        <tr><td>1.000.000 € – 3.999.999 €</td><td>× 1,50</td></tr>
+        <tr><td>4.000.000 € – 7.999.999 €</td><td>× 1,30</td></tr>
+        <tr><td>8.000.000 € – 11.999.999 €</td><td>× 1,25</td></tr>
+        <tr><td>12.000.000 € o más</td><td>× 1,20</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<div id="modal" class="modal" aria-hidden="true">
+  <article class="ficha">
+    <div class="ficha-cabecera">
+      <h2 id="fichaJugador"></h2>
+      <p id="fichaEquipo"></p>
+    </div>
+
+    <div class="ficha-cuerpo">
+      <div class="ficha-datos">
+        <div class="dato"><span>Posición</span><strong id="fichaPosicion"></strong></div>
+        <div class="dato"><span>Puntos</span><strong id="fichaPuntos"></strong></div>
+        <div class="dato"><span>Valor actual</span><strong id="fichaValor"></strong></div>
+        <div class="dato"><span>Multiplicador</span><strong id="fichaMultiplicador"></strong></div>
+      </div>
+
+      <div class="ficha-precio">
+        <span>CLÁUSULA ESPECIAL EQUIPO MALO</span>
+        <strong id="fichaClausula"></strong>
+      </div>
+
+      <div id="fichaEstado" class="ficha-estado"></div>
+
+      <div class="ficha-norma">
+        Horario: todos los días, de 12:00 a 00:00. Una vez comunicada, la operación debe ejecutarse ese mismo día antes de medianoche y no puede cancelarse.
+      </div>
+    </div>
+
+    <div class="ficha-acciones">
+      <button id="copiar" type="button">Copiar datos</button>
+      <button id="cerrar" type="button" class="secundario">Cerrar</button>
+    </div>
+  </article>
+</div>
+
+<script>
+let datos=null;
+let jugadorActivo=null;
+
+function normalizar(texto){
+  return String(texto||"")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase()
+    .trim();
+}
+
+function numero(valor){
+  return new Intl.NumberFormat("es-ES").format(Number(valor)||0);
+}
+
+function fechaLocal(texto){
+  const fecha=String(texto||"").split(" ")[0];
+  const [a,m,d]=fecha.split("-").map(Number);
+  return new Date(a,m-1,d);
+}
+
+function esHoy(texto){
+  const actualizacion=fechaLocal(texto);
+  const hoy=new Date();
+  return actualizacion.getFullYear()===hoy.getFullYear()
+    && actualizacion.getMonth()===hoy.getMonth()
+    && actualizacion.getDate()===hoy.getDate();
+}
+
+function multiplicador(valor){
+  const v=Number(valor)||0;
+  if(v<=500000) return 3.00;
+  if(v<=999999) return 2.00;
+  if(v<=3999999) return 1.50;
+  if(v<=7999999) return 1.30;
+  if(v<=11999999) return 1.25;
+  return 1.20;
+}
+
+function clausula(valor){
+  return Math.round((Number(valor)||0)*multiplicador(valor));
+}
+
+function nombrePosicion(posicion){
+  return String(posicion||"")
+    .replace("1.Portero","Portero")
+    .replace("2.Defensa","Defensa")
+    .replace("3.Medio","Medio")
+    .replace("4.Delantero","Delantero");
+}
+
+function pintarEstado(){
+  const actualizadoHoy=esHoy(datos.actualizado);
+  const caja=document.getElementById("estadoActualizacion");
+
+  caja.className="estado "+(actualizadoHoy?"ok":"warning");
+  caja.textContent=actualizadoHoy
+    ? "🟢 Datos actualizados hoy. Puedes utilizar directamente las cláusulas mostradas."
+    : "🟠 Datos no actualizados hoy. Comprueba el valor actual del jugador y realiza el cálculo manual.";
+
+  document.getElementById("ultimaActualizacion").innerHTML=
+    `<p><strong>Última actualización:</strong> ${datos.actualizado}</p>`;
+}
+
+function pintarJugadores(){
+  const texto=normalizar(document.getElementById("buscar").value);
+  const posicion=document.getElementById("posicion").value;
+
+  const filtrados=datos.jugadores.filter(j=>{
+    const coincideTexto=!texto
+      || normalizar(j.jugador).includes(texto)
+      || normalizar(j.equipo).includes(texto);
+
+    const coincidePosicion=!posicion || j.posicion===posicion;
+    return coincideTexto && coincidePosicion;
+  });
+
+  const contenedor=document.getElementById("jugadores");
+
+  if(!filtrados.length){
+    contenedor.innerHTML='<div class="sin">No hay jugadores que coincidan con la búsqueda.</div>';
+    return;
+  }
+
+  contenedor.innerHTML=filtrados.map((j,index)=>`
+    <article class="jugador">
+      <h3>${j.jugador}</h3>
+      <div class="meta">${j.equipo}<br>${nombrePosicion(j.posicion)} · ${numero(j.puntos)} puntos</div>
+      <div class="precio">${numero(j.valor)} €</div>
+      <div class="clausula">Cláusula: ${numero(clausula(j.valor))} €</div>
+      <button type="button" data-index="${datos.jugadores.indexOf(j)}">Abrir ficha</button>
+    </article>
+  `).join("");
+
+  contenedor.querySelectorAll("[data-index]").forEach(boton=>{
+    boton.addEventListener("click",()=>{
+      abrirFicha(datos.jugadores[Number(boton.dataset.index)]);
+    });
+  });
+}
+
+function abrirFicha(jugador){
+  jugadorActivo=jugador;
+  const actualizadoHoy=esHoy(datos.actualizado);
+  const mult=multiplicador(jugador.valor);
+
+  document.getElementById("fichaJugador").textContent=jugador.jugador;
+  document.getElementById("fichaEquipo").textContent=jugador.equipo;
+  document.getElementById("fichaPosicion").textContent=nombrePosicion(jugador.posicion);
+  document.getElementById("fichaPuntos").textContent=numero(jugador.puntos);
+  document.getElementById("fichaValor").textContent=numero(jugador.valor)+" €";
+  document.getElementById("fichaMultiplicador").textContent="× "+mult.toFixed(2).replace(".",",");
+  document.getElementById("fichaClausula").textContent=numero(clausula(jugador.valor))+" €";
+
+  const estado=document.getElementById("fichaEstado");
+  estado.className="ficha-estado "+(actualizadoHoy?"ok":"warning");
+  estado.textContent=actualizadoHoy
+    ? "🟢 Actualizado hoy: "+datos.actualizado
+    : "🟠 No actualizado hoy: comprobar el valor manualmente. Última actualización: "+datos.actualizado;
+
+  document.getElementById("modal").classList.add("abierto");
+  document.getElementById("modal").setAttribute("aria-hidden","false");
+}
+
+function cerrarFicha(){
+  document.getElementById("modal").classList.remove("abierto");
+  document.getElementById("modal").setAttribute("aria-hidden","true");
+}
+
+document.getElementById("buscar").addEventListener("input",pintarJugadores);
+document.getElementById("posicion").addEventListener("change",pintarJugadores);
+document.getElementById("limpiar").addEventListener("click",()=>{
+  document.getElementById("buscar").value="";
+  document.getElementById("posicion").value="";
+  pintarJugadores();
+});
+document.getElementById("cerrar").addEventListener("click",cerrarFicha);
+document.getElementById("modal").addEventListener("click",evento=>{
+  if(evento.target.id==="modal") cerrarFicha();
+});
+
+document.getElementById("copiar").addEventListener("click",async()=>{
+  if(!jugadorActivo) return;
+
+  const texto=[
+    "💀 EQUIPO MALO",
+    jugadorActivo.jugador,
+    "Equipo: "+jugadorActivo.equipo,
+    "Posición: "+nombrePosicion(jugadorActivo.posicion),
+    "Puntos: "+numero(jugadorActivo.puntos),
+    "Valor: "+numero(jugadorActivo.valor)+" €",
+    "Multiplicador: × "+multiplicador(jugadorActivo.valor).toFixed(2).replace(".",","),
+    "Cláusula: "+numero(clausula(jugadorActivo.valor))+" €",
+    "Última actualización: "+datos.actualizado,
+    "Horario: todos los días de 12:00 a 00:00.",
+    "La operación debe ejecutarse ese mismo día y no puede cancelarse."
+  ].join("\n");
+
+  try{
+    await navigator.clipboard.writeText(texto);
+    document.getElementById("copiar").textContent="Copiado";
+    setTimeout(()=>document.getElementById("copiar").textContent="Copiar datos",1500);
+  }catch(error){
+    alert(texto);
+  }
+});
+
+fetch("equipomalo.json?v="+Date.now())
+  .then(respuesta=>{
+    if(!respuesta.ok) throw new Error("No se pudo cargar equipomalo.json");
+    return respuesta.json();
+  })
+  .then(contenido=>{
+    datos=contenido;
+    pintarEstado();
+    pintarJugadores();
+  })
+  .catch(error=>{
+    document.querySelector("main").innerHTML=
+      '<section class="card"><div class="content"><div class="norma">Todavía no se ha generado equipomalo.json.</div></div></section>';
+    console.error(error);
+  });
+</script>
+
+</body>
+</html>
