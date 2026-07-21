@@ -533,6 +533,126 @@
     .cal-filtros button.activo,.cal-hoy { background:#1f6b3a; color:white; }
     .cal-detalle { margin-top:14px; padding:13px; border-radius:10px; background:#f9fafb; border:1px solid #e5e7eb; }
 
+
+    .filtro-propietarios {
+      position: relative;
+      width: 100%;
+    }
+
+    .filtro-propietarios summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      background: white;
+      font-size: 15px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .filtro-propietarios summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .filtro-propietarios[open] summary {
+      border-color: #1f6b3a;
+      border-radius: 9px 9px 0 0;
+    }
+
+    .flecha-filtro {
+      transition: transform .2s ease;
+    }
+
+    .filtro-propietarios[open] .flecha-filtro {
+      transform: rotate(180deg);
+    }
+
+    .panel-propietarios {
+      position: absolute;
+      z-index: 30;
+      top: calc(100% - 1px);
+      left: 0;
+      right: 0;
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 12px;
+      border: 1px solid #1f6b3a;
+      border-radius: 0 0 10px 10px;
+      background: white;
+      box-shadow: 0 8px 20px rgba(0,0,0,.14);
+    }
+
+    .acciones-propietarios {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .acciones-propietarios button {
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 8px;
+      background: #e8f5ec;
+      color: #1f6b3a;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .lista-propietarios {
+      display: grid;
+      gap: 5px;
+    }
+
+    .opcion-propietario {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 7px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    .opcion-propietario:hover {
+      background: #f3f4f6;
+    }
+
+    .opcion-propietario input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      accent-color: #1f6b3a;
+      flex: 0 0 auto;
+    }
+
+    .ayuda-filtro {
+      margin-top: 8px;
+      color: #6b7280;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 760px) {
+      .filtros-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-propietarios {
+        position: static;
+        max-height: none;
+        box-shadow: none;
+      }
+
+      .limpiar {
+        width: 100%;
+      }
+    }
+
 </style>
 </head>
 
@@ -649,16 +769,28 @@
         </div>
 
         <div class="campo">
-          <label for="propietario">👤 Filtrar por propietario</label>
-          <select id="propietario">
-            <option value="">Todos los propietarios</option>
-          </select>
+          <label>👥 Propietarios disponibles</label>
+          <details id="filtroPropietarios" class="filtro-propietarios">
+            <summary>
+              <span id="textoFiltroPropietarios">Todos los propietarios</span>
+              <span class="flecha-filtro" aria-hidden="true">▾</span>
+            </summary>
+
+            <div class="panel-propietarios">
+              <div class="acciones-propietarios">
+                <button id="seleccionarTodos" type="button">Seleccionar todos</button>
+                <button id="quitarTodos" type="button">Quitar todos</button>
+              </div>
+              <div id="listaPropietarios" class="lista-propietarios"></div>
+            </div>
+          </details>
         </div>
 
         <button id="limpiar" class="limpiar" type="button">Limpiar</button>
       </div>
 
       <div id="resumenFiltro" class="resumen-filtro"></div>
+      <div class="ayuda-filtro">Desmarca a los propietarios que ya hayan recibido una cláusula gorda. La selección se guarda en este dispositivo hasta el cambio de día.</div>
     </section>
 
     <div id="contenido"></div>
@@ -934,6 +1066,69 @@
       `;
     }
 
+    const CLAVE_FILTRO_PROPIETARIOS = "comuniolaviana_propietarios_disponibles";
+
+    function fechaMadrid() {
+      return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Madrid",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(new Date());
+    }
+
+    function obtenerPropietariosMarcados() {
+      return new Set(
+        [...document.querySelectorAll(".check-propietario:checked")]
+          .map(check => check.value)
+      );
+    }
+
+    function guardarFiltroPropietarios() {
+      const seleccionados = [...obtenerPropietariosMarcados()];
+      localStorage.setItem(CLAVE_FILTRO_PROPIETARIOS, JSON.stringify({
+        fecha: fechaMadrid(),
+        seleccionados
+      }));
+    }
+
+    function leerFiltroGuardado(propietarios) {
+      try {
+        const guardado = JSON.parse(localStorage.getItem(CLAVE_FILTRO_PROPIETARIOS));
+        if (!guardado || guardado.fecha !== fechaMadrid() || !Array.isArray(guardado.seleccionados)) {
+          return new Set(propietarios);
+        }
+
+        const existentes = new Set(propietarios);
+        return new Set(guardado.seleccionados.filter(nombre => existentes.has(nombre)));
+      } catch (error) {
+        return new Set(propietarios);
+      }
+    }
+
+    function actualizarTextoFiltroPropietarios() {
+      const total = document.querySelectorAll(".check-propietario").length;
+      const marcados = document.querySelectorAll(".check-propietario:checked").length;
+      const texto = document.getElementById("textoFiltroPropietarios");
+
+      if (marcados === total) {
+        texto.textContent = `Todos los propietarios (${total})`;
+      } else if (marcados === 0) {
+        texto.textContent = "Ningún propietario";
+      } else {
+        texto.textContent = `${marcados} de ${total} propietarios`;
+      }
+    }
+
+    function marcarTodosPropietarios(marcar) {
+      document.querySelectorAll(".check-propietario").forEach(check => {
+        check.checked = marcar;
+      });
+      actualizarTextoFiltroPropietarios();
+      guardarFiltroPropietarios();
+      renderizar();
+    }
+
     function cargarPropietarios(datos) {
       const propietarios = new Set();
 
@@ -943,23 +1138,46 @@
         });
       });
 
-      const select = document.getElementById("propietario");
+      const ordenados = [...propietarios]
+        .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }));
+      const seleccionados = leerFiltroGuardado(ordenados);
+      const lista = document.getElementById("listaPropietarios");
+      lista.innerHTML = "";
 
-      [...propietarios]
-        .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
-        .forEach(nombre => {
-          const opcion = document.createElement("option");
-          opcion.value = nombre;
-          opcion.textContent = nombre;
-          select.appendChild(opcion);
+      ordenados.forEach((nombre, indice) => {
+        const etiqueta = document.createElement("label");
+        etiqueta.className = "opcion-propietario";
+
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.className = "check-propietario";
+        check.value = nombre;
+        check.id = `propietario-${indice}`;
+        check.checked = seleccionados.has(nombre);
+
+        const texto = document.createElement("span");
+        texto.textContent = nombre;
+
+        check.addEventListener("change", () => {
+          actualizarTextoFiltroPropietarios();
+          guardarFiltroPropietarios();
+          renderizar();
         });
+
+        etiqueta.append(check, texto);
+        lista.appendChild(etiqueta);
+      });
+
+      actualizarTextoFiltroPropietarios();
+      guardarFiltroPropietarios();
     }
 
     function renderizar() {
       if (!datosLiga) return;
 
       const texto = normalizar(document.getElementById("buscar").value);
-      const propietarioSeleccionado = document.getElementById("propietario").value;
+      const propietariosSeleccionados = obtenerPropietariosMarcados();
+      const totalPropietarios = document.querySelectorAll(".check-propietario").length;
       let total = 0;
       let bloques = "";
 
@@ -971,8 +1189,7 @@
             normalizar(jugador.propietario).includes(texto);
 
           const coincidePropietario =
-            !propietarioSeleccionado ||
-            jugador.propietario === propietarioSeleccionado;
+            propietariosSeleccionados.has(jugador.propietario);
 
           return coincideTexto && coincidePropietario;
         });
@@ -986,22 +1203,21 @@
       document.getElementById("contenido").innerHTML =
         bloques || `<div class="sin-resultados">No hay jugadores que coincidan con los filtros.</div>`;
 
+      const visibles = propietariosSeleccionados.size;
       let mensaje = `${total} jugador${total === 1 ? "" : "es"} mostrado${total === 1 ? "" : "s"}.`;
-
-      if (propietarioSeleccionado) {
-        mensaje += ` Propietario: ${propietarioSeleccionado}.`;
-      }
+      mensaje += ` ${visibles} de ${totalPropietarios} propietarios visibles.`;
 
       document.getElementById("resumenFiltro").textContent = mensaje;
     }
 
     document.getElementById("buscar").addEventListener("input", renderizar);
-    document.getElementById("propietario").addEventListener("change", renderizar);
+    document.getElementById("seleccionarTodos").addEventListener("click", () => marcarTodosPropietarios(true));
+    document.getElementById("quitarTodos").addEventListener("click", () => marcarTodosPropietarios(false));
 
     document.getElementById("limpiar").addEventListener("click", () => {
       document.getElementById("buscar").value = "";
-      document.getElementById("propietario").value = "";
-      renderizar();
+      marcarTodosPropietarios(true);
+      document.getElementById("filtroPropietarios").removeAttribute("open");
     });
 
 
