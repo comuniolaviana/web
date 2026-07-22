@@ -51,10 +51,11 @@ button{border:0;background:var(--green);color:#fff;padding:11px 15px;border-radi
 <nav class="menu">
   <a href="index.html">⚽ Cláusulas</a>
   <a href="normas.html">📜 Normas</a>
-  <a href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
   <a href="copa.html">🏆 Copa</a>
   <a href="palmares.html">👑 Palmarés</a>
   <a class="activo" href="estadisticas.html">📊 Estadísticas</a>
+  <a href="fairplay.html">🛡️ Fair Play</a>
+  <a href="equipomalo.html">💀 Equipo Malo</a>
 </nav>
 
 <main>
@@ -173,7 +174,7 @@ function pintarHistorial(){
     const coincideJugador=!texto||normalizar(x.jugador).includes(texto);
     const coincideUsuario=!usuario||x.vendedor===usuario||x.comprador===usuario;
     return coincideJugador&&coincideUsuario;
-  }).slice(0,200);
+  }).slice(0,50);
 
   document.getElementById("historial").innerHTML=filas.length
     ? filas.map(x=>`
