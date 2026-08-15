@@ -670,7 +670,6 @@
   <nav class="menu">
     <a class="activo" href="index.html">⚽ Cláusulas</a>
     <a href="normas.html">📜 Normas</a>
-    <a href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
     <a href="copa.html">🏆 Copa</a>
     <a href="palmares.html">👑 Palmarés</a>
     <a href="estadisticas.html">📊 Estadísticas</a>
@@ -706,6 +705,9 @@
             <tbody>
               <tr><td>20 de julio – 11 de agosto de 2026</td><td>Todos los días</td></tr>
               <tr><td>Temporada ordinaria</td><td>Sábados y domingos</td></tr>
+              <tr><td>15 de agosto de 2026</td><td>Cerrado excepcionalmente</td></tr>
+              <tr><td>17 de agosto de 2026</td><td>Abierto excepcionalmente</td></tr>
+              <tr><td>21–30 de septiembre de 2026</td><td>Periodo especial</td></tr>
               <tr><td>Parones FIFA o fines de semana sin Liga</td><td>Jueves, viernes, sábado y domingo</td></tr>
               <tr><td>Navidad</td><td>Periodo especial desde el 19 de diciembre de 2026 al 3 de enero de 2027</td></tr>
               <tr><td>24, 25 y 31 de diciembre; 1 de enero</td><td>Cerrado</td></tr>
@@ -719,7 +721,8 @@
 
         <h3>🌍 Periodos especiales</h3>
         <ul>
-          <li>24–27 de septiembre de 2026.</li>
+          <li>17 de agosto de 2026: apertura extraordinaria.</li>
+          <li>21–30 de septiembre de 2026.</li>
           <li>1–4 de octubre de 2026.</li>
           <li>12–15 de noviembre de 2026.</li>
           <li>25–28 de marzo de 2027.</li>
@@ -832,9 +835,14 @@
       horaFin: "21:00",
       inicioTemporada: "2026-07-20",
       finTemporada: "2027-05-25",
+      aperturas: {
+        "2026-08-17": "Apertura extraordinaria de cláusulas."
+      },
       especiales: [
         ["2026-07-20", "2026-08-11", "Pretemporada: abiertas todos los días."],
+        ["2026-09-21", "2026-09-23", "Periodo especial: cláusulas abiertas."],
         ["2026-09-24", "2026-09-27", "Parón FIFA: abiertas de jueves a domingo."],
+        ["2026-09-28", "2026-09-30", "Periodo especial: cláusulas abiertas."],
         ["2026-10-01", "2026-10-04", "Parón FIFA: abiertas de jueves a domingo."],
         ["2026-11-12", "2026-11-15", "Parón FIFA: abiertas de jueves a domingo."],
         ["2026-12-19", "2027-01-03", "Periodo especial de Navidad."],
@@ -845,6 +853,7 @@
       cierres: {
         "2026-08-12": "Cerrado antes del inicio de Liga.",
         "2026-08-13": "Cerrado antes del inicio de Liga.",
+        "2026-08-15": "Cerrado excepcionalmente.",
         "2026-12-18": "Cerrado. El periodo especial de Navidad comienza el 19 de diciembre.",
         "2026-12-24": "Cerrado por Nochebuena.",
         "2026-12-25": "Cerrado por Navidad.",
@@ -869,6 +878,8 @@
     function estadoFechaClausulas(fecha, diaSemana) {
       const motivoCierre = calendarioClausulas.cierres[fecha];
       if (motivoCierre) return { estado: "cerrado", motivo: motivoCierre };
+      const motivoApertura = calendarioClausulas.aperturas[fecha];
+      if (motivoApertura) return { estado: "abierto", motivo: motivoApertura };
       if (fecha < calendarioClausulas.inicioTemporada || fecha > calendarioClausulas.finTemporada) {
         return { estado: "cerrado", motivo: "Fuera del calendario de cláusulas 2026/27." };
       }
