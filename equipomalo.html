@@ -410,12 +410,11 @@
     const valor = numero(j.valor ?? j.valorActual ?? j.valor_mercado ?? j.marketValue);
     const puntos = numero(j.puntos ?? j.points);
     const posicion = posicionNormalizada(j.posicion ?? j.position ?? j.demarcacion);
-    const equipo = j.equipo ?? j.club ?? j.team ?? "";
     const mult = multiplicador(valor);
     return {
       nombre:String(nombre).trim(),
       valor,puntos,posicion,
-      equipo:String(equipo ?? "").trim(),
+      equipo:"",
       multiplicador:mult,
       clausula:Math.round(valor * mult)
     };
@@ -548,6 +547,7 @@ Actualización: ${datos.actualizado || "sin fecha"}`;
       datos.actualizado = raw.actualizado ?? raw.ultimaActualizacion ?? raw.updated ?? "";
       datos.jugadores = extraerJugadores(raw)
         .map(adaptarJugador)
+        // El equipo SIEMPRE sale de equipos.json. Nunca de equipomalo.json/Excel.
         .map(j => ({...j, equipo: equipoDeJugador(j.nombre)}))
         .filter(j => j.nombre && j.valor > 0 && j.posicion);
 
