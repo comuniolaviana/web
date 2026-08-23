@@ -1,0 +1,35 @@
+name: Actualizar equipos desde LALIGA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Descargar plantillas de LALIGA y generar equipos.json
+        run: python scripts/actualizar_equipos_laliga.py
+
+      - name: Guardar equipos.json si ha cambiado
+        run: |
+          if git diff --quiet -- equipos.json; then
+            echo "equipos.json no ha cambiado"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add equipos.json
+          git commit -m "Actualizar equipos desde LALIGA"
+          git push
