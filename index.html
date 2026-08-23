@@ -22,10 +22,47 @@
     }
 
     .actualizado {
-      text-align: center;
-      margin-bottom: 24px;
-      font-size: 14px;
+      margin: 0 0 18px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 2px solid #d1d5db;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
       color: #4b5563;
+    }
+
+    .actualizado.actualizado-hoy {
+      background: #eaf8ef;
+      border-color: #2f9e5b;
+      color: #155d35;
+    }
+
+    .actualizado.desactualizado-hoy {
+      background: #fff0f0;
+      border-color: #d64545;
+      color: #8b1f1f;
+    }
+
+    .actualizado-icono {
+      font-size: 30px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .actualizado-texto strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: .3px;
+    }
+
+    .actualizado-texto span {
+      display: block;
+      margin-top: 3px;
+      font-size: 14px;
+      font-weight: 600;
     }
 
     .seccion {
@@ -789,9 +826,13 @@
   </nav>
 
 <main>
-    <div id="actualizado" class="actualizado">
-      Cargando datos...
-    </div>
+    <section id="actualizado" class="actualizado" aria-live="polite">
+      <div class="actualizado-icono">⏳</div>
+      <div class="actualizado-texto">
+        <strong>Comprobando actualización...</strong>
+        <span>Cargando la fecha del listado.</span>
+      </div>
+    </section>
 
 
 
@@ -985,6 +1026,30 @@
         fecha: `${v.year}-${v.month}-${v.day}`,
         dia: { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[v.weekday]
       };
+    }
+
+    function formatearFechaActualizacion(valor) {
+      const texto = String(valor || "").trim();
+      const coincidencia = texto.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?/);
+      if (!coincidencia) return texto || "Sin fecha";
+
+      const [, anio, mes, dia, hora = "", minuto = "", segundo = ""] = coincidencia;
+      const parteHora = hora ? ` · ${hora}:${minuto}${segundo ? `:${segundo}` : ""} h` : "";
+      return `${dia}/${mes}/${anio}${parteHora}`;
+    }
+
+    function actualizarEstadoListado(fechaActualizacion) {
+      const caja = document.getElementById("actualizado");
+      const fechaTexto = String(fechaActualizacion || "").trim();
+      const fechaDatos = fechaTexto.slice(0, 10);
+      const esHoy = /^\d{4}-\d{2}-\d{2}$/.test(fechaDatos) && fechaDatos === datosMadrid().fecha;
+      const fechaVisible = formatearFechaActualizacion(fechaTexto);
+
+      caja.classList.remove("actualizado-hoy", "desactualizado-hoy");
+      caja.classList.add(esHoy ? "actualizado-hoy" : "desactualizado-hoy");
+      caja.innerHTML = esHoy
+        ? `<div class="actualizado-icono">🟢</div><div class="actualizado-texto"><strong>✓ ACTUALIZADO HOY</strong><span>Última actualización: ${fechaVisible}. Valores actuales válidos.</span></div>`
+        : `<div class="actualizado-icono">🔴</div><div class="actualizado-texto"><strong>✕ LISTADO NO ACTUALIZADO HOY</strong><span>Última actualización: ${fechaVisible}. Comprueba los valores actuales antes de pagar.</span></div>`;
     }
 
     function estadoFechaClausulas(fecha, diaSemana) {
@@ -1439,14 +1504,16 @@
       .then(datos => {
         datosLiga = datos;
 
-        document.getElementById("actualizado").textContent =
-          "Última actualización: " + datos.actualizado;
+        actualizarEstadoListado(datos.actualizado);
 
         cargarPropietarios(datos);
         renderizar();
       })
       .catch(error => {
-        document.getElementById("actualizado").textContent = "";
+        const cajaActualizacion = document.getElementById("actualizado");
+        cajaActualizacion.classList.remove("actualizado-hoy");
+        cajaActualizacion.classList.add("desactualizado-hoy");
+        cajaActualizacion.innerHTML = `<div class="actualizado-icono">🔴</div><div class="actualizado-texto"><strong>NO SE PUDO COMPROBAR LA ACTUALIZACIÓN</strong><span>No se ha podido cargar datos.json.</span></div>`;
 
         document.getElementById("contenido").innerHTML = `
           <div class="error">
