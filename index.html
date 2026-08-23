@@ -251,33 +251,144 @@
       font-size: 22px;
     }
 
+    .propietario-movil,
+    .col-flecha,
+    .celda-flecha {
+      display: none;
+    }
+
+    .boton-flecha {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: #1f6b3a;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      line-height: 1;
+      text-decoration: none !important;
+    }
+
     @media (max-width: 700px) {
       header {
-        min-height: 210px;
-        padding: 38px 14px 34px;
-        background-size: 300px auto;
+        min-height: 150px;
+        padding: 25px 12px 23px;
+        background-size: 240px auto;
       }
 
       .hero h1 {
-        font-size: 31px;
+        font-size: 28px;
       }
 
       .hero p {
-        font-size: 15px;
-      }
-
-      th,
-      td {
-        padding: 10px;
         font-size: 14px;
       }
 
+      .hero-linea {
+        margin-top: 12px;
+      }
+
+      .menu {
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding: 10px 10px 4px;
+        scrollbar-width: thin;
+      }
+
+      .menu a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 9px 11px;
+        font-size: 13px;
+      }
+
+      main {
+        margin-top: 18px;
+        padding: 0 8px 32px;
+      }
+
       .seccion h2 {
-        font-size: 19px;
+        font-size: 18px;
+        padding: 13px 12px;
+      }
+
+      .filtros {
+        padding: 12px;
       }
 
       .filtros-grid {
         grid-template-columns: 1fr;
+      }
+
+      .tabla-contenedor {
+        overflow-x: hidden;
+      }
+
+      .tabla-jugadores {
+        min-width: 0;
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      .tabla-jugadores thead tr,
+      .tabla-jugadores tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 116px 34px;
+        align-items: center;
+      }
+
+      .tabla-jugadores th,
+      .tabla-jugadores td {
+        min-width: 0;
+        padding: 10px 8px;
+        font-size: 13px;
+      }
+
+      .tabla-jugadores .col-propietario,
+      .tabla-jugadores .celda-propietario,
+      .tabla-jugadores .col-puntos,
+      .tabla-jugadores .celda-puntos {
+        display: none;
+      }
+
+      .tabla-jugadores .propietario-movil {
+        display: block;
+        margin-top: 3px;
+        color: #6b7280;
+        font-size: 11px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .tabla-jugadores .col-flecha,
+      .tabla-jugadores .celda-flecha {
+        display: block;
+        text-align: center;
+      }
+
+      .tabla-jugadores .col-clausula,
+      .tabla-jugadores .celda-clausula {
+        text-align: right;
+        white-space: nowrap;
+        font-weight: 800;
+      }
+
+      .tabla-jugadores .jugador-enlace:not(.boton-flecha) {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+      }
+
+      .tabla-jugadores .boton-flecha {
+        display: inline-flex;
       }
     }
   
@@ -1029,7 +1140,9 @@
     }
 
     function formatearNumero(numero) {
-      return new Intl.NumberFormat("es-ES").format(numero);
+      const valor = Number(numero);
+      return new Intl.NumberFormat("es-ES", { maximumFractionDigits: 0 })
+        .format(Number.isFinite(valor) ? Math.round(valor) : 0);
     }
 
     function escaparHTML(texto) {
@@ -1042,32 +1155,44 @@
     }
 
     function crearTabla(titulo, jugadores) {
-      const filas = jugadores.map(jugador => `
+      const filas = jugadores.map(jugador => {
+        const datosJugador = encodeURIComponent(JSON.stringify(jugador));
+        return `
         <tr>
-          <td>
+          <td class="celda-jugador">
             <button
               class="jugador-enlace"
               type="button"
-              data-jugador="${encodeURIComponent(JSON.stringify(jugador))}"
+              data-jugador="${datosJugador}"
             >${escaparHTML(jugador.jugador)}</button>
+            <span class="propietario-movil">${escaparHTML(jugador.propietario)}</span>
           </td>
-          <td>${escaparHTML(jugador.propietario)}</td>
-          <td class="numero">${formatearNumero(jugador.clausula)} €</td>
-          <td class="numero">${formatearNumero(jugador.puntos)}</td>
-        </tr>
-      `).join("");
+          <td class="celda-propietario">${escaparHTML(jugador.propietario)}</td>
+          <td class="numero celda-clausula">${formatearNumero(jugador.clausula)} €</td>
+          <td class="numero celda-puntos">${formatearNumero(jugador.puntos)}</td>
+          <td class="celda-flecha">
+            <button
+              class="jugador-enlace boton-flecha"
+              type="button"
+              data-jugador="${datosJugador}"
+              aria-label="Abrir ficha de ${escaparHTML(jugador.jugador)}"
+            >›</button>
+          </td>
+        </tr>`;
+      }).join("");
 
       return `
         <section class="seccion">
           <h2>${titulo} <span class="contador">(${jugadores.length})</span></h2>
           <div class="tabla-contenedor">
-            <table>
+            <table class="tabla-jugadores">
               <thead>
                 <tr>
-                  <th>Jugador</th>
-                  <th>Propietario</th>
-                  <th class="numero">Cláusula</th>
-                  <th class="numero">Puntos</th>
+                  <th class="col-jugador">Jugador</th>
+                  <th class="col-propietario">Propietario</th>
+                  <th class="numero col-clausula">Cláusula</th>
+                  <th class="numero col-puntos">Puntos</th>
+                  <th class="col-flecha" aria-hidden="true"></th>
                 </tr>
               </thead>
               <tbody>${filas}</tbody>
