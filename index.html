@@ -921,6 +921,7 @@
         <div class="ficha-grid">
           <div class="ficha-dato"><span>Propietario</span><strong id="fichaPropietario"></strong></div>
           <div class="ficha-dato"><span>Puntos</span><strong id="fichaPuntos"></strong></div>
+          <div class="ficha-dato"><span>Valor actual</span><strong id="fichaValor"></strong></div>
         </div>
 
         <div class="ficha-clausula">
@@ -1374,6 +1375,8 @@
       document.getElementById("fichaPropietario").textContent = jugador.propietario || "—";
       document.getElementById("fichaPuntos").textContent =
         formatearNumero(jugador.puntos || 0);
+      document.getElementById("fichaValor").textContent =
+        Number.isFinite(Number(jugador.valor)) ? `${formatearNumero(jugador.valor)} €` : "—";
       document.getElementById("fichaClausula").textContent =
         `${formatearNumero(jugador.clausula || 0)} €`;
       document.getElementById("fichaActualizacion").textContent =
