@@ -311,8 +311,18 @@
   ];
 
   let datos = { actualizado:"", jugadores:[] };
-  let equiposLiga = {};
   let jugadorActivo = null;
+
+  // EQUIPOS: esta página los obtiene directamente de LALIGA.
+  // No utiliza el campo equipo de equipomalo.json/Excel ni equipos.json.
+  const LALIGA_API = "https://apim.laliga.com/public-service";
+  const LALIGA_TEMPORADA = "laliga-easports-2026";
+  const LALIGA_KEY = "c13c3a8e2f6b46da9c5c425cf61fab3e";
+
+  let indiceLaliga = new Map();
+  let registrosLaliga = [];
+  let laligaDisponible = false;
+  let estadoFuenteEquipos = "Consultando LALIGA…";
 
   const $ = id => document.getElementById(id);
 
@@ -329,26 +339,198 @@
     return Number.isFinite(n) ? n : 0;
   }
 
-  function normalizarMapaEquipos(raw){
-    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
-    if (raw.equipos && typeof raw.equipos === "object" && !Array.isArray(raw.equipos)) return raw.equipos;
-    return raw;
+  const NOMBRES_CLUB = {
+    "athletic club":"Athletic Club",
+    "atletico de madrid":"Atlético de Madrid",
+    "ca osasuna":"Osasuna",
+    "osasuna":"Osasuna",
+    "celta":"Celta",
+    "deportivo alaves":"Alavés",
+    "elche cf":"Elche",
+    "fc barcelona":"Barcelona",
+    "getafe cf":"Getafe",
+    "levante ud":"Levante",
+    "malaga cf":"Málaga",
+    "real racing club":"Racing",
+    "r racing club":"Racing",
+    "rayo vallecano":"Rayo Vallecano",
+    "rc deportivo":"Deportivo",
+    "rcd espanyol de barcelona":"Espanyol",
+    "real betis":"Betis",
+    "real madrid":"Real Madrid",
+    "real sociedad":"Real Sociedad",
+    "sevilla fc":"Sevilla",
+    "valencia cf":"Valencia",
+    "villarreal cf":"Villarreal"
+  };
+
+  const ALIAS_COMUNIO = {
+    "iturbe":"alejandro iturbe",
+    "manu hernando":"jose manuel hernando riol"
+  };
+
+  function nombreCortoClub(valor){
+    const texto = String(valor ?? "").trim();
+    if (!texto) return "";
+
+    let n = normalizarTexto(texto)
+      .replace(/\bsad\b/g,"")
+      .replace(/\bs\.a\.d\.\b/g,"")
+      .replace(/\s+/g," ")
+      .trim();
+
+    if (NOMBRES_CLUB[n]) return NOMBRES_CLUB[n];
+
+    for (const [clave, corto] of Object.entries(NOMBRES_CLUB)){
+      if (n.includes(clave) || clave.includes(n)) return corto;
+    }
+    return texto;
   }
 
-  function equipoDeJugador(nombre){
-    const dato = equiposLiga[nombre];
-    if (typeof dato === "string") return dato.trim();
-    if (dato && typeof dato === "object") return String(dato.equipo ?? dato.club ?? dato.team ?? "").trim();
+  function nombresPosiblesJugador(p){
+    const persona = p?.player ?? p?.person ?? {};
+    const candidatos = [
+      p?.name, p?.nickname, p?.player_name, p?.common_name, p?.known_name,
+      persona?.name, persona?.nickname, persona?.player_name, persona?.common_name,
+      [persona?.first_name, persona?.last_name].filter(Boolean).join(" "),
+      [p?.first_name, p?.last_name].filter(Boolean).join(" ")
+    ];
+    return [...new Set(candidatos.map(v => String(v ?? "").trim()).filter(Boolean))];
+  }
+
+  function equipoDesdeFilaLaliga(p){
+    const team = p?.team ?? p?.club ?? p?.current_team ?? p?.player?.team ?? {};
+    const candidatos = [
+      team?.nickname, team?.name, team?.short_name, team?.shortName,
+      p?.team_name, p?.teamName
+    ];
+    for (const v of candidatos){
+      const club = nombreCortoClub(v);
+      if (club) return club;
+    }
     return "";
   }
 
-  async function cargarEquiposOpcional(){
+  function registrarNombreLaliga(nombre, equipo){
+    const k = normalizarTexto(nombre);
+    if (!k || !equipo) return;
+
+    const previo = indiceLaliga.get(k);
+    if (!previo) indiceLaliga.set(k, equipo);
+    else if (previo !== equipo) indiceLaliga.set(k, "");
+  }
+
+  function construirIndiceLaliga(filas){
+    indiceLaliga = new Map();
+    registrosLaliga = [];
+
+    filas.forEach(p => {
+      const equipo = equipoDesdeFilaLaliga(p);
+      if (!equipo) return;
+
+      const nombres = nombresPosiblesJugador(p);
+      nombres.forEach(nombre => {
+        registrarNombreLaliga(nombre, equipo);
+        registrosLaliga.push({
+          clave: normalizarTexto(nombre),
+          equipo
+        });
+      });
+    });
+  }
+
+  function equipoOficialDeJugador(nombre){
+    const buscado = normalizarTexto(nombre);
+    if (!buscado || !laligaDisponible) return "";
+
+    const directo = indiceLaliga.get(buscado);
+    if (directo) return directo;
+
+    const alias = ALIAS_COMUNIO[buscado];
+    if (alias){
+      const porAlias = indiceLaliga.get(alias);
+      if (porAlias) return porAlias;
+    }
+
+    const palabras = buscado.split(" ").filter(x => x.length >= 3);
+    if (!palabras.length) return "";
+
+    const clubes = new Set();
+    for (const r of registrosLaliga){
+      const tokens = new Set(r.clave.split(" "));
+      const coincide = palabras.length === 1
+        ? (palabras[0].length >= 5 && tokens.has(palabras[0]))
+        : palabras.every(x => tokens.has(x));
+
+      if (coincide && r.equipo) clubes.add(r.equipo);
+      if (clubes.size > 1) return "";
+    }
+
+    return clubes.size === 1 ? [...clubes][0] : "";
+  }
+
+  function extraerFilasLaliga(raw){
+    if (!raw || typeof raw !== "object") return [];
+    if (Array.isArray(raw.player_stats)) return raw.player_stats;
+    if (Array.isArray(raw.playerStats)) return raw.playerStats;
+    if (Array.isArray(raw.players)) return raw.players;
+    if (Array.isArray(raw.items)) return raw.items;
+    if (Array.isArray(raw.data)) return raw.data;
+    return [];
+  }
+
+  async function fetchConTimeout(url, opciones={}, ms=6500){
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
     try{
-      const res = await fetch("equipos.json?v=" + Date.now(), {cache:"no-store"});
-      if (!res.ok) return {};
-      return normalizarMapaEquipos(await res.json());
-    }catch{
-      return {};
+      return await fetch(url, {...opciones, signal:controller.signal, cache:"no-store"});
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+
+  async function pedirPaginaLaliga(offset){
+    const base = `${LALIGA_API}/api/v1/subscriptions/${LALIGA_TEMPORADA}/players/stats?limit=100&offset=${offset}`;
+
+    try{
+      const res = await fetchConTimeout(
+        base + `&subscription-key=${encodeURIComponent(LALIGA_KEY)}`
+      );
+      if (res.ok) return extraerFilasLaliga(await res.json());
+    }catch{}
+
+    try{
+      const res = await fetchConTimeout(base, {
+        headers:{"Ocp-Apim-Subscription-Key":LALIGA_KEY}
+      });
+      if (res.ok) return extraerFilasLaliga(await res.json());
+    }catch{}
+
+    throw new Error("LALIGA no respondió");
+  }
+
+  async function cargarEquiposDesdeLaliga(){
+    try{
+      const offsets = [0,100,200,300,400,500,600,700,800];
+      const paginas = await Promise.all(offsets.map(pedirPaginaLaliga));
+      const filas = paginas.flat();
+
+      if (filas.length < 200) throw new Error("Respuesta incompleta de LALIGA");
+
+      construirIndiceLaliga(filas);
+      laligaDisponible = indiceLaliga.size > 100;
+
+      if (!laligaDisponible) throw new Error("No se pudo construir el índice");
+
+      estadoFuenteEquipos = "LALIGA oficial 2026/27";
+      return true;
+    }catch(error){
+      laligaDisponible = false;
+      indiceLaliga = new Map();
+      registrosLaliga = [];
+      estadoFuenteEquipos = "LALIGA no disponible · equipos ocultos para evitar errores";
+      console.warn("No se pudieron cargar los equipos desde LALIGA:", error);
+      return false;
     }
   }
 
@@ -427,7 +609,9 @@
     estado.textContent = hoy
       ? "🟢 ✓ ACTUALIZADO HOY. Puedes utilizar directamente la cláusula mostrada."
       : "🔴 ✕ NO ACTUALIZADO HOY. Comprueba el valor actual en Comunio y realiza el cálculo manual.";
-    $("ultimaActualizacion").innerHTML = `<b>Última actualización:</b> ${datos.actualizado || "Sin fecha"}`;
+    $("ultimaActualizacion").innerHTML =
+      `<b>Última actualización:</b> ${datos.actualizado || "Sin fecha"}<br>` +
+      `<b>Equipos:</b> ${estadoFuenteEquipos}`;
   }
 
   function render(){
@@ -537,18 +721,19 @@ Actualización: ${datos.actualizado || "sin fecha"}`;
 
   async function cargarDatos(){
     try{
-      const [res, equipos] = await Promise.all([
+      const [res] = await Promise.all([
         fetch("equipomalo.json?v=" + Date.now(), {cache:"no-store"}),
-        cargarEquiposOpcional()
+        cargarEquiposDesdeLaliga()
       ]);
+
       if (!res.ok) throw new Error("No se pudo cargar equipomalo.json");
+
       const raw = await res.json();
-      equiposLiga = equipos;
       datos.actualizado = raw.actualizado ?? raw.ultimaActualizacion ?? raw.updated ?? "";
+
       datos.jugadores = extraerJugadores(raw)
         .map(adaptarJugador)
-        // El equipo SIEMPRE sale de equipos.json. Nunca de equipomalo.json/Excel.
-        .map(j => ({...j, equipo: equipoDeJugador(j.nombre)}))
+        .map(j => ({...j, equipo: equipoOficialDeJugador(j.nombre)}))
         .filter(j => j.nombre && j.valor > 0 && j.posicion);
 
       estadoActualizacion();
