@@ -961,6 +961,7 @@
       <div class="ficha-cuerpo">
         <div class="ficha-grid">
           <div class="ficha-dato"><span>Propietario</span><strong id="fichaPropietario"></strong></div>
+          <div class="ficha-dato"><span>Equipo</span><strong id="fichaEquipo"></strong></div>
           <div class="ficha-dato"><span>Puntos</span><strong id="fichaPuntos"></strong></div>
           <div class="ficha-dato"><span>Valor actual</span><strong id="fichaValor"></strong></div>
         </div>
@@ -1196,6 +1197,31 @@
     ];
 
     let datosLiga = null;
+    let equiposLiga = {};
+
+    function normalizarMapaEquipos(raw) {
+      if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+      if (raw.equipos && typeof raw.equipos === "object" && !Array.isArray(raw.equipos)) {
+        return raw.equipos;
+      }
+      return raw;
+    }
+
+    function equipoDeJugador(nombre) {
+      const dato = equiposLiga[nombre];
+      if (typeof dato === "string") return dato.trim();
+      if (dato && typeof dato === "object") {
+        return String(dato.equipo ?? dato.club ?? dato.team ?? "").trim();
+      }
+      return "";
+    }
+
+    function cargarEquiposOpcional() {
+      return fetch("equipos.json?v=" + Date.now(), { cache: "no-store" })
+        .then(respuesta => respuesta.ok ? respuesta.json() : {})
+        .then(raw => normalizarMapaEquipos(raw))
+        .catch(() => ({}));
+    }
 
     function normalizar(texto) {
       return String(texto || "")
@@ -1438,6 +1464,7 @@
 
       document.getElementById("fichaNombre").textContent = jugador.jugador || "Jugador";
       document.getElementById("fichaPropietario").textContent = jugador.propietario || "—";
+      document.getElementById("fichaEquipo").textContent = equipoDeJugador(jugador.jugador) || "—";
       document.getElementById("fichaPuntos").textContent =
         formatearNumero(jugador.puntos || 0);
       document.getElementById("fichaValor").textContent =
@@ -1494,15 +1521,18 @@
     });
 
 
-    fetch("datos.json?v=" + Date.now())
-      .then(respuesta => {
+    Promise.all([
+      fetch("datos.json?v=" + Date.now(), { cache: "no-store" }).then(respuesta => {
         if (!respuesta.ok) {
           throw new Error("No se pudo cargar datos.json");
         }
         return respuesta.json();
-      })
-      .then(datos => {
+      }),
+      cargarEquiposOpcional()
+    ])
+      .then(([datos, equipos]) => {
         datosLiga = datos;
+        equiposLiga = equipos;
 
         actualizarEstadoListado(datos.actualizado);
 

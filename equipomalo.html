@@ -311,6 +311,7 @@
   ];
 
   let datos = { actualizado:"", jugadores:[] };
+  let equiposLiga = {};
   let jugadorActivo = null;
 
   const $ = id => document.getElementById(id);
@@ -326,6 +327,29 @@
     const limpio = String(valor ?? "").replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",",".");
     const n = Number(limpio);
     return Number.isFinite(n) ? n : 0;
+  }
+
+  function normalizarMapaEquipos(raw){
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+    if (raw.equipos && typeof raw.equipos === "object" && !Array.isArray(raw.equipos)) return raw.equipos;
+    return raw;
+  }
+
+  function equipoDeJugador(nombre){
+    const dato = equiposLiga[nombre];
+    if (typeof dato === "string") return dato.trim();
+    if (dato && typeof dato === "object") return String(dato.equipo ?? dato.club ?? dato.team ?? "").trim();
+    return "";
+  }
+
+  async function cargarEquiposOpcional(){
+    try{
+      const res = await fetch("equipos.json?v=" + Date.now(), {cache:"no-store"});
+      if (!res.ok) return {};
+      return normalizarMapaEquipos(await res.json());
+    }catch{
+      return {};
+    }
   }
 
   function posicionNormalizada(valor){
@@ -514,12 +538,17 @@ Actualización: ${datos.actualizado || "sin fecha"}`;
 
   async function cargarDatos(){
     try{
-      const res = await fetch("equipomalo.json?v=" + Date.now(), {cache:"no-store"});
+      const [res, equipos] = await Promise.all([
+        fetch("equipomalo.json?v=" + Date.now(), {cache:"no-store"}),
+        cargarEquiposOpcional()
+      ]);
       if (!res.ok) throw new Error("No se pudo cargar equipomalo.json");
       const raw = await res.json();
+      equiposLiga = equipos;
       datos.actualizado = raw.actualizado ?? raw.ultimaActualizacion ?? raw.updated ?? "";
       datos.jugadores = extraerJugadores(raw)
         .map(adaptarJugador)
+        .map(j => ({...j, equipo: equipoDeJugador(j.nombre)}))
         .filter(j => j.nombre && j.valor > 0 && j.posicion);
 
       estadoActualizacion();
