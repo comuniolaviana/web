@@ -302,7 +302,7 @@
 <script>
 (() => {
   "use strict";
-  // EQUIPO MALO - equipos corregidos LALIGA 23/08/2026 v2
+  // EQUIPO MALO - equipos únicamente desde equipos.json · revisión 23/09/2026
 
   const POSICIONES = [
     {key:"portero", title:"🥅 PORTEROS"},
@@ -335,74 +335,12 @@
     if (raw.equipos && typeof raw.equipos === "object" && !Array.isArray(raw.equipos)) return raw.equipos;
     return raw;
   }
-
-  const EQUIPOS_VERIFICADOS_EQUIPO_MALO = {
-    "Fran Pérez": "Rayo Vallecano",
-    "Bayindir": "Celta",
-    "Einar Galilea": "Málaga",
-    "Valentini": "Alavés",
-    "Dani Barcia": "Deportivo",
-    "Sazonov": "Getafe",
-    "Oláiz": "Alavés",
-    "Barzic": "Elche",
-    "Javier Hernández": "Espanyol",
-    "Facundo Buonanotte": "Elche",
-    "Nico Guillén": "Sevilla",
-    "Mikel Rodríguez": "Alavés",
-    "Miguel Rodríguez": "Alavés",
-    "Francho Serrano": "Getafe",
-    "Dani Requena": "Levante",
-    "Gerenabarrena": "Athletic Club",
-    "Diego Díaz": "Racing",
-    "Juanpe Jiménez": "Málaga",
-    "Álvaro Padilla": "Elche",
-    "Alberto Risco": "Getafe",
-    "Arnau Ortiz": "Atlético de Madrid",
-    "Ibra Sow": "Sevilla",
-    "Pablo Ramón": "Racing",
-    "Nacho Pérez": "Levante",
-    "Pelayo Fernández": "Rayo Vallecano",
-    "Ángel Recio": "Málaga",
-    "Íñigo Arguibide": "Osasuna",
-    "Boselli": "Getafe",
-    "Luken Beitia": "Real Sociedad",
-    "Jozhua Vertrouwd": "Rayo Vallecano",
-    "Dani Sánchez": "Málaga",
-    "David Jiménez": "Real Madrid",
-    "Ismael Bekhoucha": "Getafe",
-    "Manu Serrano": "Real Madrid",
-    "Jorge Montes": "Getafe",
-    "Copete": "Valencia",
-    "Rafa Rodríguez": "Málaga",
-    "Yvan Neyou": "Getafe",
-    "Paco Cortés": "Levante",
-    "Javi Muñoz": "Getafe",
-    "Álex Sancris": "Getafe",
-    "Alemao": "Rayo Vallecano",
-    "Danjuma": "Valencia",
-    "Dani Díaz": "Real Sociedad",
-    "Raba": "Valencia",
-    "Iturbe": "Elche",
-    "Manu Hernando": "Racing",
-    "Maguette Gueye": "Racing",
-    "Buba Sangaré": "Elche",
-    "Javi Morcillo": "Elche",
-    "Álex Calatrava": "Levante"
-  };
-
   function equipoDeJugador(nombre){
-    // 1) Correcciones verificadas de LALIGA para Equipo Malo.
-    const oficial = EQUIPOS_VERIFICADOS_EQUIPO_MALO[nombre];
-    if (typeof oficial === "string" && oficial.trim()) return oficial.trim();
-
-    // 2) Para el resto, usamos el mismo equipos.json que funciona en Cláusulas.
     const dato = equiposLiga[nombre];
     if (typeof dato === "string") return dato.trim();
     if (dato && typeof dato === "object") {
       return String(dato.equipo ?? dato.club ?? dato.team ?? "").trim();
     }
-
-    // Nunca recuperamos el campo equipo de equipomalo.json/Excel.
     return "";
   }
 
