@@ -28,23 +28,17 @@
     </section>
 
     <section class="panel">
-      <h2>Días de cláusulas</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <label style="grid-column:1/-1">Fecha<input id="dayInput" type="date"></label>
-        <label>Abre<input id="openInput" type="time" value="15:00"></label>
-        <label>Cierra<input id="closeInput" type="time" value="21:00"></label>
-      </div>
-      <label style="display:flex;grid-template-columns:auto 1fr;align-items:center;gap:8px">
-        <input id="enabledInput" type="checkbox" checked style="width:auto"> Día habilitado
-      </label>
-      <button id="saveDayBtn" class="primary full">Guardar día</button>
-      <p id="dayMsg" class="message"></p>
+      <h2>Calendario oficial</h2>
+      <p class="muted">La única fuente es <b>calendario-clausulas.json</b>. Este botón copia automáticamente sus días y horarios a Supabase para que el servidor aplique exactamente el mismo calendario.</p>
+      <button id="syncCalendarBtn" class="primary full">Sincronizar calendario oficial</button>
+      <p id="calendarMsg" class="message"></p>
       <div id="daysList" style="margin-top:12px"></div>
     </section>
   </main>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+<script src="../calendario-engine.js"></script>
 <script src="admin.js"></script>
 </body>
 </html>

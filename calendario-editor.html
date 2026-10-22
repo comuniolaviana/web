@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Editor calendario · Comunio Laviana</title>
+<style>
+:root{--bg:#07110b;--card:#121d16;--line:#2b4032;--text:#f3f6f4;--muted:#99a59e;--green:#218e4e;--mint:#92e7af;--red:#7c2d32;--gold:#6e551c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:900px;margin:auto;padding:18px 14px 60px}h1{margin:0;color:var(--mint)}p{color:var(--muted);line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.wide{grid-column:1/-1}
+label{display:grid;gap:5px;font-size:12px;font-weight:800;color:#c8d0cb}input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;background:#1a2920;color:#fff;border:1px solid #3a5142;border-radius:12px;padding:11px}
+textarea{min-height:74px;resize:vertical}button{border:0;border-radius:12px;padding:11px 13px;font-weight:900;cursor:pointer}
+.primary{background:var(--green);color:#fff}.secondary{background:#293a30;color:#fff}.danger{background:#5b292c;color:#fff}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar button{flex:1;min-width:150px}
+.row{display:grid;grid-template-columns:120px 110px minmax(0,1fr) auto;gap:7px;align-items:center;padding:8px 0;border-bottom:1px solid #26372d;font-size:12px}
+.period{grid-template-columns:104px 104px 100px minmax(0,1fr) auto}.row:last-child{border-bottom:0}
+.badge{border-radius:999px;padding:4px 8px;text-align:center;font-weight:900}.abierto{background:#173b24;color:#9be7b3}.especial{background:#3b3014;color:#efd27d}.cerrado{background:#3b1c1f;color:#f0b8bb}
+.msg{padding:10px;border-radius:12px;background:#1c2b21;color:#bcd0c3;margin-top:10px}.error{background:#3c1c1f;color:#ffc4c7}
+small{color:var(--muted)}code{color:var(--mint)}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.row,.period{grid-template-columns:1fr}.row button{width:100%}}
+</style>
+</head>
+<body>
+<main>
+<h1>🗓️ Editor del calendario</h1>
+<p>Este editor modifica una copia en el navegador. Al terminar pulsa <b>Descargar JSON</b> y sustituye en la web el archivo <code>calendario-clausulas.json</code>. No hay que tocar ningún HTML ni JavaScript.</p>
+
+<section class="card">
+  <h2>Horario y temporada</h2>
+  <div class="grid">
+    <label>Versión<input id="version"></label>
+    <label>Zona horaria<input id="timezone"></label>
+    <label>Abre<input id="open" type="time"></label>
+    <label>Cierra<input id="close" type="time"></label>
+    <label>Inicio temporada<input id="start" type="date"></label>
+    <label>Fin temporada<input id="end" type="date"></label>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Fechas concretas</h2>
+  <p><small>Estas fechas tienen prioridad sobre todo lo demás. Úsalas para cerrar o abrir un día excepcional.</small></p>
+  <div id="dates"></div>
+  <button id="addDate" class="secondary" type="button">+ Añadir fecha</button>
+</section>
+
+<section class="card">
+  <h2>Periodos especiales</h2>
+  <p><small>Ejemplos: parón FIFA, Navidad o una ventana extraordinaria.</small></p>
+  <div id="periods"></div>
+  <button id="addPeriod" class="secondary" type="button">+ Añadir periodo</button>
+</section>
+
+<section class="card">
+  <div class="toolbar">
+    <button id="validate" class="secondary" type="button">✓ Comprobar calendario</button>
+    <button id="download" class="primary" type="button">⬇ Descargar JSON</button>
+  </div>
+  <div id="msg" class="msg">Cargando el calendario actual…</div>
+</section>
+</main>
+
+<script src="calendario-engine.js"></script>
+<script>
+let cfg=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+
+async function boot(){
+  try{
+    const r=await fetch("calendario-clausulas.json?v="+Date.now(),{cache:"no-store"});
+    if(!r.ok)throw new Error("No se pudo leer calendario-clausulas.json");
+    cfg=await r.json();
+    fill();
+    message("Calendario cargado. Puedes hacer cambios.",false);
+  }catch(e){message(e.message,true);}
+}
+function fill(){
+  $("version").value=cfg.version||"";
+  $("timezone").value=cfg.timezone||"Europe/Madrid";
+  $("open").value=cfg.horario?.inicio||"15:00";
+  $("close").value=cfg.horario?.fin||"21:00";
+  $("start").value=cfg.vigencia?.inicio||"";
+  $("end").value=cfg.vigencia?.fin||"";
+  renderDates();renderPeriods();
+}
+function syncBase(){
+  cfg.version=$("version").value.trim();
+  cfg.timezone=$("timezone").value.trim();
+  cfg.horario={inicio:$("open").value,fin:$("close").value};
+  cfg.vigencia={inicio:$("start").value,fin:$("end").value};
+}
+function renderDates(){
+  $("dates").innerHTML=(cfg.fechas||[]).map((x,i)=>`
+    <div class="row">
+      <input type="date" data-date-i="${i}" data-k="fecha" value="${esc(x.fecha)}">
+      <select data-date-i="${i}" data-k="estado">
+        <option value="abierto" ${x.estado==="abierto"?"selected":""}>Abierto</option>
+        <option value="especial" ${x.estado==="especial"?"selected":""}>Especial</option>
+        <option value="cerrado" ${x.estado==="cerrado"?"selected":""}>Cerrado</option>
+      </select>
+      <input data-date-i="${i}" data-k="motivo" value="${esc(x.motivo)}" placeholder="Motivo">
+      <button class="danger" type="button" data-del-date="${i}">Eliminar</button>
+    </div>`).join("") || "<p><small>No hay fechas concretas.</small></p>";
+  bindRows();
+}
+function renderPeriods(){
+  $("periods").innerHTML=(cfg.periodos||[]).map((x,i)=>`
+    <div class="row period">
+      <input type="date" data-period-i="${i}" data-k="inicio" value="${esc(x.inicio)}">
+      <input type="date" data-period-i="${i}" data-k="fin" value="${esc(x.fin)}">
+      <select data-period-i="${i}" data-k="estado">
+        <option value="abierto" ${x.estado==="abierto"?"selected":""}>Abierto</option>
+        <option value="especial" ${x.estado==="especial"?"selected":""}>Especial</option>
+        <option value="cerrado" ${x.estado==="cerrado"?"selected":""}>Cerrado</option>
+      </select>
+      <input data-period-i="${i}" data-k="motivo" value="${esc(x.motivo)}" placeholder="Motivo">
+      <button class="danger" type="button" data-del-period="${i}">Eliminar</button>
+    </div>`).join("") || "<p><small>No hay periodos especiales.</small></p>";
+  bindRows();
+}
+function bindRows(){
+  document.querySelectorAll("[data-date-i]").forEach(el=>el.onchange=()=>{cfg.fechas[+el.dataset.dateI][el.dataset.k]=el.value;});
+  document.querySelectorAll("[data-period-i]").forEach(el=>el.onchange=()=>{cfg.periodos[+el.dataset.periodI][el.dataset.k]=el.value;});
+  document.querySelectorAll("[data-del-date]").forEach(b=>b.onclick=()=>{cfg.fechas.splice(+b.dataset.delDate,1);renderDates();});
+  document.querySelectorAll("[data-del-period]").forEach(b=>b.onclick=()=>{cfg.periodos.splice(+b.dataset.delPeriod,1);renderPeriods();});
+}
+$("addDate").onclick=()=>{cfg.fechas=cfg.fechas||[];cfg.fechas.push({fecha:"",estado:"cerrado",etiqueta:"CERRADO",motivo:""});renderDates();};
+$("addPeriod").onclick=()=>{cfg.periodos=cfg.periodos||[];cfg.periodos.push({inicio:"",fin:"",estado:"especial",etiqueta:"ESP",titulo:"Periodo especial",motivo:""});renderPeriods();};
+$("validate").onclick=()=>validateCfg();
+$("download").onclick=()=>{
+  if(!validateCfg())return;
+  const blob=new Blob([JSON.stringify(cfg,null,2)+"\n"],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="calendario-clausulas.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+function validateCfg(){
+  try{
+    syncBase();
+    cfg.fechas.forEach(x=>{x.etiqueta=x.estado==="especial"?"ESPECIAL":x.estado==="abierto"?"ABIERTO":"CERRADO";});
+    cfg.periodos.forEach(x=>{x.etiqueta=x.etiqueta||"ESP";x.titulo=x.titulo||"Periodo especial";});
+    ComunioCalendario.validar(cfg);
+    const motor=ComunioCalendario.crear(cfg);
+    const total=motor.fechasHabilitadas().filter(x=>x.enabled).length;
+    message(`✓ Calendario correcto. ${total} días habilitados en la temporada.`,false);
+    return true;
+  }catch(e){message("Error: "+e.message,true);return false;}
+}
+function message(t,bad){$("msg").textContent=t;$("msg").className="msg"+(bad?" error":"");}
+boot();
+</script>
+</body>
+</html>

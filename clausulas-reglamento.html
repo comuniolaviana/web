@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reglamento de cláusulas - ComunioLaviana</title>
+<style>
+    body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#1f2937}
+    header{background:#1f6b3a;color:white;padding:24px 16px;text-align:center}
+    header h1{margin:0;font-size:32px}
+    header p{margin:8px 0 0}
+    .menu{display:flex;justify-content:center;gap:10px;padding:14px 12px 0;flex-wrap:wrap}
+    .menu a{display:inline-block;text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:bold;background:white;color:#1f6b3a;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .menu a.activo{background:#1f6b3a;color:white}
+    main{max-width:1100px;margin:30px auto;padding:0 12px 40px}
+    .card,details{background:white;border-radius:14px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);overflow:hidden}
+    .card h2,summary{margin:0;padding:16px 18px;background:#e8f5ec;color:#1f6b3a;font-size:21px;font-weight:bold}
+    summary{cursor:pointer;list-style:none}
+    summary::-webkit-details-marker{display:none}
+    .contenido{padding:18px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+    .dato{background:#f9fafb;border-radius:12px;padding:14px;border:1px solid #e5e7eb}
+    .dato strong{display:block;color:#1f6b3a;margin-bottom:5px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:11px 12px;border-bottom:1px solid #e5e7eb;text-align:left}
+    th{background:#f9fafb}
+    td.numero,th.numero{text-align:right}
+    .aviso{background:#fff7d6;border-left:5px solid #d4a017;padding:12px 14px;border-radius:8px;margin:14px 0}
+    .sancion{background:#fee2e2;border-left:5px solid #b91c1c;padding:12px 14px;border-radius:8px;margin:14px 0}
+    .ok{background:#dcfce7;border-left:5px solid #15803d;padding:12px 14px;border-radius:8px;margin:14px 0}
+    .tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:13px;font-weight:bold}
+    .verde{background:#dcfce7;color:#166534}
+    .rojo{background:#fee2e2;color:#991b1b}
+    .amarillo{background:#fef3c7;color:#92400e}
+    .campeon{font-size:34px;font-weight:bold;color:#1f6b3a}
+    .podio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center}
+    .podio>div{background:#f9fafb;border-radius:12px;padding:18px;border:1px solid #e5e7eb}
+    .cuadro{font-family:Consolas,monospace;white-space:pre;overflow-x:auto;background:#111827;color:#f9fafb;padding:18px;border-radius:12px;line-height:1.5}
+    @media(max-width:700px){
+      header h1{font-size:26px}
+      th,td{font-size:14px;padding:9px 8px}
+      .podio{grid-template-columns:1fr}
+      .menu a{font-size:14px;padding:9px 11px}
+    }
+
+.calendario-meses{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.mes{border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;background:white}
+.mes h3{margin:0;padding:13px;text-align:center;background:#f9fafb;color:#1f6b3a}
+.semana,.dias{display:grid;grid-template-columns:repeat(7,1fr)}
+.semana div{padding:7px 2px;text-align:center;font-size:12px;font-weight:bold;color:#6b7280}
+.dia{min-height:48px;border:0;border-top:1px solid #f0f1f3;border-right:1px solid #f0f1f3;padding:5px;font-size:13px;cursor:pointer;position:relative}
+.dia.vacio{cursor:default;background:#fafafa}
+.dia.abierto{background:#dcfce7;color:#166534;font-weight:bold}
+.dia.cerrado{background:#fee2e2;color:#991b1b}
+.dia.especial{background:#fef3c7;color:#92400e;font-weight:bold}
+.dia.hoy{outline:3px solid #2563eb;outline-offset:-3px}
+.leyenda-calendario{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0;font-size:14px}
+.leyenda-calendario span{display:inline-flex;align-items:center;gap:6px}
+.cuadro-color{width:15px;height:15px;border-radius:4px;display:inline-block}
+.detalle-dia{margin-top:16px;padding:14px;border-radius:10px;background:#f9fafb;border:1px solid #e5e7eb}
+.estado-hoy{padding:16px;border-radius:12px;font-size:18px;font-weight:bold;margin-bottom:18px;text-align:center}
+.estado-hoy.abierto{background:#dcfce7;color:#166534}
+.estado-hoy.cerrado{background:#fee2e2;color:#991b1b}
+.estado-hoy.especial{background:#fef3c7;color:#92400e}
+
+
+.calendario-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0 18px}
+.calendario-filtros{display:flex;gap:8px;flex-wrap:wrap}
+.calendario-filtros button,.boton-hoy{border:0;border-radius:999px;padding:9px 12px;font-weight:bold;cursor:pointer;background:#eef2f7;color:#374151}
+.calendario-filtros button.activo,.boton-hoy{background:#1f6b3a;color:white}
+.proxima-apertura{padding:12px 14px;border-radius:10px;background:#eef6ff;border-left:5px solid #2563eb;color:#1e3a8a;margin-bottom:14px}
+.dia.oculto{opacity:.12}
+.dia .evento{display:block;font-size:9px;line-height:1.1;margin-top:3px;font-weight:bold}
+
+</style>
+</head>
+<body>
+<header><h1>⚽ COMUNIOLAVIANA</h1><p>Normas y calendario de cláusulas 2026/27</p></header>
+
+  <nav class="menu">
+    <a href="index.html">⚽ Cláusulas</a>
+    <a href="normas.html">📜 Normas</a>
+    <a class="activo" href="clausulas-reglamento.html">📅 Reglamento cláusulas</a>
+    <a href="copa.html">🏆 Copa</a>
+    <a href="palmares.html">👑 Palmarés</a>
+  </nav>
+
+<main>
+
+<section class="card">
+  <h2>⏰ Horario y validación</h2>
+  <div class="contenido">
+    <p id="regHorario">Cargando horario oficial…</p>
+    <p>En caso de disputa sobre la hora de ejecución, será obligatorio presentar una captura que muestre la hora exacta de entrada. Sin esa prueba, la operación podrá anularse.</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📅 Calendario general 2026/27</h2>
+  <div class="contenido">
+    <table>
+      <thead><tr><th>Periodo</th><th>Días habilitados</th><th>Estado</th></tr></thead>
+      <tbody id="regResumen"><tr><td colspan="3">Cargando calendario oficial…</td></tr></tbody>
+    </table>
+    <div class="aviso">LaLiga 2026/27 comienza el fin de semana del 14–16 de agosto; la final de Copa del Rey será el 24 de abril y la Supercopa se jugará del 2 al 7 de febrero.</div>
+  </div>
+</section>
+
+
+
+<section class="card">
+  <h2>🗓️ Calendario interactivo de cláusulas 2026/27</h2>
+  <div class="contenido">
+    <div id="estadoHoy" class="estado-hoy"></div>
+    <div id="proximaApertura" class="proxima-apertura"></div>
+
+    <div class="leyenda-calendario">
+      <span><i class="cuadro-color" style="background:#dcfce7"></i> Abiertas</span>
+      <span><i class="cuadro-color" style="background:#fef3c7"></i> Periodo especial</span>
+      <span><i class="cuadro-color" style="background:#fee2e2"></i> Cerradas</span>
+      <span><i class="cuadro-color" style="background:white;border:2px solid #2563eb"></i> Hoy</span>
+    </div>
+
+    <div class="calendario-toolbar">
+      <div class="calendario-filtros">
+        <button type="button" data-filtro="todos" class="activo">Todos</button>
+        <button type="button" data-filtro="abierto">Solo abiertos</button>
+        <button type="button" data-filtro="especial">Solo especiales</button>
+        <button type="button" data-filtro="cerrado">Solo cerrados</button>
+      </div>
+      <button id="irHoy" class="boton-hoy" type="button">Ir a hoy</button>
+    </div>
+
+    <div id="calendarioMeses" class="calendario-meses"></div>
+
+    <div id="detalleDia" class="detalle-dia">
+      Pulsa sobre cualquier día para ver el motivo.
+    </div>
+
+    <div id="regNavidadAviso" class="aviso">Cargando excepciones de Navidad…</div>
+  </div>
+</section>
+
+<details open>
+  <summary>🌍 Parones y periodos especiales</summary>
+  <div class="contenido">
+    <p>Cuando no haya jornada de Liga por parón FIFA, final de Copa u otra incidencia comunicada por la organización, las cláusulas se habilitarán durante <strong>jueves, viernes, sábado y domingo</strong> de esa semana.</p>
+  </div>
+</details>
+
+<details>
+  <summary>🎄 Navidad</summary>
+  <div class="contenido">
+    <p>Durante el parón navideño, las cláusulas permanecerán abiertas desde el comienzo de la última jornada antes del parón hasta el inicio de la primera jornada posterior.</p>
+    <div id="regNavidadExcepciones" class="sancion"><strong>Excepciones:</strong> cargando calendario oficial…</div>
+  </div>
+</details>
+
+<details>
+  <summary>🔒 Restricciones desde cuartos de Copa</summary>
+  <div class="contenido">
+    <p>A partir del inicio de los cuartos de final de la Copa, solo podrán ejecutar cláusulas:</p>
+    <ul>
+      <li>Los equipos que continúen vivos en la Copa.</li>
+      <li>Los equipos eliminados que estén a <strong>150 puntos o menos del tercer clasificado</strong>.</li>
+    </ul>
+    <p>No podrán ejecutarlas los equipos eliminados de Copa que estén a más de 150 puntos del tercer puesto.</p>
+    <div class="aviso">La finalidad es impedir que equipos sin objetivos deportivos interfieran en la lucha por Liga o Copa.</div>
+  </div>
+</details>
+
+</main>
+
+
+<script src="calendario-engine.js"></script>
+<script>
+const meses=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const dias=["L","M","X","J","V","S","D"];
+let motorCalendario=null;
+const clave=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+function fmt(d){
+  return d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+}
+function crearMes(anio,m){
+  const box=document.createElement("section");
+  box.className="mes";
+  box.dataset.mes=`${anio}-${String(m+1).padStart(2,"0")}`;
+  box.innerHTML=`<h3>${meses[m]} ${anio}</h3><div class="semana">${dias.map(x=>`<div>${x}</div>`).join("")}</div>`;
+  const grid=document.createElement("div"); grid.className="dias";
+  const first=new Date(anio,m,1),off=(first.getDay()+6)%7,total=new Date(anio,m+1,0).getDate();
+
+  for(let i=0;i<off;i++){const v=document.createElement("div");v.className="dia vacio";grid.appendChild(v);}
+  const hoy=motorCalendario.ahoraMadrid().fecha;
+
+  for(let n=1;n<=total;n++){
+    const d=new Date(anio,m,n),iso=clave(d),info=motorCalendario.estado(iso);
+    const b=document.createElement("button");
+    b.type="button"; b.className=`dia ${info.estado}`; b.dataset.estado=info.estado;
+    b.innerHTML=`<span>${n}</span><span class="evento">${info.etiqueta}</span>`;
+    if(iso===hoy)b.classList.add("hoy");
+    b.onclick=()=>{
+      const horario=(info.estado==="abierto"||info.estado==="especial")
+        ? `<br><strong>Horario:</strong> ${motorCalendario.config.horario.inicio}–${motorCalendario.config.horario.fin} h.`:"";
+      document.getElementById("detalleDia").innerHTML=`<strong>${fmt(d)}</strong><br>${info.motivo}${horario}`;
+    };
+    grid.appendChild(b);
+  }
+  box.appendChild(grid); return box;
+}
+function construirCalendario(){
+  const cal=document.getElementById("calendarioMeses");cal.innerHTML="";
+  motorCalendario.meses().forEach(({anio,mes})=>cal.appendChild(crearMes(anio,mes)));
+}
+function aplicarFiltro(filtro){
+  document.querySelectorAll(".dia[data-estado]").forEach(dia=>{
+    dia.classList.toggle("oculto",filtro!=="todos"&&dia.dataset.estado!==filtro);
+  });
+}
+function actualizarEstadoHoy(){
+  const info=motorCalendario.estadoHoy();
+  const caja=document.getElementById("estadoHoy"),proxima=document.getElementById("proximaApertura");
+  caja.className=`estado-hoy ${info.estado}`;
+  const titulo=info.estado==="abierto"?"🟢 HOY ABIERTAS":info.estado==="especial"?"🟡 HOY PERIODO ESPECIAL":"🔴 HOY CERRADAS";
+  caja.innerHTML=`${titulo}<br><small>${info.motivo}</small>`;
+
+  if(info.estado==="cerrado"){
+    const siguiente=motorCalendario.proximaApertura(info.fecha);
+    if(siguiente){
+      const d=ComunioCalendario.parseISO(siguiente.fecha);
+      proxima.innerHTML=`<strong>Próxima apertura:</strong> ${fmt(d)}.<br>${siguiente.motivo}`;
+    }else proxima.textContent="No quedan más ventanas esta temporada.";
+  }else{
+    proxima.textContent=`El mercado está disponible hoy de ${motorCalendario.config.horario.inicio} a ${motorCalendario.config.horario.fin}.`;
+  }
+}
+function renderResumenReglamento(){
+  const cfg=motorCalendario.config;
+  const horario=document.getElementById("regHorario");
+  if(horario)horario.innerHTML=`El horario oficial para ejecutar cláusulas será de <strong>${cfg.horario.inicio} a ${cfg.horario.fin} horas</strong>.`;
+
+  const tbody=document.getElementById("regResumen");
+  if(tbody){
+    const rows=[
+      ["Temporada ordinaria","Sábados y domingos","Abiertas"],
+      ...cfg.periodos.map(p=>[`${p.inicio} – ${p.fin}`,p.motivo,p.estado==="cerrado"?"Cerradas":"Periodo especial"]),
+      ...cfg.fechas.map(f=>[f.fecha,f.motivo,f.estado==="cerrado"?"Cerradas":"Abiertas"]),
+      [`Desde el día siguiente a ${cfg.vigencia.fin}`,cfg.fuera_vigencia?.despues||"Fuera de temporada","Cerradas"]
+    ];
+    tbody.innerHTML=rows.map(([a,b,c])=>{
+      const clase=c==="Cerradas"?"rojo":c==="Abiertas"?"verde":"amarillo";
+      return `<tr><td>${a}</td><td>${b}</td><td><span class="tag ${clase}">${c}</span></td></tr>`;
+    }).join("");
+  }
+
+  const navPeriod=cfg.periodos.find(p=>p.titulo==="Navidad" || (p.motivo||"").toLowerCase().includes("navidad"));
+  const navClosures=cfg.fechas.filter(f=>f.estado==="cerrado" && (f.fecha.startsWith("2026-12") || f.fecha.startsWith("2027-01")));
+  const aviso=document.getElementById("regNavidadAviso");
+  if(aviso){
+    aviso.innerHTML=navPeriod
+      ? `Navidad: periodo especial <strong>${navPeriod.inicio} – ${navPeriod.fin}</strong>. Las fechas concretas configuradas como cerradas tienen prioridad.`
+      : "No hay periodo especial de Navidad configurado.";
+  }
+  const exc=document.getElementById("regNavidadExcepciones");
+  if(exc){
+    exc.innerHTML=`<strong>Excepciones cerradas:</strong> ${navClosures.map(x=>`${x.fecha} (${x.motivo})`).join(" · ") || "ninguna"}.`;
+  }
+}
+
+async function iniciar(){
+  try{
+    motorCalendario=await ComunioCalendario.cargar("calendario-clausulas.json");
+    renderResumenReglamento();construirCalendario();actualizarEstadoHoy();
+  }catch(e){
+    document.getElementById("estadoHoy").className="estado-hoy cerrado";
+    document.getElementById("estadoHoy").textContent="⚠️ No se pudo cargar el calendario oficial.";
+    document.getElementById("proximaApertura").textContent="Por seguridad, revisa calendario-clausulas.json.";
+    console.error(e);
+  }
+}
+document.querySelectorAll("[data-filtro]").forEach(boton=>{
+  boton.addEventListener("click",()=>{
+    document.querySelectorAll("[data-filtro]").forEach(b=>b.classList.remove("activo"));
+    boton.classList.add("activo");aplicarFiltro(boton.dataset.filtro);
+  });
+});
+document.getElementById("irHoy").addEventListener("click",()=>{
+  if(!motorCalendario)return;
+  const mes=motorCalendario.ahoraMadrid().fecha.slice(0,7);
+  const objetivo=document.querySelector(`[data-mes="${mes}"]`);
+  if(objetivo)objetivo.scrollIntoView({behavior:"smooth",block:"start"});
+});
+iniciar();
+</script>
+
+
+</body>
+</html>

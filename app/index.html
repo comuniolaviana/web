@@ -23,6 +23,7 @@
     <button data-view="clauses" class="active">⚡ <span>Cláusulas</span></button>
     <button data-view="news">📰 <span>Noticias</span></button>
     <button data-view="badteam">💀 <span>Equipo Malo</span></button>
+    <button data-view="rules">📜 <span>Normas</span></button>
   </nav>
 
   <div id="demoBanner" class="demo-banner hidden">
@@ -205,6 +206,247 @@
       </div>
       <div id="historyList" class="history-list"></div>
     </section>
+    <section id="rulesView" class="view hidden">
+      <div class="rules-tabs" role="tablist" aria-label="Apartados de normas">
+        <button class="rules-tab active" data-rules-tab="general" type="button">📜 Generales</button>
+        <button class="rules-tab" data-rules-tab="clauses" type="button">⚡ Cláusulas</button>
+        <button class="rules-tab" data-rules-tab="badteam" type="button">💀 Equipo Malo</button>
+      </div>
+
+      <div id="rulesGeneral" class="rules-panel">
+        <div class="rules-intro">
+          <span class="eyebrow">REGLAMENTO 2026/27</span>
+          <h2>Normas generales</h2>
+          <p>Consulta rápida del reglamento de la comunidad. Pulsa cada apartado para desplegarlo.</p>
+        </div>
+
+        <details class="rule-card" open>
+          <summary>1. Inicio de temporada</summary>
+          <div class="rule-body">
+            <p><b>Fecha de inicio:</b> 20 de julio de 2026.</p>
+            <p><b>Reparto inicial:</b> se realizará unos días antes según el valor de mercado.</p>
+            <p>Desde el inicio estarán permitidas las ventas, compras, cláusulas de rescisión y traspasos entre usuarios.</p>
+            <p><b>Comunicación:</b> todos los movimientos, ventas y negociaciones deberán comunicarse y realizarse a través del grupo oficial de la comunidad.</p>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>2. Equipo Malo</summary>
+          <div class="rule-body">
+            <p>La normativa, funcionamiento, multiplicadores, sanciones y cláusulas especiales del Equipo Malo están en su apartado específico dentro de esta misma sección.</p>
+            <button class="inline-rule-link" type="button" data-open-rule="badteam">💀 Ver normas del Equipo Malo</button>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>3. Premios de Liga</summary>
+          <div class="rule-body">
+            <div class="rules-table">
+              <div><span>🥇 1.º</span><b>90 €</b></div>
+              <div><span>🥈 2.º</span><b>55 €</b></div>
+              <div><span>🥉 3.º</span><b>35 €</b></div>
+              <div><span>Total</span><b>180 €</b></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>4. Cesiones, intercambios y recompra</summary>
+          <div class="rule-body">
+            <ul>
+              <li>No se permiten cesiones de jugadores entre equipos.</li>
+              <li>Los intercambios deberán tener lógica y valores similares.</li>
+              <li>No se podrá vender un jugador a otro equipo y recuperarlo antes de <b>2 meses</b>, salvo mediante cláusula de rescisión.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>5. Transacciones sospechosas y fraude</summary>
+          <div class="rule-body">
+            <p>Cualquier operación protestada por la mayoría de la comunidad será investigada.</p>
+            <div class="rule-alert danger">Si se detecta fraude, la operación será anulada y se impondrá una sanción a los implicados.</div>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>6. Compras erróneas y cancelaciones</summary>
+          <div class="rule-body">
+            <p>Si un usuario queda en negativo por error al comprar un jugador, la operación no se anulará.</p>
+            <p>Solo podrá cancelarse un error manifiesto en una puja, por ejemplo ofrecer 10 millones en lugar de 1 millón, especialmente durante la pretemporada.</p>
+            <p>Durante la temporada no se admitirán excusas que afecten a una jornada o generen una ventaja.</p>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>7. Juego limpio</summary>
+          <div class="rule-body">
+            <p>Aunque haya usuarios sin opciones deportivas, todas las actuaciones deberán ser legales y no beneficiar indebidamente a otros equipos.</p>
+            <div class="rule-alert danger">Está prohibido pagar dinero del juego a cambio de ventajas, cambios o alteraciones de alineaciones. Sanción: <b>50 puntos y 5.000.000 €</b>.</div>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>8. Restricciones en las últimas jornadas</summary>
+          <div class="rule-body">
+            <p>En las últimas 5 jornadas solo podrán realizarse compras o ventas:</p>
+            <ul>
+              <li>Entre equipos que se jueguen algo entre sí.</li>
+              <li>Entre equipos que no se jueguen nada.</li>
+            </ul>
+            <p>Se considera que un equipo se juega algo si está a menos de <b>50 puntos</b> de la zona de premios en las jornadas 34 a 36, y a menos de <b>40 puntos</b> en la jornada 37.</p>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>9. Precios mínimos de compraventa</summary>
+          <div class="rule-body">
+            <div class="rules-table">
+              <div><span>Menos de 500.000 €</span><b>Valor + 200.000 €</b></div>
+              <div><span>500.000 – 1.000.000 €</span><b>Valor + 300.000 €</b></div>
+              <div><span>1.000.001 – 2.000.000 €</span><b>Valor + 400.000 €</b></div>
+              <div><span>Más de 2.000.000 €</span><b>Valor + 500.000 €</b></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>10. Jugadores en plantilla</summary>
+          <div class="rule-body">
+            <p>Antes del comienzo de cada jornada, cada equipo deberá tener exactamente <b>16 jugadores</b>.</p>
+            <div class="rule-alert danger">Por cada jugador extra se sancionará con <b>1.000.000 €</b>.</div>
+            <p>Al final de temporada, si un equipo está eliminado de Copa y sin opciones en Liga, no se controlará este límite.</p>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>11. Reparto de dinero tras cada jornada</summary>
+          <div class="rule-body">
+            <p>Durante la primera vuelta, los tres últimos equipos reciben:</p>
+            <div class="rules-table">
+              <div><span>Último</span><b>1.500.000 €</b></div>
+              <div><span>Penúltimo</span><b>1.000.000 €</b></div>
+              <div><span>Antepenúltimo</span><b>500.000 €</b></div>
+            </div>
+            <p>Al finalizar la primera vuelta se entregará además una ayuda equivalente a <b>19 jornadas</b> de estas cantidades.</p>
+          </div>
+        </details>
+      </div>
+
+      <div id="rulesClauses" class="rules-panel hidden">
+        <div class="rules-intro">
+          <span class="eyebrow">CLÁUSULAS 2026/27</span>
+          <h2>Reglamento y calendario</h2>
+          <p>Horario, días habilitados, periodos especiales y calendario interactivo.</p>
+        </div>
+
+        <div id="calendarTodayStatus" class="calendar-status">
+          <strong>Comprobando hoy…</strong>
+          <span></span>
+        </div>
+
+        <div class="quick-rule-grid">
+          <article><span>⏰ Horario</span><b id="appRuleHours">—</b></article>
+          <article><span>📆 Ordinario</span><b id="appRuleOrdinary">—</b></article>
+        </div>
+
+        <details class="rule-card" open>
+          <summary>📅 Reglas y excepciones del calendario</summary>
+          <div class="rule-body">
+            <div id="calendarRulesSummary" class="rules-table compact">
+              <div><span>Cargando calendario oficial…</span><b>—</b></div>
+            </div>
+          </div>
+        </details>
+
+        <section class="calendar-card">
+          <div class="calendar-head">
+            <button id="calendarPrev" class="calendar-arrow" type="button" aria-label="Mes anterior">‹</button>
+            <div>
+              <span class="eyebrow">CALENDARIO INTERACTIVO</span>
+              <h3 id="calendarMonthLabel">—</h3>
+            </div>
+            <button id="calendarNext" class="calendar-arrow" type="button" aria-label="Mes siguiente">›</button>
+          </div>
+
+          <div class="calendar-legend">
+            <span><i class="legend-dot open"></i>Abierto</span>
+            <span><i class="legend-dot special"></i>Especial</span>
+            <span><i class="legend-dot closed"></i>Cerrado</span>
+          </div>
+
+          <div class="calendar-week">
+            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+
+          <div id="calendarDetail" class="calendar-detail">Pulsa cualquier día para ver el motivo.</div>
+
+          <button id="calendarTodayBtn" class="secondary full" type="button">Ir a hoy</button>
+        </section>
+
+        <details class="rule-card">
+          <summary>🌍 Periodos especiales</summary>
+          <div class="rule-body">
+            <ul id="appRuleSpecialPeriods"><li>Cargando calendario oficial…</li></ul>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>🔒 Restricción desde cuartos de Copa</summary>
+          <div class="rule-body">
+            <p>Solo podrán ejecutar cláusulas los equipos vivos en Copa y los eliminados que estén a <b>150 puntos o menos del tercer clasificado</b>.</p>
+          </div>
+        </details>
+      </div>
+
+      <div id="rulesBadteam" class="rules-panel hidden">
+        <div class="rules-intro">
+          <span class="eyebrow">EQUIPO MALO</span>
+          <h2>Normas especiales</h2>
+          <p>Funcionamiento, horario, multiplicadores y sanciones.</p>
+        </div>
+
+        <div class="quick-rule-grid">
+          <article><span>⏰ Horario</span><b>12:00–00:00</b></article>
+          <article><span>🛒 Compras</span><b>Sin límite diario</b></article>
+        </div>
+
+        <div class="rule-alert danger">
+          Una vez comunicada la compra, debe ejecutarse en Comunio ese mismo día antes de las 00:00 y no puede cancelarse.
+          <br><b>Si no se ejecuta a tiempo: 1.000.000 € de sanción y una tarjeta amarilla.</b>
+        </div>
+
+        <details class="rule-card" open>
+          <summary>💶 Multiplicadores especiales</summary>
+          <div class="rule-body">
+            <div class="rules-table">
+              <div><span>160.000 – 500.000 €</span><b>× 3,00</b></div>
+              <div><span>501.000 – 999.999 €</span><b>× 2,00</b></div>
+              <div><span>1.000.000 – 3.999.999 €</span><b>× 1,50</b></div>
+              <div><span>4.000.000 – 7.999.999 €</span><b>× 1,30</b></div>
+              <div><span>8.000.000 – 11.999.999 €</span><b>× 1,25</b></div>
+              <div><span>12.000.000 € o más</span><b>× 1,20</b></div>
+            </div>
+            <div class="rule-alert warning">Si los datos no están actualizados hoy, hay que comprobar el valor actual en Comunio y aplicar manualmente el multiplicador correspondiente.</div>
+          </div>
+        </details>
+
+        <details class="rule-card">
+          <summary>⚙️ Funciones adicionales</summary>
+          <div class="rule-body">
+            <ul>
+              <li>🛒 El Equipo Malo comprará jugadores del mercado Computer que no quiera nadie y cuyo valor sea inferior a <b>1.000.000 €</b>, para acotar el mercado.</li>
+              <li>👥 Durante la liga tendrá plantilla activa. Cualquier usuario podrá fichar a uno de sus jugadores pagando la cláusula correspondiente.</li>
+              <li>💶 Esta cuenta podrá comprar jugadores a otros usuarios por el valor de mercado existente en el momento de la transferencia.</li>
+              <li>📢 Cada usuario deberá solicitar la operación en el grupo <b>CLÁUSULAS</b> y realizar personalmente la gestión.</li>
+            </ul>
+            <div class="rule-alert warning"><b>Recomendación para las ventas:</b> hacer una captura desde <b>Tus ofertas</b>, donde aparecen el valor de mercado y el precio de venta. También seguirá siendo válido comunicar “Vendo a esta jugadora al Equipo Malo”.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
   </main>
 </div>
 
@@ -224,6 +466,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+<script src="../calendario-engine.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

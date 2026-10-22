@@ -26,8 +26,7 @@ async function boot(){
   const {data:profile}=await supa.from("profiles").select("manager_name,role").eq("id",session.user.id).single();
   if(!profile||profile.role!=="admin"){ $("adminLogin").innerHTML="<h2>Sin permiso</h2><p class='muted'>Tu usuario no es administrador.</p>";return; }
   $("adminLogin").classList.add("hidden");$("adminMain").classList.remove("hidden");
-  $("dayInput").value=new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
-  $("syncBtn").addEventListener("click",syncPlayers);$("saveDayBtn").addEventListener("click",saveDay);loadDays();
+  $("syncBtn").addEventListener("click",syncPlayers);$("syncCalendarBtn").addEventListener("click",syncCalendar);loadDays();
 }
 async function syncPlayers(){
   $("syncBtn").disabled=true;$("syncMsg").textContent="Sincronizando jugadores y Equipo Malo…";
@@ -77,11 +76,21 @@ async function syncPlayers(){
   }catch(e){$("syncMsg").textContent="Error: "+e.message;}
   finally{$("syncBtn").disabled=false;}
 }
-async function saveDay(){
-  const row={day:$("dayInput").value,opens_at:$("openInput").value+":00",closes_at:$("closeInput").value+":00",enabled:$("enabledInput").checked};
-  if(!row.day){$("dayMsg").textContent="Selecciona una fecha.";return;}
-  const {error}=await supa.from("clause_days").upsert(row,{onConflict:"day"});
-  $("dayMsg").textContent=error?"Error: "+error.message:"✓ Día guardado.";if(!error)loadDays();
+async function syncCalendar(){
+  $("syncCalendarBtn").disabled=true;$("calendarMsg").textContent="Cargando calendario oficial…";
+  try{
+    const motor=await ComunioCalendario.cargar("../calendario-clausulas.json");
+    const days=motor.fechasHabilitadas().map(x=>({
+      day:x.fecha,opens_at:x.opens_at,closes_at:x.closes_at,enabled:x.enabled
+    }));
+    for(let i=0;i<days.length;i+=100){
+      const {error}=await supa.from("clause_days").upsert(days.slice(i,i+100),{onConflict:"day"});
+      if(error)throw error;
+    }
+    $("calendarMsg").textContent=`✓ Calendario ${motor.config.version} sincronizado: ${days.length} días de temporada.`;
+    loadDays();
+  }catch(e){$("calendarMsg").textContent="Error: "+e.message;}
+  finally{$("syncCalendarBtn").disabled=false;}
 }
 async function loadDays(){
   const today=new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());

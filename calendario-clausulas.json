@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "version": "2026-10-22-v1",
+  "temporada": "2026/27",
+  "timezone": "Europe/Madrid",
+  "horario": {
+    "inicio": "15:00",
+    "fin": "21:00"
+  },
+  "vigencia": {
+    "inicio": "2026-07-20",
+    "fin": "2027-05-25"
+  },
+  "regla_ordinaria": {
+    "dias_semana": [
+      6,
+      0
+    ],
+    "motivo_abierto": "Temporada ordinaria: cláusulas abiertas los sábados y domingos.",
+    "motivo_cerrado": "Temporada ordinaria: solo se permiten sábados y domingos."
+  },
+  "periodos": [
+    {
+      "inicio": "2026-07-20",
+      "fin": "2026-08-11",
+      "estado": "especial",
+      "etiqueta": "PRE",
+      "titulo": "Pretemporada",
+      "motivo": "Pretemporada: cláusulas abiertas todos los días."
+    },
+    {
+      "inicio": "2026-09-21",
+      "fin": "2026-09-23",
+      "estado": "especial",
+      "etiqueta": "ESP",
+      "titulo": "Periodo especial",
+      "motivo": "Periodo especial: cláusulas abiertas."
+    },
+    {
+      "inicio": "2026-09-24",
+      "fin": "2026-09-27",
+      "estado": "especial",
+      "etiqueta": "FIFA",
+      "titulo": "Parón FIFA",
+      "motivo": "Parón FIFA: cláusulas abiertas de jueves a domingo."
+    },
+    {
+      "inicio": "2026-09-28",
+      "fin": "2026-09-30",
+      "estado": "especial",
+      "etiqueta": "ESP",
+      "titulo": "Periodo especial",
+      "motivo": "Periodo especial: cláusulas abiertas."
+    },
+    {
+      "inicio": "2026-10-01",
+      "fin": "2026-10-04",
+      "estado": "especial",
+      "etiqueta": "FIFA",
+      "titulo": "Parón FIFA",
+      "motivo": "Parón FIFA: cláusulas abiertas de jueves a domingo."
+    },
+    {
+      "inicio": "2026-11-12",
+      "fin": "2026-11-15",
+      "estado": "especial",
+      "etiqueta": "FIFA",
+      "titulo": "Parón FIFA",
+      "motivo": "Parón FIFA: cláusulas abiertas de jueves a domingo."
+    },
+    {
+      "inicio": "2026-12-19",
+      "fin": "2027-01-03",
+      "estado": "especial",
+      "etiqueta": "NAV",
+      "titulo": "Navidad",
+      "motivo": "Periodo especial de Navidad."
+    },
+    {
+      "inicio": "2027-03-25",
+      "fin": "2027-03-28",
+      "estado": "especial",
+      "etiqueta": "FIFA",
+      "titulo": "Parón FIFA",
+      "motivo": "Parón FIFA: cláusulas abiertas de jueves a domingo."
+    },
+    {
+      "inicio": "2027-04-22",
+      "fin": "2027-04-25",
+      "estado": "especial",
+      "etiqueta": "COPA",
+      "titulo": "Final de Copa",
+      "motivo": "Fin de semana sin Liga por la final de Copa."
+    },
+    {
+      "inicio": "2027-05-24",
+      "fin": "2027-05-25",
+      "estado": "especial",
+      "etiqueta": "FINAL",
+      "titulo": "Última ventana",
+      "motivo": "Última ventana extraordinaria tras la jornada 37."
+    }
+  ],
+  "fechas": [
+    {
+      "fecha": "2026-08-12",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado antes del inicio de Liga."
+    },
+    {
+      "fecha": "2026-08-13",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado antes del inicio de Liga."
+    },
+    {
+      "fecha": "2026-08-15",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado excepcionalmente."
+    },
+    {
+      "fecha": "2026-08-17",
+      "estado": "abierto",
+      "etiqueta": "ABIERTO",
+      "motivo": "Apertura extraordinaria de cláusulas."
+    },
+    {
+      "fecha": "2026-12-18",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado. El periodo especial de Navidad comienza el 19 de diciembre."
+    },
+    {
+      "fecha": "2026-12-24",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado por Nochebuena."
+    },
+    {
+      "fecha": "2026-12-25",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado por Navidad."
+    },
+    {
+      "fecha": "2026-12-31",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado por Nochevieja."
+    },
+    {
+      "fecha": "2027-01-01",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Cerrado por Año Nuevo."
+    },
+    {
+      "fecha": "2027-05-22",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Jornada 37: cláusulas cerradas."
+    },
+    {
+      "fecha": "2027-05-23",
+      "estado": "cerrado",
+      "etiqueta": "CERRADO",
+      "motivo": "Jornada 37: cláusulas cerradas."
+    }
+  ],
+  "fuera_vigencia": {
+    "antes": "Fuera del calendario de cláusulas 2026/27.",
+    "despues": "Mercado cerrado hasta la siguiente temporada."
+  }
+}

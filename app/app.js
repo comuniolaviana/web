@@ -6,6 +6,112 @@ const $=id=>document.getElementById(id);
 const POS={porteros:"portero",defensas:"defensa",medios:"medio",delanteros:"delantero"};
 const POS_LABEL={portero:"🥅 Porteros",defensa:"🛡️ Defensas",medio:"⚙️ Medios",delantero:"🎯 Delanteros"};
 
+let motorCalendario=null;
+let calendarCursor=null;
+
+function isoFromDate(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function madridDateObject(){
+  const now=motorCalendario
+    ? motorCalendario.ahoraMadrid()
+    : {fecha:localDate()};
+  const [y,m,d]=now.fecha.split("-").map(Number);
+  return new Date(y,m-1,d);
+}
+function clauseCalendarState(date){
+  if(!motorCalendario)return{state:"closed",reason:"Calendario oficial no cargado.",label:"CERRADO"};
+  const info=motorCalendario.estado(isoFromDate(date));
+  return{state:info.estado,reason:info.motivo,label:info.etiqueta};
+}
+function renderCalendarToday(){
+  const box=$("calendarTodayStatus");
+  if(!motorCalendario){
+    box.className="calendar-status closed";
+    box.querySelector("strong").textContent="⚠️ CALENDARIO NO DISPONIBLE";
+    box.querySelector("span").textContent="Por seguridad no se deben ejecutar cláusulas.";
+    return;
+  }
+  const info=motorCalendario.estadoHoy();
+  const label=info.estado==="especial"?"🟡 PERIODO ESPECIAL: ABIERTAS HOY":info.estado==="abierto"?"🟢 CLÁUSULAS ABIERTAS HOY":"🔴 CLÁUSULAS CERRADAS HOY";
+  box.className=`calendar-status ${info.estado}`;
+  box.querySelector("strong").textContent=label;
+  box.querySelector("span").textContent=(info.estado==="abierto"||info.estado==="especial")
+    ? `${info.motivo} Horario: ${motorCalendario.config.horario.inicio}–${motorCalendario.config.horario.fin}.`
+    : info.motivo;
+}
+function renderCalendarRulesSummary(){
+  const el=$("calendarRulesSummary");
+  if(!el||!motorCalendario)return;
+  const cfg=motorCalendario.config;
+  const rows=[
+    ["Horario oficial",`${cfg.horario.inicio}–${cfg.horario.fin}`],
+    ["Regla ordinaria",(cfg.regla_ordinaria?.motivo_abierto||"").replace(/^Temporada ordinaria:\s*/i,"")],
+    ...cfg.periodos.map(p=>[`${p.inicio} – ${p.fin}`,p.titulo||p.motivo]),
+    ...cfg.fechas.map(f=>[f.fecha,`${f.estado==="cerrado"?"Cerrado":"Abierto"} · ${f.motivo}`])
+  ];
+  el.innerHTML=rows.map(([a,b])=>`<div><span>${escapeHtml(a)}</span><b>${escapeHtml(b)}</b></div>`).join("");
+
+  const hours=$("appRuleHours");
+  if(hours)hours.textContent=`${cfg.horario.inicio}–${cfg.horario.fin}`;
+  const ordinary=$("appRuleOrdinary");
+  if(ordinary)ordinary.textContent=(cfg.regla_ordinaria?.motivo_abierto||"").replace(/^Temporada ordinaria:\s*/i,"");
+  const specials=$("appRuleSpecialPeriods");
+  if(specials){
+    specials.innerHTML=[
+      ...cfg.periodos.map(p=>`<li><strong>${escapeHtml(p.inicio)} – ${escapeHtml(p.fin)}:</strong> ${escapeHtml(p.motivo)}</li>`),
+      ...cfg.fechas.filter(f=>f.estado!=="cerrado").map(f=>`<li><strong>${escapeHtml(f.fecha)}:</strong> ${escapeHtml(f.motivo)}</li>`)
+    ].join("")||"<li>No hay periodos especiales configurados.</li>";
+  }
+}
+function setCalendarMonth(date){
+  if(!motorCalendario)return;
+  const meses=motorCalendario.meses();
+  const first=meses[0],last=meses[meses.length-1];
+  const min=new Date(first.anio,first.mes,1),max=new Date(last.anio,last.mes,1);
+  let d=new Date(date.getFullYear(),date.getMonth(),1);
+  if(d<min)d=min;if(d>max)d=max;
+  calendarCursor=d;renderCalendar();
+}
+function renderCalendar(){
+  if(!calendarCursor||!motorCalendario)return;
+  const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth();
+  const names=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  $("calendarMonthLabel").textContent=`${names[m]} ${y}`;
+  const grid=$("calendarGrid");grid.innerHTML="";
+  const first=new Date(y,m,1),offset=(first.getDay()+6)%7,total=new Date(y,m+1,0).getDate();
+  for(let i=0;i<offset;i++){const b=document.createElement("div");b.className="cal-blank";grid.appendChild(b);}
+  const todayIso=motorCalendario.ahoraMadrid().fecha;
+  for(let n=1;n<=total;n++){
+    const d=new Date(y,m,n),iso=isoFromDate(d),raw=motorCalendario.estado(iso);
+    const info={state:raw.estado,reason:raw.motivo};
+    const b=document.createElement("button");b.type="button";b.className=`cal-day ${info.state}`;
+    if(iso===todayIso)b.classList.add("today");
+    b.innerHTML=`<span>${n}</span><i class="cal-dot"></i>`;
+    b.addEventListener("click",()=>{
+      grid.querySelectorAll(".selected").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");
+      const f=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+      const status=info.state==="special"?"Periodo especial · ABIERTO":info.state==="open"?"ABIERTO":"CERRADO";
+      $("calendarDetail").innerHTML=`<strong>${f} · ${status}</strong>${escapeHtml(info.reason)}${info.state!=="closed"?`<br>Horario: ${motorCalendario.config.horario.inicio}–${motorCalendario.config.horario.fin}.`:""}`;
+    });
+    grid.appendChild(b);
+  }
+  const meses=motorCalendario.meses(),firstM=meses[0],lastM=meses[meses.length-1];
+  $("calendarPrev").disabled=(y===firstM.anio&&m===firstM.mes);
+  $("calendarNext").disabled=(y===lastM.anio&&m===lastM.mes);
+}
+function openRulesTab(name){
+  document.querySelectorAll(".rules-tab").forEach(b=>b.classList.toggle("active",b.dataset.rulesTab===name));
+  ["General","Clauses","Badteam"].forEach(k=>$("rules"+k).classList.add("hidden"));
+  const map={general:"rulesGeneral",clauses:"rulesClauses",badteam:"rulesBadteam"};
+  $(map[name]||"rulesGeneral").classList.remove("hidden");
+  if(name==="clauses"){
+    renderCalendarToday();renderCalendarRulesSummary();
+    if(!calendarCursor)setCalendarMonth(madridDateObject());
+  }
+}
+
+
 let supa=null, session=null, profile=null;
 let players=[], badPlayers=[];
 let clauseExecutions=[], badPurchases=[];
@@ -49,6 +155,8 @@ function showToast(msg,bad=false){
 async function boot(){
   if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
   bindUI();
+  try{ motorCalendario=await ComunioCalendario.cargar("../calendario-clausulas.json"); }
+  catch(e){ console.error("Calendario oficial:",e); }
 
   if(isConfigured()){
     supa=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY);
@@ -98,6 +206,13 @@ function bindUI(){
   $("historyDate").addEventListener("change",()=>{
     historyPeriod="date";document.querySelectorAll("[data-period]").forEach(x=>x.classList.remove("active"));loadNews();
   });
+
+  document.querySelectorAll(".rules-tab").forEach(b=>b.addEventListener("click",()=>openRulesTab(b.dataset.rulesTab)));
+  document.querySelectorAll("[data-open-rule]").forEach(b=>b.addEventListener("click",()=>openRulesTab(b.dataset.openRule)));
+  $("calendarPrev").addEventListener("click",()=>setCalendarMonth(new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1)));
+  $("calendarNext").addEventListener("click",()=>setCalendarMonth(new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1)));
+  $("calendarTodayBtn").addEventListener("click",()=>setCalendarMonth(madridDateObject()));
+
 }
 function collapse(id){if(window.innerWidth<700)$(id).classList.add("collapsed");}
 
@@ -215,6 +330,22 @@ function fillFilters(){
 
 function clauseAvailability(){
   if(CFG.DEMO_MODE&&CFG.DEMO_FORCE_CLAUSES_OPEN)return{open:true,label:"Demo abierta",detail:"Prueba de cláusulas activada"};
+
+  // En demo, la app usa directamente el MISMO calendario oficial que la web.
+  if(CFG.DEMO_MODE || !isConfigured()){
+    if(!motorCalendario)return{open:false,label:"Calendario no disponible",detail:"Por seguridad las cláusulas quedan cerradas"};
+    const info=motorCalendario.estadoAhora();
+    if(info.estado==="cerrado")return{open:false,label:"Día cerrado",detail:info.motivo};
+    if(!info.abiertoAhora){
+      const t=info.hora,open=motorCalendario.config.horario.inicio,close=motorCalendario.config.horario.fin;
+      return t<open
+        ? {open:false,label:"Todavía cerrado",detail:`Abre a las ${open}`}
+        : {open:false,label:"Horario cerrado",detail:`Cerró a las ${close}`};
+    }
+    return{open:true,label:info.estado==="especial"?"Periodo especial abierto":"Cláusulas abiertas",detail:`Disponible hasta las ${motorCalendario.config.horario.fin}`};
+  }
+
+  // En modo real, Supabase recibe una copia generada por el mismo JSON desde admin.html.
   if(!schedule||!schedule.enabled)return{open:false,label:"Día cerrado",detail:"Hoy no es día de cláusulas"};
   const t=localTime(),open=String(schedule.opens_at||"15:00").slice(0,5),close=String(schedule.closes_at||"21:00").slice(0,5);
   if(t<open)return{open:false,label:"Todavía cerrado",detail:`Abre a las ${open}`};
@@ -457,11 +588,12 @@ function newsHtml(e){
 function showView(name){
   currentView=name;
   document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
-  const map={home:"homeView",clauses:"clausesView",news:"newsView",badteam:"badteamView"};
+  const map={home:"homeView",clauses:"clausesView",news:"newsView",badteam:"badteamView",rules:"rulesView"};
   $(map[name]||"clausesView").classList.remove("hidden");
   document.querySelectorAll(".main-nav [data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
-  $("pageTitle").textContent=name==="home"?"Inicio":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":"Cláusulas";
+  $("pageTitle").textContent=name==="home"?"Inicio":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="rules"?"Normas":"Cláusulas";
   if(name==="news")loadNews();
+  if(name==="rules")openRulesTab(document.querySelector(".rules-tab.active")?.dataset.rulesTab||"general");
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function formatDate(iso){const[y,m,d]=iso.split("-");return`${d}/${m}/${y}`;}

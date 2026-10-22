@@ -6,7 +6,7 @@ window.COMUNIO_CONFIG = {
   DEMO_MODE: true,
 
   // Permite probar botones a cualquier hora en demo.
-  DEMO_FORCE_CLAUSES_OPEN: true,
+  DEMO_FORCE_CLAUSES_OPEN: false,
   DEMO_FORCE_BADTEAM_OPEN: true,
 
   TIMEZONE: "Europe/Madrid",
