@@ -1,6 +1,7 @@
 window.COMUNIO_CONFIG = {
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
+  SUPABASE_URL: "https://oflgindcczjcddjoseut.supabase.co",
+  // Clave pública de Supabase. Es segura para el frontend con RLS activado.
+  SUPABASE_ANON_KEY: "sb_publishable_gun_Wvu4cIpDiLmAd5MIww_ruKI4IQG",
 
   // Dominio interno usado únicamente para convertir el nombre de usuario
   // en una identidad de Supabase. Los jugadores nunca necesitan saberlo.
@@ -12,10 +13,10 @@ window.COMUNIO_CONFIG = {
     "Jonatan","Jorge","Juanin","Laureano","Nazaré","Ordieres","PABLO","Ubaldo","Vizcaino"
   ],
 
-  // Producción: false. Ponlo en true solo para pruebas locales sin contraseña.
+  // Producción.
   DEMO_MODE: false,
 
-  // Permite probar botones a cualquier hora en demo.
+  // Solo tienen efecto en demo.
   DEMO_FORCE_CLAUSES_OPEN: false,
   DEMO_FORCE_BADTEAM_OPEN: true,
 
