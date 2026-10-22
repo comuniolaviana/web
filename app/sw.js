@@ -1,4 +1,4 @@
-const CACHE="comunio-laviana-app-v4";
+const CACHE="comunio-laviana-app-v5";
 const STATIC=["./","./index.html","./styles.css","./config.js","./app.js","./manifest.json","../calendario-engine.js","../calendario-clausulas.json"];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(STATIC))));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));

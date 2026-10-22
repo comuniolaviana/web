@@ -114,7 +114,8 @@ function openRulesTab(name){
 
 let supa=null, session=null, profile=null;
 let players=[], badPlayers=[];
-let clauseExecutions=[], badPurchases=[];
+let clauseExecutions=[], badPurchases=[], badSales=[];
+let dataSnapshotMs=0;
 let schedule=null, pendingAction=null, currentView="clauses", historyPeriod="today";
 
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
@@ -122,6 +123,89 @@ const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
 const escapeHtml=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const demoKey=k=>`comunio_laviana_demo_${k}`;
 const isConfigured=()=>!CFG.DEMO_MODE&&CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY;
+
+const sameManager=(a,b)=>norm(a)===norm(b);
+function sourceDateMs(value){
+  const s=String(value||"").trim();
+  if(!s)return 0;
+  const d=new Date(s.replace(" ","T"));
+  return Number.isFinite(d.getTime())?d.getTime():0;
+}
+function allDemoRecords(kind){
+  const out=[];
+  const prefix=demoKey(kind+"_");
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith(prefix)){
+      try{out.push(...JSON.parse(localStorage.getItem(k)||"[]"));}catch{}
+    }
+  }
+  return out;
+}
+function allDemoClauses(){return allDemoRecords("clauses");}
+function allDemoBadPurchases(){return allDemoRecords("badbuys");}
+function allDemoBadSales(){return allDemoRecords("badsales");}
+function eventTime(e){const t=new Date(e.executed_at||e._time||0).getTime();return Number.isFinite(t)?t:0;}
+
+function effectiveLeaguePlayers(){
+  if(isConfigured())return players.filter(p=>p.active!==false);
+
+  const map=new Map(players.filter(p=>p.active!==false).map(p=>[p.name,{...p}]));
+  const ops=[
+    ...allDemoClauses().map(e=>({...e,_kind:"clause"})),
+    ...allDemoBadSales().map(e=>({...e,_kind:"sale"})),
+    ...allDemoBadPurchases().map(e=>({...e,_kind:"buy"}))
+  ].filter(e=>eventTime(e)>dataSnapshotMs).sort((a,b)=>eventTime(a)-eventTime(b));
+
+  for(const e of ops){
+    let p=map.get(e.player_name);
+    if(!p){
+      p={
+        name:e.player_name,team:e.team||"",position:e.position||"",
+        points:Number(e.points)||0,market_value:Number(e.market_value)||0,
+        clause_value:Number(e.clause_value)||0,active:true,owner_name:""
+      };
+      map.set(e.player_name,p);
+    }
+    if(e.team)p.team=e.team;
+    if(e.position)p.position=e.position;
+    if(Number.isFinite(Number(e.points)))p.points=Number(e.points)||0;
+    if(Number(e.market_value)>0)p.market_value=Number(e.market_value);
+    if(Number(e.clause_value)>0)p.clause_value=Number(e.clause_value);
+
+    if(e._kind==="clause")p.owner_name=e.executor_name;
+    if(e._kind==="sale")p.owner_name="Equipo Malo";
+    if(e._kind==="buy")p.owner_name=e.buyer_name;
+  }
+  return [...map.values()];
+}
+
+function effectiveBadPlayers(){
+  if(isConfigured())return badPlayers.filter(p=>p.available!==false);
+
+  const map=new Map(badPlayers.map(p=>[p.name,{...p,available:p.available!==false}]));
+  const ops=[
+    ...allDemoBadSales().map(e=>({...e,_kind:"sale"})),
+    ...allDemoBadPurchases().map(e=>({...e,_kind:"buy"}))
+  ].sort((a,b)=>eventTime(a)-eventTime(b));
+
+  for(const e of ops){
+    if(e._kind==="sale"){
+      const value=Number(e.market_value)||0;
+      map.set(e.player_name,{
+        name:e.player_name,team:e.team||"",position:e.position||"",
+        points:Number(e.points)||0,market_value:value,
+        multiplier:specialMultiplier(value),
+        clause_value:Math.round(value*specialMultiplier(value)),
+        available:true
+      });
+    }else{
+      const p=map.get(e.player_name);
+      if(p)p.available=false;
+    }
+  }
+  return [...map.values()].filter(p=>p.available!==false);
+}
 
 function localDate(offset=0){
   const d=new Date(); d.setDate(d.getDate()+offset);
@@ -249,7 +333,7 @@ async function sendMagicLink(){
 async function enterApp(){
   $("loginView").classList.add("hidden");$("sessionBtn").textContent=profile.manager_name||"Salir";
   if(isConfigured())await loadRealData();else await loadDemoData();
-  fillFilters();updateStatusUI();renderPlayers();renderBadPlayers();renderActivityMini();showView(currentView);
+  fillFilters();updateStatusUI();renderMyTeam();renderPlayers();renderBadPlayers();renderActivityMini();showView(currentView);
 }
 
 async function firstJson(paths){
@@ -274,6 +358,7 @@ async function loadWebData(){
     }));
   });
   players=p;
+  dataSnapshotMs=sourceDateMs(d.actualizado);
 
   badPlayers=(b.jugadores||[]).map(x=>{
     const value=Number(x.valor)||0;
@@ -287,36 +372,24 @@ async function loadWebData(){
 }
 
 async function loadRealData(){
-  const [p,b,s,c,m]=await Promise.all([
+  const [p,b,s,c,m,v]=await Promise.all([
     supa.from("players").select("*").eq("active",true).order("clause_value",{ascending:false}),
     supa.from("team_malo_players").select("*").eq("available",true).order("clause_value",{ascending:false}),
     supa.from("clause_days").select("*").eq("day",localDate()).maybeSingle(),
     supa.from("clause_executions").select("*").eq("clause_day",localDate()).order("executed_at",{ascending:true}),
-    supa.from("team_malo_purchases").select("*").eq("purchase_day",localDate()).order("executed_at",{ascending:true})
+    supa.from("team_malo_purchases").select("*").eq("purchase_day",localDate()).order("executed_at",{ascending:true}),
+    supa.from("team_malo_sales").select("*").eq("sale_day",localDate()).order("executed_at",{ascending:true})
   ]);
-  if(p.error)throw p.error;if(b.error)throw b.error;
+  if(p.error)throw p.error;if(b.error)throw b.error;if(v.error)throw v.error;
   players=p.data||[];badPlayers=b.data||[];schedule=s.data||null;
-  clauseExecutions=c.data||[];badPurchases=m.data||[];
+  clauseExecutions=c.data||[];badPurchases=m.data||[];badSales=v.data||[];
 }
 async function loadDemoData(){
   if(!players.length||!badPlayers.length)await loadWebData();
   schedule={day:localDate(),enabled:true,opens_at:CFG.DEFAULT_OPEN+":00",closes_at:CFG.DEFAULT_CLOSE+":00"};
   clauseExecutions=JSON.parse(localStorage.getItem(demoKey("clauses_"+localDate()))||"[]");
   badPurchases=JSON.parse(localStorage.getItem(demoKey("badbuys_"+localDate()))||"[]");
-
-  // Una compra al Equipo Malo elimina el jugador del stock de la demo.
-  const bought=new Set(allDemoBadPurchases().map(x=>x.player_name));
-  badPlayers=badPlayers.map(x=>({...x,available:!bought.has(x.name)}));
-}
-function allDemoBadPurchases(){
-  const out=[];
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(k&&k.startsWith(demoKey("badbuys_"))){
-      try{out.push(...JSON.parse(localStorage.getItem(k)||"[]"));}catch{}
-    }
-  }
-  return out;
+  badSales=JSON.parse(localStorage.getItem(demoKey("badsales_"+localDate()))||"[]");
 }
 
 function fillDemoUsers(){
@@ -324,7 +397,7 @@ function fillDemoUsers(){
   $("demoUserSelect").innerHTML=owners.map(o=>`<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join("");
 }
 function fillFilters(){
-  const owners=[...new Set(players.map(p=>p.owner_name).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es"));
+  const owners=[...new Set(effectiveLeaguePlayers().map(p=>p.owner_name).filter(o=>o&&!sameManager(o,"Equipo Malo")))].sort((a,b)=>a.localeCompare(b,"es"));
   $("ownerFilter").innerHTML='<option value="">Todos</option>'+owners.map(o=>`<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join("");
 }
 
@@ -360,19 +433,29 @@ function badTeamAvailability(){
     ? {open:true,label:"Equipo Malo abierto",detail:"Disponible hasta las 00:00"}
     : {open:false,label:"Equipo Malo cerrado",detail:"Abre todos los días a las 12:00"};
 }
-const executorUsed=()=>clauseExecutions.some(e=>(e.executor_name||"")===profile?.manager_name);
-const blockedOwners=()=>new Set(clauseExecutions.map(e=>e.target_owner_name).filter(Boolean));
+const executorUsed=()=>clauseExecutions.some(e=>sameManager(e.executor_name,profile?.manager_name));
+const blockedOwners=()=>clauseExecutions.map(e=>e.target_owner_name).filter(Boolean);
 function availablePlayers(){
   const blocked=blockedOwners();
-  return players.filter(p=>p.active!==false&&p.owner_name!==profile?.manager_name&&!blocked.has(p.owner_name));
+  return effectiveLeaguePlayers().filter(p=>
+    p.active!==false &&
+    !sameManager(p.owner_name,profile?.manager_name) &&
+    !sameManager(p.owner_name,"Equipo Malo") &&
+    !blocked.some(o=>sameManager(o,p.owner_name))
+  );
 }
 function availableBadPlayers(){
-  return badPlayers.filter(p=>p.available!==false);
+  return effectiveBadPlayers();
+}
+function myTeamPlayers(){
+  if(!profile)return[];
+  return effectiveLeaguePlayers().filter(p=>p.active!==false&&sameManager(p.owner_name,profile.manager_name));
 }
 function todayNews(){
   return [
     ...clauseExecutions.map(e=>({...e,_type:"clause",_time:e.executed_at})),
-    ...badPurchases.map(e=>({...e,_type:"badteam",_time:e.executed_at}))
+    ...badPurchases.map(e=>({...e,_type:"badteam",_time:e.executed_at})),
+    ...badSales.map(e=>({...e,_type:"badsale",_time:e.executed_at}))
   ].sort((a,b)=>new Date(a._time)-new Date(b._time));
 }
 
@@ -392,6 +475,57 @@ function updateStatusUI(){
   const bad=badTeamAvailability(), bs=$("badTeamStateBanner");
   if(!bad.open){bs.textContent=`🔒 ${bad.detail}. Las compras se habilitan automáticamente a las 12:00.`;bs.classList.remove("hidden");}
   else bs.classList.add("hidden");
+
+  const ms=$("myTeamBadState");
+  if(ms){
+    if(!bad.open){ms.textContent=`🔒 ${bad.detail}. Las ventas al Equipo Malo se habilitan automáticamente a las 12:00.`;ms.classList.remove("hidden");}
+    else ms.classList.add("hidden");
+  }
+}
+
+
+function renderMyTeam(){
+  if(!profile)return;
+  const list=myTeamPlayers();
+  const bad=badTeamAvailability();
+  $("myTeamManager").textContent=String(profile.manager_name||"Mi equipo").toUpperCase();
+  $("myTeamCount").textContent=list.length;
+  $("myTeamValue").textContent=euros(list.reduce((s,p)=>s+(Number(p.market_value)||0),0));
+  $("myTeamPoints").textContent=list.reduce((s,p)=>s+(Number(p.points)||0),0);
+
+  const box=$("myTeamList");
+  if(!list.length){
+    box.innerHTML='<div class="empty">No aparecen jugadores en tu plantilla.</div>';
+    return;
+  }
+
+  const order=["portero","defensa","medio","delantero"];
+  box.innerHTML="";
+  order.forEach(pos=>{
+    const rows=list
+      .filter(p=>p.position===pos)
+      .sort((a,b)=>(Number(b.market_value)||0)-(Number(a.market_value)||0)||a.name.localeCompare(b.name,"es"));
+    if(!rows.length)return;
+
+    const section=document.createElement("section");
+    section.className="myteam-position";
+    section.innerHTML=`<div class="myteam-position-head"><h3>${POS_LABEL[pos]}</h3><span>${rows.length} · valor ↓</span></div>`;
+    rows.forEach(p=>{
+      const row=document.createElement("article");
+      row.className="myteam-row";
+      row.innerHTML=`
+        <div>
+          <div class="player-name">${escapeHtml(p.name)}</div>
+          <div class="player-meta">${escapeHtml(p.team||"Sin equipo")}</div>
+          <div class="player-extra">${Number(p.points)||0} pts</div>
+        </div>
+        <div class="myteam-value"><span>VALOR</span><b>${euros(p.market_value)}</b></div>
+        <button class="sell-bad-btn" ${!bad.open?"disabled":""}>${bad.open?"VENDER":"CERRADO"}<small>AL 💀</small></button>`;
+      row.querySelector(".sell-bad-btn").addEventListener("click",()=>openAction("badsale",p));
+      section.appendChild(row);
+    });
+    box.appendChild(section);
+  });
 }
 
 function renderPlayers(){
@@ -463,10 +597,14 @@ function openAction(type,p){
     if(!clauseAvailability().open){showToast("Las cláusulas están cerradas.",true);return;}
     $("modalIcon").textContent="⚡";$("modalTitle").textContent="Ejecutar cláusula";
     $("confirmText").innerHTML=`<strong>${escapeHtml(p.name)}</strong><br>${escapeHtml(p.owner_name)} · ${escapeHtml(p.team||"")}<br><br>Cláusula: <strong>${euros(p.clause_value)}</strong><br><small>Al confirmar, todos los jugadores de ${escapeHtml(p.owner_name)} desaparecerán del listado de hoy.</small>`;
-  }else{
+  }else if(type==="badteam"){
     if(!badTeamAvailability().open){showToast("Equipo Malo está cerrado. Abre a las 12:00.",true);return;}
     $("modalIcon").textContent="💀";$("modalTitle").textContent="Comprar al Equipo Malo";
     $("confirmText").innerHTML=`<strong>${escapeHtml(p.name)}</strong><br>${escapeHtml(p.team||"")}<br><br>Valor: ${euros(p.market_value)} · × ${Number(p.multiplier).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})}<br>Precio: <strong>${euros(p.clause_value)}</strong><br><small>Una vez confirmada la compra, el jugador desaparecerá del listado para todos.</small>`;
+  }else if(type==="badsale"){
+    if(!badTeamAvailability().open){showToast("Equipo Malo está cerrado. Abre a las 12:00.",true);return;}
+    $("modalIcon").textContent="💰";$("modalTitle").textContent="Vender al Equipo Malo";
+    $("confirmText").innerHTML=`<strong>${escapeHtml(p.name)}</strong><br>${escapeHtml(p.team||"")}<br><br>Precio de venta: <strong>${euros(p.market_value)}</strong><br><small>La venta al Equipo Malo se hace por el valor de mercado actual. No se aplica multiplicador. Una vez comunicada, debe ejecutarse en Comunio antes de las 00:00 y no puede cancelarse.</small>`;
   }
   pendingAction={type,player:p};$("confirmModal").classList.remove("hidden");
 }
@@ -479,18 +617,22 @@ async function executePending(){
     const {type,player}=pendingAction;
     if(isConfigured()){
       if(type==="clause")await executeRealClause(player);
-      else await executeRealBadPurchase(player);
+      else if(type==="badteam")await executeRealBadPurchase(player);
+      else await executeRealBadSale(player);
       await loadRealData();
     }else{
       if(type==="clause")executeDemoClause(player);
-      else executeDemoBadPurchase(player);
+      else if(type==="badteam")executeDemoBadPurchase(player);
+      else executeDemoBadSale(player);
       await loadDemoData();
     }
     closeModal();
     showToast(type==="clause"
       ?`✅ Cláusula ejecutada. ${player.owner_name} queda bloqueado hoy.`
-      :`✅ ${player.name} comprado al Equipo Malo.`);
-    updateStatusUI();renderPlayers();renderBadPlayers();renderActivityMini();
+      :type==="badteam"
+        ?`✅ ${player.name} comprado al Equipo Malo.`
+        :`✅ ${player.name} vendido al Equipo Malo por ${euros(player.market_value)}.`);
+    fillFilters();updateStatusUI();renderMyTeam();renderPlayers();renderBadPlayers();renderActivityMini();
   }catch(e){
     showToast(humanError(e),true);
     if(isConfigured())await loadRealData();
@@ -505,6 +647,10 @@ async function executeRealBadPurchase(p){
   const {error}=await supa.from("team_malo_purchases").insert({player_name:p.name});
   if(error)throw error;
 }
+async function executeRealBadSale(p){
+  const {error}=await supa.from("team_malo_sales").insert({player_name:p.name});
+  if(error)throw error;
+}
 function executeDemoClause(p){
   const key=demoKey("clauses_"+localDate()),arr=JSON.parse(localStorage.getItem(key)||"[]");
   if(arr.some(x=>x.executor_name===profile.manager_name))throw new Error("EXECUTOR_ALREADY_USED");
@@ -517,12 +663,23 @@ function executeDemoClause(p){
   localStorage.setItem(key,JSON.stringify(arr));
 }
 function executeDemoBadPurchase(p){
-  if(allDemoBadPurchases().some(x=>x.player_name===p.name))throw new Error("BAD_PLAYER_ALREADY_BOUGHT");
+  if(!effectiveBadPlayers().some(x=>x.name===p.name))throw new Error("BAD_PLAYER_ALREADY_BOUGHT");
   const key=demoKey("badbuys_"+localDate()),arr=JSON.parse(localStorage.getItem(key)||"[]");
   arr.push({
     id:crypto.randomUUID(),purchase_day:localDate(),executed_at:new Date().toISOString(),
     buyer_name:profile.manager_name,player_name:p.name,team:p.team,position:p.position,
     points:p.points,market_value:p.market_value,multiplier:p.multiplier,clause_value:p.clause_value
+  });
+  localStorage.setItem(key,JSON.stringify(arr));
+}
+function executeDemoBadSale(p){
+  const mine=myTeamPlayers().some(x=>x.name===p.name);
+  if(!mine)throw new Error("PLAYER_NOT_OWNED");
+  const key=demoKey("badsales_"+localDate()),arr=JSON.parse(localStorage.getItem(key)||"[]");
+  arr.push({
+    id:crypto.randomUUID(),sale_day:localDate(),executed_at:new Date().toISOString(),
+    seller_name:profile.manager_name,player_name:p.name,team:p.team,position:p.position,
+    points:p.points,market_value:p.market_value,sale_value:p.market_value
   });
   localStorage.setItem(key,JSON.stringify(arr));
 }
@@ -534,6 +691,7 @@ function humanError(e){
   if(s.includes("CLAUSE_DAY_CLOSED"))return "Hoy no es día de cláusulas.";
   if(s.includes("BADTEAM_CLOSED"))return "Equipo Malo está cerrado. Abre a las 12:00.";
   if(s.includes("BAD_PLAYER_ALREADY_BOUGHT")||s.includes("BAD_PLAYER_NOT_AVAILABLE"))return "Ese jugador acaba de ser comprado por otro usuario.";
+  if(s.includes("PLAYER_NOT_OWNED")||s.includes("BAD_SALE_NOT_OWNER"))return "Ese jugador ya no pertenece a tu equipo. La plantilla se ha actualizado.";
   if(s.includes("CANNOT_TARGET_SELF"))return "No puedes ejecutar una cláusula sobre tu propio equipo.";
   return "La operación no se pudo completar. La lista se ha actualizado por si otro usuario llegó antes.";
 }
@@ -541,8 +699,11 @@ function humanError(e){
 function renderActivityMini(){
   const arr=[...todayNews()].sort((a,b)=>new Date(b._time)-new Date(a._time)).slice(0,5);
   $("activityMiniList").innerHTML=arr.length?arr.map(newsHtml).join(""):'<div class="empty">Todavía no hay actividad hoy.</div>';
-  const buys=[...badPurchases].sort((a,b)=>new Date(b.executed_at)-new Date(a.executed_at)).slice(0,4);
-  $("badTodayMiniList").innerHTML=buys.length?buys.map(e=>newsHtml({...e,_type:"badteam",_time:e.executed_at})).join(""):'<div class="empty">Todavía no hay compras al Equipo Malo hoy.</div>';
+  const badActivity=[
+    ...badPurchases.map(e=>({...e,_type:"badteam",_time:e.executed_at})),
+    ...badSales.map(e=>({...e,_type:"badsale",_time:e.executed_at}))
+  ].sort((a,b)=>new Date(b._time)-new Date(a._time)).slice(0,4);
+  $("badTodayMiniList").innerHTML=badActivity.length?badActivity.map(newsHtml).join(""):'<div class="empty">Todavía no hay actividad con el Equipo Malo hoy.</div>';
 }
 
 async function loadNews(){
@@ -550,20 +711,23 @@ async function loadNews(){
   const title=day===localDate()?"Noticias de hoy":day===localDate(-1)?"Noticias de ayer":`Noticias del ${formatDate(day)}`;
   $("historyTitle").querySelector("h2").textContent=title;
 
-  let clauses=[],buys=[];
+  let clauses=[],buys=[],sales=[];
   if(isConfigured()){
-    const [c,b]=await Promise.all([
+    const [c,b,s]=await Promise.all([
       supa.from("clause_executions").select("*").eq("clause_day",day).order("executed_at",{ascending:true}),
-      supa.from("team_malo_purchases").select("*").eq("purchase_day",day).order("executed_at",{ascending:true})
+      supa.from("team_malo_purchases").select("*").eq("purchase_day",day).order("executed_at",{ascending:true}),
+      supa.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:true})
     ]);
-    clauses=c.data||[];buys=b.data||[];
+    clauses=c.data||[];buys=b.data||[];sales=s.data||[];
   }else{
     clauses=JSON.parse(localStorage.getItem(demoKey("clauses_"+day))||"[]");
     buys=JSON.parse(localStorage.getItem(demoKey("badbuys_"+day))||"[]");
+    sales=JSON.parse(localStorage.getItem(demoKey("badsales_"+day))||"[]");
   }
   const arr=[
     ...clauses.map(e=>({...e,_type:"clause",_time:e.executed_at})),
-    ...buys.map(e=>({...e,_type:"badteam",_time:e.executed_at}))
+    ...buys.map(e=>({...e,_type:"badteam",_time:e.executed_at})),
+    ...sales.map(e=>({...e,_type:"badsale",_time:e.executed_at}))
   ].sort((a,b)=>new Date(a._time)-new Date(b._time));
 
   $("historyCount").textContent=`${arr.length} noticias`;
@@ -573,9 +737,16 @@ function newsHtml(e){
   const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(new Date(e._time||e.executed_at));
   if(e._type==="badteam"){
     return `<article class="history-item"><div class="history-time">${time}</div><div>
-      <span class="news-type badteam">💀 EQUIPO MALO</span>
+      <span class="news-type badteam">💀 COMPRA AL EQUIPO MALO</span>
       <div class="history-main">${escapeHtml(e.buyer_name||"")} compró a ${escapeHtml(e.player_name||"")}</div>
       <div class="history-sub">${euros(e.clause_value)} · ${escapeHtml(e.team||"")}</div>
+    </div></article>`;
+  }
+  if(e._type==="badsale"){
+    return `<article class="history-item"><div class="history-time">${time}</div><div>
+      <span class="news-type sale">💰 VENTA AL EQUIPO MALO</span>
+      <div class="history-main">${escapeHtml(e.seller_name||"")} vendió a ${escapeHtml(e.player_name||"")}</div>
+      <div class="history-sub">${euros(e.sale_value??e.market_value)} · ${escapeHtml(e.team||"")}</div>
     </div></article>`;
   }
   return `<article class="history-item"><div class="history-time">${time}</div><div>
@@ -588,10 +759,11 @@ function newsHtml(e){
 function showView(name){
   currentView=name;
   document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
-  const map={home:"homeView",clauses:"clausesView",news:"newsView",badteam:"badteamView",rules:"rulesView"};
+  const map={home:"homeView",myteam:"myteamView",clauses:"clausesView",news:"newsView",badteam:"badteamView",rules:"rulesView"};
   $(map[name]||"clausesView").classList.remove("hidden");
   document.querySelectorAll(".main-nav [data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
-  $("pageTitle").textContent=name==="home"?"Inicio":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="rules"?"Normas":"Cláusulas";
+  $("pageTitle").textContent=name==="home"?"Inicio":name==="myteam"?"Mi equipo":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="rules"?"Normas":"Cláusulas";
+  if(name==="myteam")renderMyTeam();
   if(name==="news")loadNews();
   if(name==="rules")openRulesTab(document.querySelector(".rules-tab.active")?.dataset.rulesTab||"general");
   window.scrollTo({top:0,behavior:"smooth"});

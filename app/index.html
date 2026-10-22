@@ -20,6 +20,7 @@
 
   <nav class="main-nav" aria-label="Navegación">
     <button data-view="home">🏠 <span>Inicio</span></button>
+    <button data-view="myteam">👕 <span>Mi equipo</span></button>
     <button data-view="clauses" class="active">⚡ <span>Cláusulas</span></button>
     <button data-view="news">📰 <span>Noticias</span></button>
     <button data-view="badteam">💀 <span>Equipo Malo</span></button>
@@ -66,8 +67,50 @@
       </div>
 
       <div class="home-actions">
-        <button class="primary full big-action" data-go="clauses">⚡ Ver cláusulas</button>
+        <button class="primary full big-action" data-go="myteam">👕 Ver mi equipo</button>
+        <button class="secondary full big-action" data-go="clauses">⚡ Ver cláusulas</button>
         <button class="secondary full big-action" data-go="badteam">💀 Ver Equipo Malo</button>
+      </div>
+    </section>
+
+    <section id="myteamView" class="view hidden">
+      <div class="myteam-hero">
+        <div>
+          <span class="eyebrow">MI PLANTILLA</span>
+          <h2 id="myTeamManager">—</h2>
+          <p>Solo puedes ver y gestionar los jugadores de tu usuario.</p>
+        </div>
+        <div class="myteam-badge">👕</div>
+      </div>
+
+      <div class="myteam-stats">
+        <article>
+          <strong id="myTeamCount">—</strong>
+          <span>jugadores</span>
+        </article>
+        <article>
+          <strong id="myTeamValue">—</strong>
+          <span>valor plantilla</span>
+        </article>
+        <article>
+          <strong id="myTeamPoints">—</strong>
+          <span>puntos plantilla</span>
+        </article>
+      </div>
+
+      <p class="myteam-note">
+        “Puntos plantilla” es la suma de los puntos actuales de tus jugadores. No es la clasificación general de Comunio.
+      </p>
+
+      <div id="myTeamBadState" class="user-state hidden"></div>
+
+      <div class="myteam-sale-info">
+        <span>💀 Vender al Equipo Malo</span>
+        <b>Precio = valor de mercado actual</b>
+      </div>
+
+      <div id="myTeamList" class="myteam-list">
+        <div class="loading">Cargando tu plantilla…</div>
       </div>
     </section>
 
@@ -183,7 +226,7 @@
 
       <section class="today-mini">
         <div class="section-title-row">
-          <h2>📰 Compras de hoy</h2>
+          <h2>📰 Actividad Equipo Malo</h2>
           <button class="text-btn" data-go="news">Ver noticias</button>
         </div>
         <div id="badTodayMiniList"></div>
