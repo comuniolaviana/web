@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07130d">
+  <title>Comunio Laviana · Cláusulas</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="appShell" class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="brand">COMUNIO LAVIANA</div>
+        <h1 id="pageTitle">Cláusulas</h1>
+      </div>
+      <button id="sessionBtn" class="session-btn" type="button">Entrar</button>
+    </header>
+
+    <nav class="main-nav" aria-label="Navegación">
+      <button data-view="home">🏠 <span>Inicio</span></button>
+      <button data-view="clauses" class="active">⚡ <span>Cláusulas</span></button>
+      <button data-view="today">📰 <span>Hoy</span></button>
+      <a href="../equipomalo.html">💀 <span>Equipo Malo</span></a>
+    </nav>
+
+    <div id="demoBanner" class="demo-banner hidden">
+      MODO DEMO LOCAL · sirve para probar la app, no registra operaciones reales de la liga
+    </div>
+
+    <main>
+      <section id="loginView" class="panel login-panel hidden">
+        <h2>Entrar</h2>
+        <p id="loginHelp" class="muted"></p>
+
+        <div id="realLogin" class="hidden">
+          <label>Email
+            <input id="emailInput" type="email" autocomplete="email" placeholder="tu@email.com">
+          </label>
+          <button id="magicLinkBtn" class="primary full" type="button">Enviar enlace de acceso</button>
+        </div>
+
+        <div id="demoLogin" class="hidden">
+          <label>Usuario de la liga
+            <select id="demoUserSelect"></select>
+          </label>
+          <button id="demoEnterBtn" class="primary full" type="button">Entrar en demo</button>
+        </div>
+        <p id="loginMessage" class="message"></p>
+      </section>
+
+      <section id="homeView" class="view hidden">
+        <div class="hero-card">
+          <div>
+            <span class="eyebrow">ESTADO DE CLÁUSULAS</span>
+            <h2 id="homeStatusTitle">Comprobando…</h2>
+            <p id="homeStatusText" class="muted"></p>
+          </div>
+          <div id="homeStatusDot" class="status-dot"></div>
+        </div>
+
+        <div class="stats-grid">
+          <article><strong id="statAvailable">—</strong><span>jugadores disponibles</span></article>
+          <article><strong id="statToday">—</strong><span>cláusulas hoy</span></article>
+          <article><strong id="statBlockedOwners">—</strong><span>propietarios bloqueados</span></article>
+        </div>
+
+        <button class="primary full big-action" data-go="clauses">Ver jugadores disponibles</button>
+      </section>
+
+      <section id="clausesView" class="view">
+        <div id="userStateBanner" class="user-state hidden"></div>
+
+        <div class="compact-tools">
+          <div class="search-row">
+            <div class="search-box">
+              <span>🔎</span>
+              <input id="searchInput" type="search" placeholder="Jugador, propietario o equipo">
+            </div>
+            <button id="filtersBtn" class="filter-btn" type="button">⚙️ <span>Filtros</span></button>
+          </div>
+
+          <div id="filterPanel" class="filter-panel collapsed">
+            <label>Posición
+              <select id="positionFilter">
+                <option value="">Todas</option>
+                <option value="portero">Porteros</option>
+                <option value="defensa">Defensas</option>
+                <option value="medio">Medios</option>
+                <option value="delantero">Delanteros</option>
+              </select>
+            </label>
+            <label>Propietario
+              <select id="ownerFilter"><option value="">Todos</option></select>
+            </label>
+            <button id="clearFiltersBtn" class="secondary" type="button">Limpiar</button>
+          </div>
+
+          <div id="activeFilters" class="active-filters hidden"></div>
+        </div>
+
+        <div class="list-head">
+          <div>
+            <h2 id="playersHeading">Disponibles</h2>
+            <span id="playersCount" class="muted small"></span>
+          </div>
+          <span class="muted small">cláusula ↓</span>
+        </div>
+
+        <div id="playersList" class="players-list">
+          <div class="loading">Cargando jugadores…</div>
+        </div>
+
+        <section class="today-mini">
+          <div class="section-title-row">
+            <h2>✅ Pagadas hoy</h2>
+            <button class="text-btn" data-go="today">Ver todas</button>
+          </div>
+          <div id="todayMiniList"></div>
+        </section>
+      </section>
+
+      <section id="todayView" class="view hidden">
+        <div class="history-toolbar">
+          <button class="period-btn active" data-period="today">Hoy</button>
+          <button class="period-btn" data-period="yesterday">Ayer</button>
+          <label class="date-pick">📅
+            <input id="historyDate" type="date">
+          </label>
+        </div>
+        <div id="historyTitle" class="list-head">
+          <div>
+            <h2>Cláusulas de hoy</h2>
+            <span id="historyCount" class="muted small"></span>
+          </div>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-icon">⚡</div>
+      <h2>Ejecutar cláusula</h2>
+      <p id="confirmText"></p>
+      <div class="modal-actions">
+        <button id="cancelExecuteBtn" class="secondary" type="button">Cancelar</button>
+        <button id="confirmExecuteBtn" class="primary" type="button">CONFIRMAR</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
