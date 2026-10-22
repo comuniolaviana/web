@@ -1,0 +1,22 @@
+COMUNIO LAVIANA · V6 VISUAL · FASE 1
+
+Sustituye dentro de la carpeta app:
+- styles.css
+- sw.js
+
+NO TOQUES:
+- config.js
+- app.js
+- admin.js
+- Supabase
+
+Esta primera V6 cambia solamente presentación y usabilidad:
+- nueva identidad oscura/deportiva
+- cabecera con emblema CL en CSS
+- colores, fondos, tarjetas y botones
+- rediseño fuerte de Inicio
+- rediseño fuerte de Mi equipo
+- retoque visual coherente del resto de pantallas
+- caché V6 para que el móvil coja los cambios
+
+Después: Commit + Push.
