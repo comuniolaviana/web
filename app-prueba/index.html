@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#123d24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Comunio Laviana">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="app.css">
+  <title>Comunio Laviana · App prueba</title>
+</head>
+<body>
+<div class="topline"></div>
+
+<main class="shell">
+  <section id="login" class="screen">
+    <div class="brand">
+      <div class="logo">CL</div>
+      <h1>Comunio Laviana</h1>
+      <p>Prueba de la futura aplicación</p>
+    </div>
+
+    <div class="card">
+      <h2>Entrar</h2>
+      <p class="muted">En la versión definitiva entrarás con tu correo. En esta prueba selecciona un usuario.</p>
+      <label>Usuario</label>
+      <select id="usuario"></select>
+      <button id="entrar" class="primary">Entrar</button>
+    </div>
+
+    <div class="warning">
+      🧪 <b>PROTOTIPO.</b> Las reglas ya son las reales, pero las ejecuciones todavía se guardan solo en este dispositivo.
+    </div>
+  </section>
+
+  <section id="app" class="screen hidden">
+    <header class="header">
+      <div>
+        <small>COMUNIO LAVIANA</small>
+        <h1 id="saludo"></h1>
+      </div>
+      <button id="salir" class="ghost">Salir</button>
+    </header>
+
+    <section class="gate card">
+      <div class="gate-top">
+        <div>
+          <span class="eyebrow">ESTADO DE CLÁUSULAS</span>
+          <h2 id="estadoTitulo">Comprobando…</h2>
+          <p id="estadoDetalle"></p>
+        </div>
+        <div id="dot" class="dot"></div>
+      </div>
+      <div class="checks">
+        <div id="checkDia"></div>
+        <div id="checkDatos"></div>
+        <div id="checkHora"></div>
+      </div>
+    </section>
+
+    <section class="my-status card">
+      <span class="eyebrow">MI ESTADO HOY</span>
+      <div class="state-row">
+        <span>⚡ Pagar cláusula</span>
+        <strong id="estadoPagar"></strong>
+      </div>
+      <div class="state-row">
+        <span>🛡️ Recibir cláusula</span>
+        <strong id="estadoRecibir"></strong>
+      </div>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="clausulas">⚡ Cláusulas</button>
+      <button class="tab" data-tab="historial">🧾 Historial</button>
+      <button class="tab" data-tab="cuenta">👤 Cuenta</button>
+    </nav>
+
+    <section id="tab-clausulas">
+      <div class="search-wrap">
+        <input id="buscar" type="search" placeholder="Buscar jugador, equipo o propietario">
+      </div>
+      <div id="lista" class="players"></div>
+    </section>
+
+    <section id="tab-historial" class="hidden">
+      <div class="card">
+        <h2>Historial</h2>
+        <p class="muted">En la versión definitiva será el mismo para todos los móviles y no se podrá manipular.</p>
+        <div id="historial"></div>
+      </div>
+    </section>
+
+    <section id="tab-cuenta" class="hidden">
+      <div class="card">
+        <h2>Mi cuenta</h2>
+        <div class="line"><span>Usuario</span><strong id="cuentaUsuario"></strong></div>
+        <div class="line"><span>Horario</span><strong>15:00–21:00</strong></div>
+        <div class="line"><span>Regla</span><strong>1 paga + 1 recibe</strong></div>
+        <button id="reiniciar" class="danger">Reiniciar todas las pruebas de este móvil</button>
+      </div>
+      <div class="card">
+        <h2>Instalar</h2>
+        <p id="installText" class="muted"></p>
+        <button id="installBtn" class="primary hidden">Instalar aplicación</button>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <button id="cerrar" class="x">×</button>
+    <span class="eyebrow">CONFIRMAR CLÁUSULA</span>
+    <h2 id="mJugador"></h2>
+    <div class="line"><span>Propietario</span><strong id="mProp"></strong></div>
+    <div class="line"><span>Equipo</span><strong id="mEquipo"></strong></div>
+    <div class="line"><span>Importe</span><strong id="mImporte"></strong></div>
+    <div id="mAviso" class="modal-note"></div>
+    <button id="confirmar" class="primary">EJECUTAR CLÁUSULA</button>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

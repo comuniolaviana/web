@@ -1,0 +1,45 @@
+COMUNIO LAVIANA · PROTOTIPO V2
+
+REGLAS YA INCLUIDAS
+- Cada usuario puede PAGAR 1 cláusula por jornada.
+- Cada usuario puede RECIBIR 1 cláusula por jornada.
+- Cuando un usuario recibe una cláusula, TODOS sus jugadores desaparecen.
+- Solo funciona en días abiertos del calendario.
+- Solo funciona entre 15:00 y 21:00.
+- Si datos.json no está actualizado HOY, NO se puede ejecutar ninguna cláusula.
+- Fuera de horario el botón EJECUTAR está deshabilitado.
+- No se puede ejecutar sobre un jugador propio.
+- El mismo jugador no se puede ejecutar dos veces.
+- Se vuelven a comprobar las reglas al confirmar.
+
+ACTUALIZACIÓN DIARIA
+La app NO lleva una copia propia de datos.json ni equipos.json.
+Lee directamente:
+  ../datos.json
+  ../equipos.json
+Por tanto, cuando actualices la web como haces normalmente, la app verá automáticamente los datos nuevos.
+
+CALENDARIO
+Archivo: calendario.json
+Para esta PRUEBA está marcado como abierto:
+  2026-10-22
+Horario: 15:00–21:00
+En la versión real pondremos aquí todo el calendario oficial.
+
+IMPORTANTE
+Esto sigue siendo un PROTOTIPO:
+- no hay login real por correo;
+- no hay base de datos central;
+- el historial se guarda solo en este dispositivo;
+- aún no existe el bloqueo seguro entre dos móviles distintos.
+La siguiente fase será servidor + usuarios + base de datos.
+
+CÓMO SUBIRLO
+1. En la carpeta web de tu repositorio crea:
+   app-prueba
+2. Copia dentro TODOS estos archivos.
+3. Commit y Push.
+4. Abre:
+   https://comuniolaviana.github.io/web/app-prueba/
+
+NO MODIFICA NI SUSTITUYE NINGÚN ARCHIVO DE TU WEB ACTUAL.
