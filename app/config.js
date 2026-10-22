@@ -6,6 +6,12 @@ window.COMUNIO_CONFIG = {
   // en una identidad de Supabase. Los jugadores nunca necesitan saberlo.
   LOGIN_DOMAIN: "comuniolaviana.app",
 
+  // Los nombres son públicos; los PIN NO están en la app.
+  LOGIN_USERS: [
+    "Adrian","Borja","Carlos","Dani","David","Eduardo","Efren","Enol","Jesus",
+    "Jonatan","Jorge","Juanin","Laureano","Nazaré","Ordieres","PABLO","Ubaldo","Vizcaino"
+  ],
+
   // Producción: false. Ponlo en true solo para pruebas locales sin contraseña.
   DEMO_MODE: false,
 

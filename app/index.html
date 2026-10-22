@@ -29,7 +29,7 @@
   </nav>
 
   <div id="demoBanner" class="demo-banner hidden">
-    V5.3 · ACCESO PERSONAL · DEMO LOCAL
+    V5.4 · USUARIO + PIN · DEMO LOCAL
   </div>
 
   <main>
@@ -38,13 +38,15 @@
       <p id="loginHelp" class="muted"></p>
       <div id="realLogin" class="hidden">
         <label>Usuario
-          <input id="usernameInput" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Tu usuario de la liga">
+          <select id="usernameSelect" autocomplete="username">
+            <option value="">Selecciona tu usuario</option>
+          </select>
         </label>
-        <label>Contraseña
-          <input id="passwordInput" type="password" autocomplete="current-password" inputmode="numeric" placeholder="Tu contraseña">
+        <label>PIN
+          <input id="passwordInput" type="password" autocomplete="current-password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Tu PIN de 6 cifras">
         </label>
         <button id="passwordLoginBtn" class="primary full" type="button">Entrar</button>
-        <p class="login-note">Usa el usuario y la contraseña que te ha facilitado el administrador.</p>
+        <p class="login-note">Selecciona tu nombre e introduce tu PIN. La sesión quedará guardada automáticamente en este dispositivo.</p>
       </div>
       <div id="demoLogin" class="hidden">
         <label>Usuario de la liga

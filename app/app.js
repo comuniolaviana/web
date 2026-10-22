@@ -121,9 +121,11 @@ let schedule=null, pendingAction=null, currentView="clauses", historyPeriod="tod
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
 const escapeHtml=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-const demoKey=k=>`comunio_laviana_v52_demo_${k}`;
+const demoKey=k=>`comunio_laviana_v54_demo_${k}`;
 const isConfigured=()=>!CFG.DEMO_MODE&&CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY;
 const LOGIN_DOMAIN=CFG.LOGIN_DOMAIN||"comuniolaviana.app";
+const LOGIN_USERS=Array.isArray(CFG.LOGIN_USERS)?CFG.LOGIN_USERS:[];
+const LAST_LOGIN_USER_KEY="comunio_laviana_last_login_user";
 
 function loginSlug(value){
   return norm(value).replace(/[^a-z0-9]+/g,"");
@@ -289,7 +291,14 @@ function bindUI(){
 
   $("sessionBtn").addEventListener("click",sessionAction);
   $("passwordLoginBtn").addEventListener("click",signInWithPassword);
-  $("usernameInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("passwordInput").focus();});
+  $("usernameSelect").addEventListener("change",()=>{
+    const name=$("usernameSelect").value;
+    if(name)localStorage.setItem(LAST_LOGIN_USER_KEY,name);
+    $("passwordInput").focus();
+  });
+  $("passwordInput").addEventListener("input",()=>{
+    $("passwordInput").value=$("passwordInput").value.replace(/\D/g,"").slice(0,6);
+  });
   $("passwordInput").addEventListener("keydown",e=>{if(e.key==="Enter")signInWithPassword();});
   $("demoEnterBtn").addEventListener("click",()=>{
     const name=$("demoUserSelect").value;if(!name)return;
@@ -328,11 +337,19 @@ function showLogin(msg=""){
     fillDemoUsers();
   }else{
     $("realLogin").classList.remove("hidden");$("demoLogin").classList.add("hidden");
+    fillLoginUsers();
     $("loginHelp").textContent=isConfigured()
-      ?"Identifícate con tu usuario y contraseña de Comunio Laviana."
+      ?"Selecciona tu usuario e introduce tu PIN."
       :"Falta conectar Supabase en config.js antes de activar los accesos personales.";
     $("passwordLoginBtn").disabled=!isConfigured();
   }
+}
+function fillLoginUsers(){
+  const select=$("usernameSelect");
+  if(!select)return;
+  const saved=localStorage.getItem(LAST_LOGIN_USER_KEY)||"";
+  select.innerHTML='<option value="">Selecciona tu usuario</option>'+LOGIN_USERS.map(name=>`<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("");
+  if(LOGIN_USERS.includes(saved))select.value=saved;
 }
 async function sessionAction(){
   if(!profile){showLogin();return;}
@@ -343,10 +360,11 @@ async function sessionAction(){
 }
 async function signInWithPassword(){
   if(!isConfigured()){ $("loginMessage").textContent="Supabase todavía no está configurado.";return; }
-  const username=$("usernameInput").value.trim();
+  const username=$("usernameSelect").value.trim();
   const password=$("passwordInput").value;
   const email=loginEmail(username);
-  if(!email||!password){$("loginMessage").textContent="Escribe usuario y contraseña.";return;}
+  if(!username){$("loginMessage").textContent="Selecciona tu usuario.";return;}
+  if(!/^\d{6}$/.test(password)){$("loginMessage").textContent="Introduce tu PIN de 6 cifras.";return;}
   $("passwordLoginBtn").disabled=true;
   $("loginMessage").textContent="Comprobando acceso…";
   const {error}=await supa.auth.signInWithPassword({email,password});
@@ -356,6 +374,7 @@ async function signInWithPassword(){
     $("loginMessage").textContent="Usuario o contraseña incorrectos.";
     return;
   }
+  localStorage.setItem(LAST_LOGIN_USER_KEY,username);
   $("passwordInput").value="";
   $("loginMessage").textContent="";
 }

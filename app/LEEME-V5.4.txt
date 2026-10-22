@@ -1,0 +1,11 @@
+COMUNIO LAVIANA · V5.4 · USUARIO + PIN
+
+- Login con desplegable de los 18 usuarios.
+- Cada participante introduce solo su PIN de 6 cifras.
+- Supabase mantiene la sesión automáticamente en el dispositivo.
+- El último usuario seleccionado queda recordado para facilitar un nuevo acceso.
+- ENOL conserva el rol admin.
+- Ningún PIN está incluido en estos archivos públicos.
+
+IMPORTANTE:
+Para que el login funcione de verdad hay que rellenar SUPABASE_URL y SUPABASE_ANON_KEY en config.js y crear los 18 usuarios de Auth usando el paquete privado ya preparado.
