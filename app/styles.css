@@ -65,6 +65,7 @@ input:focus,select:focus{border-color:#76c795;box-shadow:0 0 0 2px rgba(118,199,
 .muted{color:var(--muted)}
 .small{font-size:12px}
 .message{min-height:20px;color:#d9e1dc}
+.login-note{margin:10px 2px 0;color:var(--muted);font-size:11px;line-height:1.4;text-align:center}
 .hero-card{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .eyebrow{font-size:11px;color:var(--green2);font-weight:950;letter-spacing:1px}
 .hero-card h2{font-size:24px;margin-top:5px}

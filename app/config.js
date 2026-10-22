@@ -2,8 +2,12 @@ window.COMUNIO_CONFIG = {
   SUPABASE_URL: "",
   SUPABASE_ANON_KEY: "",
 
-  // Demo para probar la interfaz antes de conectar usuarios reales.
-  DEMO_MODE: true,
+  // Dominio interno usado únicamente para convertir el nombre de usuario
+  // en una identidad de Supabase. Los jugadores nunca necesitan saberlo.
+  LOGIN_DOMAIN: "comuniolaviana.app",
+
+  // Producción: false. Ponlo en true solo para pruebas locales sin contraseña.
+  DEMO_MODE: false,
 
   // Permite probar botones a cualquier hora en demo.
   DEMO_FORCE_CLAUSES_OPEN: false,

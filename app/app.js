@@ -123,6 +123,15 @@ const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
 const escapeHtml=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const demoKey=k=>`comunio_laviana_v52_demo_${k}`;
 const isConfigured=()=>!CFG.DEMO_MODE&&CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY;
+const LOGIN_DOMAIN=CFG.LOGIN_DOMAIN||"comuniolaviana.app";
+
+function loginSlug(value){
+  return norm(value).replace(/[^a-z0-9]+/g,"");
+}
+function loginEmail(value){
+  const slug=loginSlug(value);
+  return slug?`${slug}@${LOGIN_DOMAIN}`:"";
+}
 
 const sameManager=(a,b)=>norm(a)===norm(b);
 function sourceDateMs(value){
@@ -247,12 +256,14 @@ async function boot(){
     const {data:{session:s}}=await supa.auth.getSession();session=s;
     supa.auth.onAuthStateChange((_e,s)=>{session=s;refreshSession().catch(console.error);});
     await refreshSession();
-  }else{
+  }else if(CFG.DEMO_MODE){
     $("demoBanner").classList.remove("hidden");
     await loadWebData();
     const saved=localStorage.getItem(demoKey("user"));
     if(saved){profile={manager_name:saved,role:"demo"};await enterApp();}
     else showLogin();
+  }else{
+    showLogin("Configuración pendiente: conecta Supabase para activar los 18 accesos personales.");
   }
 }
 
@@ -277,7 +288,9 @@ function bindUI(){
   $("confirmModal").addEventListener("click",e=>{if(e.target===$("confirmModal"))closeModal();});
 
   $("sessionBtn").addEventListener("click",sessionAction);
-  $("magicLinkBtn").addEventListener("click",sendMagicLink);
+  $("passwordLoginBtn").addEventListener("click",signInWithPassword);
+  $("usernameInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("passwordInput").focus();});
+  $("passwordInput").addEventListener("keydown",e=>{if(e.key==="Enter")signInWithPassword();});
   $("demoEnterBtn").addEventListener("click",()=>{
     const name=$("demoUserSelect").value;if(!name)return;
     localStorage.setItem(demoKey("user"),name);profile={manager_name:name,role:"demo"};enterApp();
@@ -309,29 +322,48 @@ async function refreshSession(){
 function showLogin(msg=""){
   document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
   $("loginView").classList.remove("hidden");$("sessionBtn").textContent="Entrar";$("loginMessage").textContent=msg;
-  if(CFG.DEMO_MODE||!isConfigured()){
+  if(CFG.DEMO_MODE){
     $("demoLogin").classList.remove("hidden");$("realLogin").classList.add("hidden");
     $("loginHelp").textContent="Prueba local: elige un participante.";
     fillDemoUsers();
   }else{
     $("realLogin").classList.remove("hidden");$("demoLogin").classList.add("hidden");
-    $("loginHelp").textContent="Recibirás un enlace de acceso en tu email.";
+    $("loginHelp").textContent=isConfigured()
+      ?"Identifícate con tu usuario y contraseña de Comunio Laviana."
+      :"Falta conectar Supabase en config.js antes de activar los accesos personales.";
+    $("passwordLoginBtn").disabled=!isConfigured();
   }
 }
 async function sessionAction(){
   if(!profile){showLogin();return;}
-  if(CFG.DEMO_MODE){localStorage.removeItem(demoKey("user"));profile=null;showLogin();}
-  else{await supa.auth.signOut();profile=null;showLogin();}
+  if(!isConfigured()){
+    localStorage.removeItem(demoKey("user"));profile=null;showLogin();return;
+  }
+  await supa.auth.signOut();profile=null;showLogin();
 }
-async function sendMagicLink(){
-  const email=$("emailInput").value.trim();if(!email){$("loginMessage").textContent="Escribe tu email.";return;}
-  $("loginMessage").textContent="Enviando…";
-  const {error}=await supa.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});
-  $("loginMessage").textContent=error?error.message:"Enlace enviado. Abre el email desde este móvil.";
+async function signInWithPassword(){
+  if(!isConfigured()){ $("loginMessage").textContent="Supabase todavía no está configurado.";return; }
+  const username=$("usernameInput").value.trim();
+  const password=$("passwordInput").value;
+  const email=loginEmail(username);
+  if(!email||!password){$("loginMessage").textContent="Escribe usuario y contraseña.";return;}
+  $("passwordLoginBtn").disabled=true;
+  $("loginMessage").textContent="Comprobando acceso…";
+  const {error}=await supa.auth.signInWithPassword({email,password});
+  $("passwordLoginBtn").disabled=false;
+  if(error){
+    $("passwordInput").value="";
+    $("loginMessage").textContent="Usuario o contraseña incorrectos.";
+    return;
+  }
+  $("passwordInput").value="";
+  $("loginMessage").textContent="";
 }
 
 async function enterApp(){
   $("loginView").classList.add("hidden");$("sessionBtn").textContent=profile.manager_name||"Salir";
+  const adminNav=$("adminNav");
+  if(adminNav)adminNav.classList.toggle("hidden",profile?.role!=="admin");
   if(isConfigured())await loadRealData();else await loadDemoData();
   fillFilters();updateStatusUI();renderMyTeam();renderPlayers();renderBadPlayers();renderActivityMini();showView(currentView);
 }

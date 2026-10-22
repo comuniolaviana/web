@@ -1,12 +1,12 @@
 {
   "name": "Comunio Laviana",
   "short_name": "Comunio",
-  "start_url": "./index.html?v=5-2",
+  "start_url": "./index.html?v=5-3",
   "scope": "./",
   "display": "standalone",
   "background_color": "#06110b",
   "theme_color": "#07130d",
-  "description": "Aplicación de Comunio Laviana para cláusulas e historial.",
+  "description": "Aplicación de Comunio Laviana con acceso personal para cláusulas e historial.",
   "icons": [
     {
       "src": "icon-192.svg",
