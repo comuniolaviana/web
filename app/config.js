@@ -1,16 +1,21 @@
 window.COMUNIO_CONFIG = {
-  // Rellena estos dos valores cuando creemos el proyecto Supabase.
   SUPABASE_URL: "",
   SUPABASE_ANON_KEY: "",
 
-  // TRUE = prueba local en un solo móvil/navegador.
-  // FALSE = modo real multiusuario con Supabase.
+  // Demo para probar la interfaz antes de conectar usuarios reales.
   DEMO_MODE: true,
 
-  // Solo afecta al modo DEMO para poder probar el botón a cualquier hora.
-  DEMO_FORCE_OPEN: true,
+  // Permite probar botones a cualquier hora en demo.
+  DEMO_FORCE_CLAUSES_OPEN: true,
+  DEMO_FORCE_BADTEAM_OPEN: true,
 
   TIMEZONE: "Europe/Madrid",
+
+  // Cláusulas entre usuarios.
   DEFAULT_OPEN: "15:00",
-  DEFAULT_CLOSE: "21:00"
+  DEFAULT_CLOSE: "21:00",
+
+  // Equipo Malo: todos los días, 12:00–00:00.
+  BADTEAM_OPEN: "12:00",
+  BADTEAM_CLOSE: "00:00"
 };

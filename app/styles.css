@@ -180,3 +180,36 @@ input:focus,select:focus{border-color:#76c795;box-shadow:0 0 0 2px rgba(118,199,
   .player-meta,.player-extra{font-size:10px}
   .clause-value{font-size:12px}
 }
+
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rule-compact{
+  min-height:57px;border:1px solid #344c3e;background:#1a2921;border-radius:15px;
+  display:flex;flex-direction:column;justify-content:center;padding:8px 11px;color:#dce4df
+}
+.rule-compact b{color:var(--green2);font-size:13px}
+.rule-compact span{font-size:10px;color:var(--muted);margin-top:2px}
+.badteam-rule-strip{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:#121d16;border:1px solid var(--line);border-radius:14px;padding:9px 11px;
+  margin:1px 0 8px;font-size:11px;color:#c8d1cc
+}
+.bad-rules-box{
+  display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:9px;
+  background:#0d170f;border:1px solid var(--line);border-radius:15px;padding:8px
+}
+.bad-rules-box>div{
+  display:flex;justify-content:space-between;gap:8px;background:#152119;
+  border-radius:10px;padding:7px 9px;font-size:10px;color:#a9b4ae
+}
+.bad-rules-box b{color:#91e5ad}
+.news-type{
+  display:inline-flex;align-items:center;border-radius:999px;padding:3px 7px;
+  font-size:9px;font-weight:950;margin-bottom:4px
+}
+.news-type.clause{background:#173a25;color:#98e8b3}
+.news-type.badteam{background:#3c2813;color:#efc579}
+.bad-buy-btn{background:#6e4b16}
+@media(max-width:520px){
+  .home-actions{grid-template-columns:1fr}
+  .bad-rules-box{grid-template-columns:1fr 1fr}
+}
