@@ -121,7 +121,7 @@ let schedule=null, pendingAction=null, currentView="clauses", historyPeriod="tod
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
 const escapeHtml=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-const demoKey=k=>`comunio_laviana_demo_${k}`;
+const demoKey=k=>`comunio_laviana_v52_demo_${k}`;
 const isConfigured=()=>!CFG.DEMO_MODE&&CFG.SUPABASE_URL&&CFG.SUPABASE_ANON_KEY;
 
 const sameManager=(a,b)=>norm(a)===norm(b);
@@ -448,8 +448,16 @@ function availableBadPlayers(){
   return effectiveBadPlayers();
 }
 function myTeamPlayers(){
-  if(!profile)return[];
-  return effectiveLeaguePlayers().filter(p=>p.active!==false&&sameManager(p.owner_name,profile.manager_name));
+  if(!profile?.manager_name)return[];
+  const selectedManager=norm(profile.manager_name);
+  if(!selectedManager)return[];
+
+  // MI EQUIPO = exclusivamente el propietario del usuario seleccionado.
+  // No se reutiliza ningún filtro de Cláusulas ni se muestran otros propietarios.
+  return effectiveLeaguePlayers().filter(p=>{
+    if(p.active===false)return false;
+    return norm(p.owner_name)===selectedManager;
+  });
 }
 function todayNews(){
   return [
@@ -517,7 +525,7 @@ function renderMyTeam(){
         <div>
           <div class="player-name">${escapeHtml(p.name)}</div>
           <div class="player-meta">${escapeHtml(p.team||"Sin equipo")}</div>
-          <div class="player-extra">${Number(p.points)||0} pts</div>
+          <div class="player-extra">${Number(p.points)||0} pts · ${escapeHtml(profile.manager_name)}</div>
         </div>
         <div class="myteam-value"><span>VALOR</span><b>${euros(p.market_value)}</b></div>
         <button class="sell-bad-btn" ${!bad.open?"disabled":""}>${bad.open?"VENDER":"CERRADO"}<small>AL 💀</small></button>`;
