@@ -1,45 +1,66 @@
-COMUNIO LAVIANA · PROTOTIPO V2
+COMUNIO LAVIANA · APP PRUEBA V3
 
-REGLAS YA INCLUIDAS
-- Cada usuario puede PAGAR 1 cláusula por jornada.
-- Cada usuario puede RECIBIR 1 cláusula por jornada.
-- Cuando un usuario recibe una cláusula, TODOS sus jugadores desaparecen.
-- Solo funciona en días abiertos del calendario.
-- Solo funciona entre 15:00 y 21:00.
-- Si datos.json no está actualizado HOY, NO se puede ejecutar ninguna cláusula.
-- Fuera de horario el botón EJECUTAR está deshabilitado.
+QUÉ CAMBIA EN ESTA VERSIÓN
+
+1. CLÁUSULAS
+- Separadas por:
+  Porteros
+  Defensas
+  Medios
+  Delanteros
+- Dentro de cada posición: orden de MAYOR A MENOR CLÁUSULA.
+- Cada jugador muestra:
+  propietario
+  equipo
+  puntos
+  valor actual
+  cláusula
+- El botón Ejecutar solo se activa si TODAS las reglas se cumplen.
+
+2. REGLAS
+- 1 cláusula pagada por usuario y jornada.
+- 1 cláusula recibida por usuario y jornada.
+- Cuando alguien recibe una cláusula, TODOS sus jugadores desaparecen.
+- Día permitido según el CALENDARIO OFICIAL DE LA WEB.
+- Horario estricto 15:00–21:00.
+- datos.json tiene que estar actualizado HOY.
 - No se puede ejecutar sobre un jugador propio.
-- El mismo jugador no se puede ejecutar dos veces.
-- Se vuelven a comprobar las reglas al confirmar.
 
-ACTUALIZACIÓN DIARIA
-La app NO lleva una copia propia de datos.json ni equipos.json.
-Lee directamente:
+3. CALENDARIO
+NO HAY UN CALENDARIO DE PRUEBA SEPARADO.
+La app abre ../index.html y lee directamente el objeto calendarioClausulas
+que ya utiliza la página oficial.
+Por tanto, si modificas el calendario en la web principal, la app utiliza
+esa misma regla.
+
+4. RESTO DE LA WEB DENTRO DE LA APP
+- Equipo Malo
+- Normas
+- Copa
+- Palmarés
+- Estadísticas
+- Fair Play
+
+Estas secciones cargan las páginas REALES que ya están en la carpeta web.
+No hay copias duplicadas dentro de app-prueba.
+
+5. ACTUALIZACIÓN DIARIA
+La app lee directamente:
   ../datos.json
   ../equipos.json
-Por tanto, cuando actualices la web como haces normalmente, la app verá automáticamente los datos nuevos.
-
-CALENDARIO
-Archivo: calendario.json
-Para esta PRUEBA está marcado como abierto:
-  2026-10-22
-Horario: 15:00–21:00
-En la versión real pondremos aquí todo el calendario oficial.
+Por tanto tu rutina de actualización sigue siendo la misma.
 
 IMPORTANTE
-Esto sigue siendo un PROTOTIPO:
-- no hay login real por correo;
-- no hay base de datos central;
-- el historial se guarda solo en este dispositivo;
-- aún no existe el bloqueo seguro entre dos móviles distintos.
-La siguiente fase será servidor + usuarios + base de datos.
+Sigue siendo un prototipo:
+- el usuario todavía se elige en una lista, no entra por email;
+- las ejecuciones se guardan solo en este dispositivo;
+- falta la base de datos central para sincronizar todos los móviles.
 
-CÓMO SUBIRLO
-1. En la carpeta web de tu repositorio crea:
-   app-prueba
-2. Copia dentro TODOS estos archivos.
-3. Commit y Push.
-4. Abre:
-   https://comuniolaviana.github.io/web/app-prueba/
+CÓMO SUBIR
+Sustituye TODO el contenido de:
+  web/app-prueba/
+por los archivos de este ZIP.
+Después:
+  Commit -> Push origin
 
-NO MODIFICA NI SUSTITUYE NINGÚN ARCHIVO DE TU WEB ACTUAL.
+NO hay que sustituir ningún archivo de la web principal para probar V3.

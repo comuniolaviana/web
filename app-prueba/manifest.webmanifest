@@ -1,11 +1,11 @@
 {
   "name": "Comunio Laviana",
   "short_name": "Comunio",
-  "description": "Prototipo de la app de Comunio Laviana",
+  "description": "Aplicación de Comunio Laviana",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0b0f0d",
+  "background_color": "#0b100d",
   "theme_color": "#123d24",
   "icons": [
     {

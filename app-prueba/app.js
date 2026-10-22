@@ -1,276 +1,387 @@
 
 const ZONA = "Europe/Madrid";
-let config = null;
-let usuario = localStorage.getItem("cl_usuario_v2") || "";
-let jugadores = [];
-let equipos = {};
-let participantes = [];
-let serverNow = null;
-let serverCapturedAt = null;
-let jugadorActivo = null;
-let installPrompt = null;
-let datosActualizado = "";
+const PAGINAS = {
+  equipomalo:{titulo:"Equipo Malo",url:"../equipomalo.html"},
+  normas:{titulo:"Normas",url:"../normas.html"},
+  copa:{titulo:"Copa",url:"../copa.html"},
+  palmares:{titulo:"Palmarés",url:"../palmares.html"},
+  estadisticas:{titulo:"Estadísticas",url:"../estadisticas.html"},
+  fairplay:{titulo:"Fair Play",url:"../fairplay.html"}
+};
+const TITULOS={inicio:"Inicio",clausulas:"Cláusulas",calendario:"Calendario",...Object.fromEntries(Object.entries(PAGINAS).map(([k,v])=>[k,v.titulo]))};
+const POSICIONES=[
+  {key:"porteros",titulo:"🥅 PORTEROS"},
+  {key:"defensas",titulo:"🛡️ DEFENSAS"},
+  {key:"medios",titulo:"⚙️ MEDIOS"},
+  {key:"delanteros",titulo:"🎯 DELANTEROS"}
+];
 
-const $ = id => document.getElementById(id);
-const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-const norm = s => String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
-const euro = n => Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
+let usuario=localStorage.getItem("cl_usuario_v3")||"";
+let datosRaw=null, equipos={}, calendario=null;
+let jugadoresPorPosicion={};
+let participantes=[];
+let jugadorActivo=null;
+let serverNow=null, serverCapturedAt=null;
+let installPrompt=null;
+let currentView="inicio";
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+const euro=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
 
 function nowReal(){
-  if(serverNow && serverCapturedAt){
-    return new Date(serverNow.getTime() + (Date.now()-serverCapturedAt));
-  }
+  if(serverNow&&serverCapturedAt) return new Date(serverNow.getTime()+(Date.now()-serverCapturedAt));
   return new Date();
 }
 function madridParts(date=nowReal()){
-  const parts = new Intl.DateTimeFormat("sv-SE",{
-    timeZone:ZONA,year:"numeric",month:"2-digit",day:"2-digit",
-    hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false
-  }).formatToParts(date);
-  return Object.fromEntries(parts.map(p=>[p.type,p.value]));
+  const p=new Intl.DateTimeFormat("sv-SE",{timeZone:ZONA,year:"numeric",month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).formatToParts(date);
+  return Object.fromEntries(p.map(x=>[x.type,x.value]));
 }
-function hoy(){
-  const p=madridParts(); return `${p.year}-${p.month}-${p.day}`;
-}
-function minutosAhora(){
-  const p=madridParts(); return Number(p.hour)*60+Number(p.minute);
-}
-function minutos(txt){
-  const [h,m]=String(txt).split(":").map(Number); return h*60+m;
-}
-function diaAbierto(){ return config.dias_abiertos.includes(hoy()); }
-function horaAbierta(){
-  const n=minutosAhora();
-  return n>=minutos(config.hora_inicio) && n<minutos(config.hora_fin);
-}
-function datosDeHoy(){
-  return String(datosActualizado||"").slice(0,10)===hoy();
-}
-function gateAbierto(){ return diaAbierto() && horaAbierta() && datosDeHoy(); }
-
-function keyHist(){ return "cl_historial_v2"; }
-function hist(){
-  try{return JSON.parse(localStorage.getItem(keyHist())||"[]");}catch{return []}
-}
-function saveHist(x){ localStorage.setItem(keyHist(),JSON.stringify(x)); }
-function operacionesHoy(){ return hist().filter(x=>x.fecha===hoy()); }
-function pagoUsado(u){ return operacionesHoy().some(x=>norm(x.pagador)===norm(u)); }
-function recibidoUsado(u){ return operacionesHoy().some(x=>norm(x.receptor)===norm(u)); }
-
-async function cargar(){
-  const [rc, rd, re] = await Promise.all([
-    fetch("calendario.json?v="+Date.now(),{cache:"no-store"}),
-    fetch("../datos.json?v="+Date.now(),{cache:"no-store"}),
-    fetch("../equipos.json?v="+Date.now(),{cache:"no-store"}).catch(()=>null)
-  ]);
-
-  config = await rc.json();
-
-  // Referencia de hora del servidor/CDN, si está disponible.
-  const dh = rd.headers.get("date");
-  if(dh){
-    const d = new Date(dh);
-    if(!Number.isNaN(d.getTime())){
-      serverNow=d;
-      serverCapturedAt=Date.now();
-    }
-  }
-
-  const raw = await rd.json();
-  datosActualizado = raw.actualizado || "";
-  if(re && re.ok){
-    const eraw=await re.json();
-    equipos=eraw.equipos||eraw||{};
-  }
-
-  jugadores=["porteros","defensas","medios","delanteros"].flatMap(pos =>
-    (raw[pos]||[]).map(j=>({...j,posicion:pos,equipo:equipoDe(j.jugador)}))
-  );
-  participantes=[...new Set(jugadores.map(j=>String(j.propietario||"").trim()).filter(Boolean))]
-    .sort((a,b)=>a.localeCompare(b,"es"));
-}
-
+function hoy(){const p=madridParts();return `${p.year}-${p.month}-${p.day}`}
+function minutosAhora(){const p=madridParts();return Number(p.hour)*60+Number(p.minute)}
+function minutos(s){const [h,m]=String(s).split(":").map(Number);return h*60+m}
 function equipoDe(nombre){
   const d=equipos[nombre];
-  if(typeof d==="string") return d;
-  if(d&&typeof d==="object") return d.equipo||d.club||d.team||"";
+  if(typeof d==="string")return d;
+  if(d&&typeof d==="object")return d.equipo||d.club||d.team||"";
   return "";
 }
 
-function fillUsers(){
-  $("usuario").innerHTML=participantes.map(u=>`<option value="${esc(u)}">${esc(u)}</option>`).join("");
-  if(usuario && participantes.includes(usuario)) $("usuario").value=usuario;
+function extraerCalendarioDesdeIndex(html){
+  const marca="const calendarioClausulas";
+  const p=html.indexOf(marca);
+  if(p<0) throw new Error("No encuentro el calendario oficial en index.html");
+  const inicio=html.indexOf("{",p);
+  let nivel=0, fin=-1, comilla=null, escape=false;
+  for(let i=inicio;i<html.length;i++){
+    const ch=html[i];
+    if(comilla){
+      if(escape){escape=false;continue}
+      if(ch==="\\"){escape=true;continue}
+      if(ch===comilla)comilla=null;
+      continue;
+    }
+    if(ch==="'"||ch==='"'||ch==="`"){comilla=ch;continue}
+    if(ch==="{")nivel++;
+    if(ch==="}"){nivel--;if(nivel===0){fin=i+1;break}}
+  }
+  if(fin<0)throw new Error("Calendario oficial incompleto");
+  const literal=html.slice(inicio,fin);
+  return Function('"use strict";return ('+literal+')')();
+}
+
+function fechaDiaSemana(clave){
+  const [y,m,d]=clave.split("-").map(Number);
+  return new Date(Date.UTC(y,m-1,d,12)).getUTCDay();
+}
+function estadoFecha(fecha){
+  if(!calendario)return {estado:"cerrado",motivo:"Calendario no disponible."};
+  if(calendario.cierres?.[fecha])return {estado:"cerrado",motivo:calendario.cierres[fecha]};
+  if(calendario.aperturas?.[fecha])return {estado:"abierto",motivo:calendario.aperturas[fecha]};
+  if(fecha<calendario.inicioTemporada||fecha>calendario.finTemporada)return {estado:"cerrado",motivo:"Fuera del calendario de cláusulas 2026/27."};
+  for(const [ini,fin,motivo] of calendario.especiales||[]){
+    if(fecha>=ini&&fecha<=fin)return {estado:"especial",motivo};
+  }
+  const ds=fechaDiaSemana(fecha);
+  if(ds===0||ds===6)return {estado:"abierto",motivo:"Temporada ordinaria: abiertas los sábados y domingos."};
+  return {estado:"cerrado",motivo:"Temporada ordinaria: solo se permiten sábados y domingos."};
+}
+function diaAbierto(){const e=estadoFecha(hoy());return e.estado==="abierto"||e.estado==="especial"}
+function horaAbierta(){const n=minutosAhora();return n>=minutos(calendario.horaInicio)&&n<minutos(calendario.horaFin)}
+function datosDeHoy(){return String(datosRaw?.actualizado||"").slice(0,10)===hoy()}
+function gateAbierto(){return diaAbierto()&&horaAbierta()&&datosDeHoy()}
+
+function historial(){
+  try{return JSON.parse(localStorage.getItem("cl_historial_v3")||"[]")}catch{return[]}
+}
+function guardarHistorial(h){localStorage.setItem("cl_historial_v3",JSON.stringify(h))}
+function operacionesHoy(){return historial().filter(x=>x.fecha===hoy())}
+function pagoUsado(u){return operacionesHoy().some(x=>norm(x.pagador)===norm(u))}
+function recibidoUsado(u){return operacionesHoy().some(x=>norm(x.receptor)===norm(u))}
+
+async function cargarDatos(){
+  const [rd,re,ri]=await Promise.all([
+    fetch("../datos.json?v="+Date.now(),{cache:"no-store"}),
+    fetch("../equipos.json?v="+Date.now(),{cache:"no-store"}).catch(()=>null),
+    fetch("../index.html?v="+Date.now(),{cache:"no-store"})
+  ]);
+  if(!rd.ok)throw new Error("No se pudo cargar datos.json");
+  if(!ri.ok)throw new Error("No se pudo cargar el calendario oficial");
+
+  const dateHeader=rd.headers.get("date");
+  if(dateHeader){
+    const d=new Date(dateHeader);
+    if(!Number.isNaN(d.getTime())){serverNow=d;serverCapturedAt=Date.now()}
+  }
+
+  datosRaw=await rd.json();
+  if(re&&re.ok){const e=await re.json();equipos=e.equipos||e||{}}
+  calendario=extraerCalendarioDesdeIndex(await ri.text());
+
+  jugadoresPorPosicion={};
+  for(const pos of POSICIONES){
+    jugadoresPorPosicion[pos.key]=(datosRaw[pos.key]||[])
+      .map(j=>({...j,equipo:equipoDe(j.jugador),posicion:pos.key}))
+      .sort((a,b)=>Number(b.clausula)-Number(a.clausula)||String(a.jugador).localeCompare(String(b.jugador),"es"));
+  }
+
+  participantes=[...new Set(POSICIONES.flatMap(p=>jugadoresPorPosicion[p.key]).map(j=>String(j.propietario||"").trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,"es",{sensitivity:"base"}));
+}
+
+function rellenarUsuarios(){
+  $("usuarioSelect").innerHTML=participantes.map(u=>`<option value="${esc(u)}">${esc(u)}</option>`).join("");
+  if(usuario){
+    const match=participantes.find(u=>norm(u)===norm(usuario));
+    if(match){usuario=match;$("usuarioSelect").value=match}
+  }
 }
 
 function motivoJugador(j){
-  if(!diaAbierto()) return "Hoy no es día de cláusulas";
-  if(!datosDeHoy()) return "Datos no actualizados hoy";
-  if(!horaAbierta()) return `Fuera de horario (${config.hora_inicio}–${config.hora_fin})`;
-  if(pagoUsado(usuario)) return "Ya utilizaste tu cláusula";
-  if(norm(j.propietario)===norm(usuario)) return "Es un jugador de tu equipo";
-  if(recibidoUsado(j.propietario)) return `${j.propietario} ya recibió una cláusula`;
-  if(operacionesHoy().some(x=>x.jugador===j.jugador)) return "Jugador ya clausulado";
+  if(!diaAbierto())return "Hoy no es día de cláusulas";
+  if(!datosDeHoy())return "Datos no actualizados hoy";
+  if(!horaAbierta())return `Fuera de horario (${calendario.horaInicio}–${calendario.horaFin})`;
+  if(pagoUsado(usuario))return "Ya utilizaste tu cláusula";
+  if(norm(j.propietario)===norm(usuario))return "Jugador de tu propio equipo";
+  if(recibidoUsado(j.propietario))return `${j.propietario} ya recibió una cláusula`;
+  if(operacionesHoy().some(x=>x.jugador===j.jugador))return "Jugador ya clausulado";
   return "";
 }
-function puede(j){ return motivoJugador(j)===""; }
 
-function renderGate(){
-  const d=diaAbierto(), a=datosDeHoy(), h=horaAbierta(), ok=d&&a&&h;
-  $("dot").className="dot "+(ok?"ok":"no");
+function gateHTML(){
+  const fecha=hoy(),info=estadoFecha(fecha);
+  const d=diaAbierto(),a=datosDeHoy(),h=horaAbierta(),ok=d&&a&&h;
+  const estadoTexto=ok?"🟢 CLÁUSULAS ABIERTAS":"🔒 CLÁUSULAS CERRADAS";
+  let detalle="";
+  if(!d)detalle=info.motivo;
+  else if(!a)detalle="El listado de jugadores todavía no está actualizado hoy.";
+  else if(!h)detalle=`Horario permitido: ${calendario.horaInicio}–${calendario.horaFin}.`;
+  else detalle=`Puedes ejecutar hasta las ${calendario.horaFin}.`;
 
-  if(ok){
-    $("estadoTitulo").textContent="🟢 CLÁUSULAS ABIERTAS";
-    $("estadoDetalle").textContent=`Hasta las ${config.hora_fin}.`;
-  }else{
-    $("estadoTitulo").textContent="🔒 CLÁUSULAS CERRADAS";
-    if(!d) $("estadoDetalle").textContent="Hoy no está habilitado en el calendario.";
-    else if(!a) $("estadoDetalle").textContent="La base de jugadores todavía no está actualizada hoy.";
-    else $("estadoDetalle").textContent=`Horario permitido: ${config.hora_inicio}–${config.hora_fin}.`;
+  return `<span class="eyebrow">ESTADO DE CLÁUSULAS</span>
+    <h2>${estadoTexto}</h2>
+    <p>${esc(detalle)}</p>
+    <div class="gate-checks">
+      <div class="check ${d?"ok":"no"}">${d?"✅":"❌"} ${d?"Día habilitado por el calendario oficial":"Día cerrado por el calendario oficial"}</div>
+      <div class="check ${a?"ok":"no"}">${a?"✅":"❌"} ${a?"Datos actualizados hoy · "+esc(datosRaw.actualizado):"Última actualización: "+esc(datosRaw.actualizado||"sin fecha")}</div>
+      <div class="check ${h?"ok":"no"}">${h?"✅":"❌"} ${h?"Dentro del horario":"Fuera del horario"} ${calendario.horaInicio}–${calendario.horaFin}</div>
+    </div>`;
+}
+
+function renderEstados(){
+  const html=gateHTML(),open=gateAbierto();
+  for(const id of ["gateInicio","gateClausulas"]){
+    $(id).innerHTML=html;$(id).className="gate card "+(open?"open":"closed");
+  }
+  const p=pagoUsado(usuario),r=recibidoUsado(usuario);
+  for(const id of ["inicioPagar","estadoPagar"]){$(id).textContent=p?"UTILIZADA":"DISPONIBLE";$(id).className=p?"blocked":"available"}
+  for(const id of ["inicioRecibir","estadoRecibir"]){$(id).textContent=r?"RECIBIDA":"DISPONIBLE";$(id).className=r?"blocked":"available"}
+}
+
+function renderClausulas(){
+  const q=norm($("buscar").value);
+  const cont=$("clausulasContenido");
+  cont.innerHTML="";
+  let total=0;
+
+  for(const pos of POSICIONES){
+    const lista=jugadoresPorPosicion[pos.key]
+      .filter(j=>!recibidoUsado(j.propietario))
+      .filter(j=>!q||norm(j.jugador).includes(q)||norm(j.propietario).includes(q)||norm(j.equipo).includes(q));
+
+    if(!lista.length)continue;
+    total+=lista.length;
+
+    const sec=document.createElement("section");
+    sec.className="position-section";
+    sec.innerHTML=`<div class="position-heading"><h2>${pos.titulo}</h2><span>${lista.length} · mayor a menor cláusula</span></div><div class="players"></div>`;
+    const grid=sec.querySelector(".players");
+
+    for(const j of lista){
+      const motivo=motivoJugador(j),ok=!motivo;
+      const art=document.createElement("article");
+      art.className="player "+(ok?"":"locked");
+      art.innerHTML=`<div class="player-top">
+        <div><h3>${esc(j.jugador)}</h3><div class="player-sub">${esc(j.propietario)}${j.equipo?" · "+esc(j.equipo):""}</div></div>
+        <div class="clause"><small>CLÁUSULA</small>${euro(j.clausula)}</div>
+      </div>
+      <div class="player-data">
+        <div class="datum"><span>Puntos</span><strong>${Number(j.puntos)||0}</strong></div>
+        <div class="datum"><span>Valor actual</span><strong>${euro(j.valor)}</strong></div>
+      </div>
+      <button class="player-action" ${ok?"":"disabled"}>${ok?"EJECUTAR CLÁUSULA":esc(motivo)}</button>`;
+      art.querySelector("button").addEventListener("click",()=>abrirModal(j));
+      grid.appendChild(art);
+    }
+    cont.appendChild(sec);
   }
 
-  const setCheck=(id,ok,text)=>$(id).innerHTML=`<div class="check ${ok?"ok":"no"}">${ok?"✅":"❌"} ${esc(text)}</div>`;
-  setCheck("checkDia",d,d?"Día habilitado en el calendario":"Día cerrado en el calendario");
-  setCheck("checkDatos",a,a?`Datos actualizados hoy · ${datosActualizado}`:`Última actualización: ${datosActualizado||"sin fecha"}`);
-  setCheck("checkHora",h,h?`Dentro del horario ${config.hora_inicio}–${config.hora_fin}`:`Fuera del horario ${config.hora_inicio}–${config.hora_fin}`);
-}
-
-function renderMiEstado(){
-  const p=pagoUsado(usuario), r=recibidoUsado(usuario);
-  $("estadoPagar").textContent=p?"UTILIZADA":"DISPONIBLE";
-  $("estadoPagar").className=p?"blocked":"available";
-  $("estadoRecibir").textContent=r?"RECIBIDA":"DISPONIBLE";
-  $("estadoRecibir").className=r?"blocked":"available";
-}
-
-function renderLista(){
-  const q=norm($("buscar").value);
-  // REGLA REAL: si un propietario ya recibió una cláusula hoy,
-  // TODOS sus jugadores desaparecen inmediatamente de la lista.
-  const visibles=jugadores
-    .filter(j=>!recibidoUsado(j.propietario))
-    .filter(j=>!q || norm(j.jugador).includes(q)||norm(j.propietario).includes(q)||norm(j.equipo).includes(q))
-    .sort((a,b)=>Number(b.clausula)-Number(a.clausula));
-
-  $("lista").innerHTML=visibles.map(j=>{
-    const m=motivoJugador(j), ok=!m;
-    return `<article class="player ${ok?"":"locked"}">
-      <div><h3>${esc(j.jugador)}</h3><div class="sub">${esc(j.propietario)}${j.equipo?" · "+esc(j.equipo):""}</div></div>
-      <div class="amount"><small>CLÁUSULA</small>${euro(j.clausula)}</div>
-      <button data-name="${encodeURIComponent(j.jugador)}" ${ok?"":"disabled"}>${ok?"EJECUTAR CLÁUSULA":esc(m)}</button>
-    </article>`;
-  }).join("") || `<div class="card muted">No hay jugadores disponibles con este filtro.</div>`;
-
-  document.querySelectorAll(".player button[data-name]").forEach(b=>{
-    b.addEventListener("click",()=>{
-      const name=decodeURIComponent(b.dataset.name);
-      const j=jugadores.find(x=>x.jugador===name);
-      abrirModal(j);
-    });
-  });
+  if(!total)cont.innerHTML=`<div class="card muted">No hay jugadores disponibles que coincidan con la búsqueda.</div>`;
 }
 
 function abrirModal(j){
   jugadorActivo=j;
-  const m=motivoJugador(j);
-  $("mJugador").textContent=j.jugador;
-  $("mProp").textContent=j.propietario;
-  $("mEquipo").textContent=j.equipo||"—";
-  $("mImporte").textContent=euro(j.clausula);
-  $("mAviso").textContent=m || `Al confirmar: ${usuario} utilizará su cláusula y ${j.propietario} quedará protegido. Todos sus jugadores desaparecerán para el resto de usuarios.`;
-  $("confirmar").disabled=!!m;
+  const motivo=motivoJugador(j);
+  $("modalJugador").textContent=j.jugador;
+  $("modalPropietario").textContent=j.propietario;
+  $("modalEquipo").textContent=j.equipo||"—";
+  $("modalPuntos").textContent=Number(j.puntos)||0;
+  $("modalValor").textContent=euro(j.valor);
+  $("modalClausula").textContent=euro(j.clausula);
+  $("modalAviso").textContent=motivo||`Al confirmar, ${usuario} gastará su cláusula de hoy y ${j.propietario} quedará protegido: todos sus jugadores desaparecerán de la lista.`;
+  $("confirmarBtn").disabled=!!motivo;
   $("modal").classList.remove("hidden");
 }
-function cerrar(){ $("modal").classList.add("hidden"); jugadorActivo=null; }
-
+function cerrarModal(){$("modal").classList.add("hidden");jugadorActivo=null}
 function ejecutar(){
-  if(!jugadorActivo) return;
-  // Se vuelven a comprobar TODAS las reglas justo antes de registrar.
-  const m=motivoJugador(jugadorActivo);
-  if(m){ toast("❌ "+m); cerrar(); refrescar(); return; }
-
+  if(!jugadorActivo)return;
+  const motivo=motivoJugador(jugadorActivo);
+  if(motivo){toast("❌ "+motivo);cerrarModal();refrescar();return}
   const p=madridParts();
   const item={
-    id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())),
-    fecha:hoy(),
-    hora:`${p.hour}:${p.minute}:${p.second}`,
-    pagador:usuario,
-    receptor:jugadorActivo.propietario,
-    jugador:jugadorActivo.jugador,
-    importe:Number(jugadorActivo.clausula)||0
+    id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),
+    fecha:hoy(),hora:`${p.hour}:${p.minute}:${p.second}`,
+    pagador:usuario,receptor:jugadorActivo.propietario,
+    jugador:jugadorActivo.jugador,importe:Number(jugadorActivo.clausula)||0
   };
-  const h=hist(); h.unshift(item); saveHist(h);
-  cerrar();
-  refrescar();
-  toast(`✅ ${item.pagador} → ${item.jugador} (${item.receptor})`);
+  const h=historial();h.unshift(item);guardarHistorial(h);
+  cerrarModal();refrescar();toast(`✅ ${item.pagador} → ${item.jugador} (${item.receptor})`);
 }
 
-function renderHist(){
-  const h=hist();
-  $("historial").innerHTML=h.length?h.map(x=>`
-    <div class="history"><b>${esc(x.pagador)}</b> paga cláusula de <b>${esc(x.jugador)}</b> a ${esc(x.receptor)} · ${euro(x.importe)}
-      <small>${esc(x.fecha)} · ${esc(x.hora)}</small>
-    </div>`).join(""):`<p class="muted">Todavía no hay operaciones de prueba.</p>`;
+function renderCalendario(){
+  const e=estadoFecha(hoy());
+  const abierto=e.estado==="abierto"||e.estado==="especial";
+  $("estadoCalendarioHoy").innerHTML=`<div class="today-box ${abierto?"open":"closed"}"><b>${abierto?"🟢 Abierto hoy":"🔴 Cerrado hoy"}</b><br>${esc(e.motivo)}<br><small>Horario cuando está abierto: ${calendario.horaInicio}–${calendario.horaFin}</small></div>`;
+
+  const cont=$("calendarioMeses");cont.innerHTML="";
+  const nombres=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const dias=["L","M","X","J","V","S","D"];
+  const [sy,sm]=calendario.inicioTemporada.split("-").map(Number);
+  const [ey,em]=calendario.finTemporada.split("-").map(Number);
+
+  let y=sy,m=sm-1;
+  while(y<ey||(y===ey&&m<=em-1)){
+    const card=document.createElement("section");card.className="month-card";
+    card.innerHTML=`<h3>${nombres[m]} ${y}</h3><div class="week">${dias.map(x=>`<div>${x}</div>`).join("")}</div><div class="days"></div>`;
+    const grid=card.querySelector(".days");
+    const first=new Date(y,m,1),offset=(first.getDay()+6)%7,total=new Date(y,m+1,0).getDate();
+    for(let i=0;i<offset;i++){const d=document.createElement("div");d.className="day empty";grid.appendChild(d)}
+    for(let n=1;n<=total;n++){
+      const key=`${y}-${String(m+1).padStart(2,"0")}-${String(n).padStart(2,"0")}`;
+      const info=estadoFecha(key);
+      const b=document.createElement("button");
+      const cls=info.estado==="especial"?"special":info.estado==="abierto"?"open":"closed";
+      b.className=`day ${cls} ${key===hoy()?"today":""}`;
+      b.innerHTML=`<b>${n}</b><small>${info.estado==="especial"?"ESP":info.estado==="abierto"?"ABR":"CER"}</small>`;
+      b.title=info.motivo;
+      b.addEventListener("click",()=>toast(`${key}: ${info.motivo}`));
+      grid.appendChild(b);
+    }
+    cont.appendChild(card);
+    m++;if(m===12){m=0;y++}
+  }
+}
+
+function renderHistorial(){
+  const h=historial();
+  $("historial").innerHTML=h.length?h.map(x=>`<div class="state-row"><span><b>${esc(x.pagador)}</b> → ${esc(x.jugador)} (${esc(x.receptor)})</span><strong>${euro(x.importe)}</strong></div>`).join(""):`<p class="muted">Todavía no hay ejecuciones en esta prueba.</p>`;
+}
+
+function limpiarPaginaIframe(){
+  const f=$("webFrame");
+  try{
+    const doc=f.contentDocument;
+    if(!doc)return;
+    const st=doc.createElement("style");
+    st.textContent=`
+      nav.menu{display:none!important}
+      body>header, header.hero{display:none!important}
+      main{margin-top:12px!important}
+      .page{padding-top:8px!important}
+    `;
+    doc.head.appendChild(st);
+
+    doc.querySelectorAll("a[href]").forEach(a=>{
+      const href=(a.getAttribute("href")||"").split("?")[0].split("#")[0];
+      const map={
+        "index.html":"clausulas","equipomalo.html":"equipomalo","normas.html":"normas",
+        "copa.html":"copa","palmares.html":"palmares","estadisticas.html":"estadisticas",
+        "fairplay.html":"fairplay","clausulas-reglamento.html":"calendario"
+      };
+      if(map[href]){
+        a.addEventListener("click",ev=>{ev.preventDefault();window.parent.abrirSeccion(map[href])});
+      }
+    });
+  }catch(e){console.warn("No se pudo adaptar la página interna",e)}
+}
+window.abrirSeccion=abrirSeccion;
+
+function abrirSeccion(view){
+  currentView=view;
+  document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
+  document.querySelectorAll(".app-nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+  $("appTitle").textContent=TITULOS[view]||"Comunio Laviana";
+
+  if(view==="inicio")$("view-inicio").classList.remove("hidden");
+  else if(view==="clausulas"){$("view-clausulas").classList.remove("hidden");renderEstados();renderClausulas()}
+  else if(view==="calendario"){$("view-calendario").classList.remove("hidden");renderCalendario()}
+  else if(PAGINAS[view]){
+    $("view-web").classList.remove("hidden");
+    const f=$("webFrame"),url=PAGINAS[view].url;
+    if(f.dataset.url!==url){f.dataset.url=url;f.src=url+"?app="+Date.now()}
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
 function refrescar(){
-  renderGate(); renderMiEstado(); renderLista(); renderHist();
+  if(!usuario)return;
+  renderEstados();
+  if(currentView==="clausulas")renderClausulas();
+  if(currentView==="calendario")renderCalendario();
+  renderHistorial();
 }
-function show(){
-  $("login").classList.toggle("hidden",!!usuario);
-  $("app").classList.toggle("hidden",!usuario);
+
+function mostrar(){
+  $("loginView").classList.toggle("hidden",!!usuario);
+  $("appView").classList.toggle("hidden",!usuario);
   if(usuario){
-    $("saludo").textContent="Hola, "+usuario;
-    $("cuentaUsuario").textContent=usuario;
+    $("holaUsuario").textContent=usuario;
+    abrirSeccion(currentView);
     refrescar();
   }
 }
-function toast(t){
-  $("toast").textContent=t;$("toast").classList.remove("hidden");
-  setTimeout(()=>$("toast").classList.add("hidden"),2600);
-}
-
-$("entrar").addEventListener("click",()=>{
-  usuario=$("usuario").value;localStorage.setItem("cl_usuario_v2",usuario);show();
-});
-$("salir").addEventListener("click",()=>{
-  usuario="";localStorage.removeItem("cl_usuario_v2");show();
-});
-$("buscar").addEventListener("input",renderLista);
-$("cerrar").addEventListener("click",cerrar);
-$("modal").addEventListener("click",e=>{if(e.target===$("modal"))cerrar()});
-$("confirmar").addEventListener("click",ejecutar);
-$("reiniciar").addEventListener("click",()=>{
-  if(confirm("¿Borrar todas las ejecuciones de prueba guardadas en este móvil?")){
-    localStorage.removeItem(keyHist());refrescar();toast("Pruebas reiniciadas");
-  }
-});
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));
-  ["clausulas","historial","cuenta"].forEach(t=>$("tab-"+t).classList.toggle("hidden",t!==b.dataset.tab));
-  if(b.dataset.tab==="historial")renderHist();
-}));
-
-window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();installPrompt=e;$("installBtn").classList.remove("hidden");
-});
-$("installBtn").addEventListener("click",async()=>{
-  if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;
-  installPrompt=null;$("installBtn").classList.add("hidden");
-});
-function installHelp(){
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),2800)}
+function ayudaInstalacion(){
   const ua=navigator.userAgent.toLowerCase();
-  $("installText").innerHTML=/iphone|ipad|ipod/.test(ua)
-    ?"iPhone: Safari → Compartir → <b>Añadir a pantalla de inicio</b>."
-    :"Android: menú del navegador → <b>Instalar aplicación</b> o <b>Añadir a pantalla de inicio</b>.";
+  $("installHelp").innerHTML=/iphone|ipad|ipod/.test(ua)
+    ?"En iPhone: Safari → Compartir → <b>Añadir a pantalla de inicio</b>."
+    :"En Android: menú del navegador → <b>Instalar aplicación</b> o <b>Añadir a pantalla de inicio</b>.";
 }
 
-(async function(){
-  installHelp();
+$("entrarBtn").addEventListener("click",()=>{usuario=$("usuarioSelect").value;localStorage.setItem("cl_usuario_v3",usuario);mostrar()});
+$("salirBtn").addEventListener("click",()=>{usuario="";localStorage.removeItem("cl_usuario_v3");mostrar()});
+$("buscar").addEventListener("input",renderClausulas);
+$("cerrarModal").addEventListener("click",cerrarModal);
+$("modal").addEventListener("click",e=>{if(e.target===$("modal"))cerrarModal()});
+$("confirmarBtn").addEventListener("click",ejecutar);
+$("nav").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>abrirSeccion(b.dataset.view)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>abrirSeccion(b.dataset.go)));
+$("webFrame").addEventListener("load",limpiarPaginaIframe);
+
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;$("installBtn").classList.remove("hidden")});
+$("installBtn").addEventListener("click",async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$("installBtn").classList.add("hidden")});
+
+(async function init(){
+  ayudaInstalacion();
   try{
-    await cargar();fillUsers();show();
+    await cargarDatos();
+    rellenarUsuarios();
+    mostrar();
   }catch(e){
-    console.error(e);alert("No se pudieron cargar los datos de la prueba.");
+    console.error(e);
+    document.body.innerHTML=`<div style="padding:24px;color:white;font-family:Arial"><h2>No se pudo cargar la aplicación</h2><p>${esc(e.message)}</p></div>`;
   }
-  if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(console.warn);
-  setInterval(()=>{if(usuario)refrescar()},15000);
+  if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(console.warn);
+  setInterval(()=>refrescar(),15000);
 })();
