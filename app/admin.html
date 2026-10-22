@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07130d">
   <title>Comunio Laviana · Administrador</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=5-5">
+  <link rel="stylesheet" href="admin-check.css?v=1">
 </head>
 <body>
 <div class="app-shell">
@@ -27,6 +28,28 @@
       <p id="syncMsg" class="message"></p>
     </section>
 
+    <section class="panel admin-reconcile" style="margin-bottom:12px">
+      <h2>✅ Comprobar operaciones</h2>
+      <p class="muted">Compara las operaciones realizadas desde la app con el historial oficial de <b>estadisticas.json</b>, que sale de tu Excel. Las compras y ventas con <b>Computer</b> que solo existen en el Excel no se consideran incidencia.</p>
+
+      <div class="reconcile-controls">
+        <label>Fecha a comprobar
+          <input id="reconcileDate" type="date">
+        </label>
+        <button id="reconcileBtn" class="primary" type="button">Comprobar operaciones</button>
+      </div>
+
+      <p id="reconcileMsg" class="message"></p>
+
+      <div id="reconcileSummary" class="reconcile-summary hidden">
+        <article><strong id="reconcileAppCount">0</strong><span>En la app</span></article>
+        <article><strong id="reconcileOkCount">0</strong><span>Correctas</span></article>
+        <article><strong id="reconcileIssueCount">0</strong><span>Incidencias</span></article>
+      </div>
+
+      <div id="reconcileResult" class="reconcile-result"></div>
+    </section>
+
     <section class="panel">
       <h2>Calendario oficial</h2>
       <p class="muted">La única fuente es <b>calendario-clausulas.json</b>. Este botón copia automáticamente sus días y horarios a Supabase para que el servidor aplique exactamente el mismo calendario.</p>
@@ -39,6 +62,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="../calendario-engine.js"></script>
-<script src="admin.js"></script>
+<script src="admin.js?v=2"></script>
 </body>
 </html>
