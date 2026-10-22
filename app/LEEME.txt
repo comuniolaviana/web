@@ -1,22 +1,31 @@
-COMUNIO LAVIANA · V6 VISUAL · FASE 1
+COMUNIO LAVIANA · NOTIFICACIONES PUSH
 
-Sustituye dentro de la carpeta app:
-- styles.css
-- sw.js
+Copia estos 4 archivos dentro de la carpeta app:
 
-NO TOQUES:
-- config.js
+1. config.js            -> SUSTITUIR el actual
+2. sw.js                -> SUSTITUIR el actual
+3. notifications.js     -> ARCHIVO NUEVO
+4. notifications.css    -> ARCHIVO NUEVO
+
+NO TOCAR:
 - app.js
 - admin.js
 - Supabase
+- datos.json
+- estadisticas.json
 
-Esta primera V6 cambia solamente presentación y usabilidad:
-- nueva identidad oscura/deportiva
-- cabecera con emblema CL en CSS
-- colores, fondos, tarjetas y botones
-- rediseño fuerte de Inicio
-- rediseño fuerte de Mi equipo
-- retoque visual coherente del resto de pantallas
-- caché V6 para que el móvil coja los cambios
+Después:
+- Commit
+- Push origin
 
-Después: Commit + Push.
+FUNCIONAMIENTO
+- Nueva cláusula: aviso general.
+- Si la cláusula es contra tu equipo: aviso especial "Te han pagado una cláusula".
+- Compra al Equipo Malo: aviso general.
+- Venta al Equipo Malo: aviso general.
+- Cada usuario debe activar las notificaciones una sola vez en cada móvil/dispositivo.
+- En iPhone es necesario abrir la app desde el icono añadido a la pantalla de inicio.
+- Una vez activadas aparece un botón "Probar" para enviar una notificación de prueba.
+
+IMPORTANTE
+Este sw.js ya incluye la caché V6.1 y las notificaciones. Si tenías pendiente el sw.js del paquete V6 anterior, NO lo vuelvas a copiar después de este.

@@ -1,5 +1,9 @@
-const CACHE="comunio-laviana-app-v6-0";
-const STATIC=["./","./index.html","./styles.css","./config.js","./app.js","./manifest.json","../calendario-engine.js","../calendario-clausulas.json"];
+const CACHE="comunio-laviana-app-v6-1";
+const STATIC=[
+  "./","./index.html","./styles.css","./notifications.css","./notifications.js",
+  "./config.js","./app.js","./manifest.json",
+  "../calendario-engine.js","../calendario-clausulas.json"
+];
 
 self.addEventListener("install",e=>e.waitUntil(
   caches.open(CACHE).then(c=>c.addAll(STATIC)).then(()=>self.skipWaiting())
@@ -14,9 +18,6 @@ self.addEventListener("activate",e=>e.waitUntil(
 self.addEventListener("fetch",e=>{
   const u=new URL(e.request.url);
   if(u.pathname.endsWith(".json") || u.hostname.includes("supabase")) return;
-
-  // En V6 intentamos red siempre primero para evitar que el móvil se quede
-  // visualmente atrapado en una versión anterior. Si no hay red, usamos caché.
   e.respondWith(
     fetch(e.request,{cache:"no-store"})
       .then(r=>{
@@ -26,4 +27,35 @@ self.addEventListener("fetch",e=>{
       })
       .catch(()=>caches.match(e.request))
   );
+});
+
+self.addEventListener("push",event=>{
+  let data={};
+  try{ data=event.data?event.data.json():{}; }
+  catch{ data={title:"Comunio Laviana",body:event.data?.text()||"Nueva actividad en la liga."}; }
+
+  const title=data.title||"Comunio Laviana";
+  const options={
+    body:data.body||"Nueva actividad en la liga.",
+    icon:"./icon-192.svg",
+    tag:data.tag||"comunio-laviana",
+    renotify:true,
+    data:{url:data.url||"./index.html",type:data.type||""}
+  };
+  event.waitUntil(self.registration.showNotification(title,options));
+});
+
+self.addEventListener("notificationclick",event=>{
+  event.notification.close();
+  const target=event.notification?.data?.url||"./index.html";
+  event.waitUntil((async()=>{
+    const list=await clients.matchAll({type:"window",includeUncontrolled:true});
+    for(const client of list){
+      if("focus" in client){
+        if("navigate" in client) try{ await client.navigate(target); }catch{}
+        return client.focus();
+      }
+    }
+    return clients.openWindow(target);
+  })());
 });
