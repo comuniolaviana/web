@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07130d">
   <title>Comunio Laviana</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=5-5">
 </head>
 <body>
 <div id="appShell" class="app-shell">
@@ -24,6 +24,7 @@
     <button data-view="clauses" class="active">⚡ <span>Cláusulas</span></button>
     <button data-view="news">📰 <span>Noticias</span></button>
     <button data-view="badteam">💀 <span>Equipo Malo</span></button>
+    <button data-view="stats">📊 <span>Estadísticas</span></button>
     <button data-view="rules">📜 <span>Normas</span></button>
     <a id="adminNav" class="hidden" href="admin.html">🛠️ <span>Admin</span></a>
   </nav>
@@ -256,6 +257,76 @@
       </div>
       <div id="historyList" class="history-list"></div>
     </section>
+
+    <section id="statsView" class="view hidden">
+      <div class="stats-intro-card">
+        <div>
+          <span class="eyebrow">DATOS DE LA LIGA</span>
+          <h2>📊 Estadísticas</h2>
+          <p>Equipos, movimientos y traspasos registrados desde el 20/07/2026.</p>
+        </div>
+        <button id="statsRefreshBtn" class="stats-refresh-btn" type="button">↻ Actualizar</button>
+      </div>
+
+      <div id="statsUpdated" class="stats-updated">Cargando estadísticas…</div>
+
+      <div class="stats-summary-grid">
+        <article><strong id="statsTotalTeams">—</strong><span>Equipos</span></article>
+        <article><strong id="statsTotalPlayers">—</strong><span>Jugadores</span></article>
+        <article><strong id="statsTotalMoves">—</strong><span>Movimientos</span></article>
+        <article><strong id="statsMovedPlayers">—</strong><span>Con movimientos</span></article>
+      </div>
+
+      <div class="stats-two-col">
+        <section class="stats-card">
+          <div class="stats-card-head">
+            <h2>👥 Jugadores actuales por equipo</h2>
+            <span>plantilla</span>
+          </div>
+          <div id="statsSquads" class="stats-ranking"><div class="loading">Cargando…</div></div>
+        </section>
+
+        <section class="stats-card">
+          <div class="stats-card-head">
+            <h2>🔄 Usuarios con más movimientos</h2>
+            <span>total</span>
+          </div>
+          <div id="statsManagers" class="stats-ranking"><div class="loading">Cargando…</div></div>
+          <div class="stats-note">Cada compra o venta realizada por un usuario cuenta como un movimiento. Computer, Equipo Malo y errores no aparecen como equipos.</div>
+        </section>
+      </div>
+
+      <section class="stats-card">
+        <div class="stats-card-head">
+          <h2>⚽ Jugadores más traspasados</h2>
+          <span>Top 25</span>
+        </div>
+        <div id="statsPlayers" class="stats-ranking"><div class="loading">Cargando…</div></div>
+      </section>
+
+      <section class="stats-card stats-history-card">
+        <div class="stats-card-head">
+          <h2>📜 Historial de traspasos por jugador</h2>
+          <span>máx. 50</span>
+        </div>
+
+        <div class="stats-history-tools">
+          <div class="search-box stats-search-box">
+            <span>🔎</span>
+            <input id="statsPlayerSearch" type="search" placeholder="Buscar jugador">
+          </div>
+          <select id="statsUserFilter" aria-label="Filtrar por usuario">
+            <option value="">Todos los usuarios</option>
+          </select>
+          <button id="statsClearBtn" class="secondary" type="button">Limpiar</button>
+        </div>
+
+        <div id="statsHistoryList" class="stats-history-list">
+          <div class="loading">Cargando historial…</div>
+        </div>
+      </section>
+    </section>
+
     <section id="rulesView" class="view hidden">
       <div class="rules-tabs" role="tablist" aria-label="Apartados de normas">
         <button class="rules-tab active" data-rules-tab="general" type="button">📜 Generales</button>
@@ -515,8 +586,8 @@
 <div id="toast" class="toast hidden"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+<script src="config.js?v=5-5"></script>
 <script src="../calendario-engine.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=5-5"></script>
 </body>
 </html>

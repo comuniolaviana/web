@@ -116,6 +116,7 @@ let supa=null, session=null, profile=null;
 let players=[], badPlayers=[];
 let clauseExecutions=[], badPurchases=[], badSales=[];
 let dataSnapshotMs=0;
+let statsData=null, statsLoading=false;
 let schedule=null, pendingAction=null, currentView="clauses", historyPeriod="today";
 
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
@@ -312,6 +313,15 @@ function bindUI(){
   $("historyDate").addEventListener("change",()=>{
     historyPeriod="date";document.querySelectorAll("[data-period]").forEach(x=>x.classList.remove("active"));loadNews();
   });
+
+  $("statsPlayerSearch").addEventListener("input",renderStatsHistory);
+  $("statsUserFilter").addEventListener("change",renderStatsHistory);
+  $("statsClearBtn").addEventListener("click",()=>{
+    $("statsPlayerSearch").value="";
+    $("statsUserFilter").value="";
+    renderStatsHistory();
+  });
+  $("statsRefreshBtn").addEventListener("click",()=>loadStatsData(true));
 
   document.querySelectorAll(".rules-tab").forEach(b=>b.addEventListener("click",()=>openRulesTab(b.dataset.rulesTab)));
   document.querySelectorAll("[data-open-rule]").forEach(b=>b.addEventListener("click",()=>openRulesTab(b.dataset.openRule)));
@@ -815,15 +825,110 @@ function newsHtml(e){
   </div></article>`;
 }
 
+function statsNumber(n){return new Intl.NumberFormat("es-ES").format(Number(n)||0);}
+function statsDateES(value){
+  const s=String(value||"").slice(0,10),parts=s.split("-");
+  return parts.length===3?`${parts[2]}/${parts[1]}/${parts[0]}`:String(value||"");
+}
+function statsUpdatedLabel(value){
+  const s=String(value||"").trim();
+  if(!s)return "";
+  const [date,time=""] = s.split(" ");
+  return `${statsDateES(date)}${time?` · ${time.slice(0,5)}`:""}`;
+}
+async function loadStatsData(force=false){
+  if(statsLoading)return;
+  if(statsData&&!force){renderStats();return;}
+  statsLoading=true;
+  $("statsRefreshBtn").disabled=true;
+  $("statsUpdated").textContent="Actualizando estadísticas…";
+  try{
+    const r=await fetch(`../estadisticas.json?v=${Date.now()}`,{cache:"no-store"});
+    if(!r.ok)throw new Error("No se pudo cargar estadisticas.json");
+    statsData=await r.json();
+    renderStats();
+  }catch(e){
+    console.error("Estadísticas:",e);
+    $("statsUpdated").textContent="No se pudieron cargar las estadísticas.";
+    $("statsSquads").innerHTML='<div class="empty">No hay datos disponibles ahora mismo.</div>';
+    $("statsManagers").innerHTML='<div class="empty">No hay datos disponibles ahora mismo.</div>';
+    $("statsPlayers").innerHTML='<div class="empty">No hay datos disponibles ahora mismo.</div>';
+    $("statsHistoryList").innerHTML='<div class="empty">No hay datos disponibles ahora mismo.</div>';
+  }finally{
+    statsLoading=false;
+    $("statsRefreshBtn").disabled=false;
+  }
+}
+function renderStats(){
+  if(!statsData)return;
+  const teams=Array.isArray(statsData.equipos)?statsData.equipos:[];
+  const moved=Array.isArray(statsData.jugadoresMasTraspasados)?statsData.jugadoresMasTraspasados:[];
+  const history=Array.isArray(statsData.historial)?statsData.historial:[];
+
+  $("statsTotalTeams").textContent=statsNumber(teams.length);
+  $("statsTotalPlayers").textContent=statsNumber(statsData.totalJugadores);
+  $("statsTotalMoves").textContent=statsNumber(statsData.totalMovimientosUsuarios);
+  $("statsMovedPlayers").textContent=statsNumber(moved.length);
+  $("statsUpdated").textContent=statsData.actualizado
+    ? `Actualizado ${statsUpdatedLabel(statsData.actualizado)} · desde ${statsDateES(statsData.fechaInicio||"2026-07-20")}`
+    : `Datos desde ${statsDateES(statsData.fechaInicio||"2026-07-20")}`;
+
+  const squads=[...teams].sort((a,b)=>(Number(b.jugadores)||0)-(Number(a.jugadores)||0)||String(a.propietario||"").localeCompare(String(b.propietario||""),"es"));
+  $("statsSquads").innerHTML=squads.length?squads.map((x,i)=>statsRankRow(i+1,x.propietario,x.jugadores,"jugadores")).join(""):'<div class="empty">Sin datos de plantillas.</div>';
+
+  const managers=[...teams].sort((a,b)=>(Number(b.movimientos)||0)-(Number(a.movimientos)||0)||String(a.propietario||"").localeCompare(String(b.propietario||""),"es"));
+  $("statsManagers").innerHTML=managers.length?managers.map((x,i)=>statsRankRow(i+1,x.propietario,x.movimientos,"mov.")).join(""):'<div class="empty">Sin movimientos.</div>';
+
+  const top=moved.slice(0,25);
+  $("statsPlayers").innerHTML=top.length?top.map((x,i)=>statsRankRow(i+1,x.jugador,x.traspasos,"traspasos")).join(""):'<div class="empty">Todavía no hay traspasos registrados.</div>';
+
+  const users=new Set();
+  history.forEach(x=>{
+    if(x.vendedor&&!['computer','equipomalo'].includes(norm(x.vendedor)))users.add(x.vendedor);
+    if(x.comprador&&!['computer','equipomalo'].includes(norm(x.comprador)))users.add(x.comprador);
+  });
+  const select=$("statsUserFilter"),current=select.value;
+  select.innerHTML='<option value="">Todos los usuarios</option>'+[...users].sort((a,b)=>a.localeCompare(b,"es")).map(u=>`<option value="${escapeHtml(u)}">${escapeHtml(u)}</option>`).join("");
+  if([...users].includes(current))select.value=current;
+  renderStatsHistory();
+}
+function statsRankRow(rank,label,value,suffix){
+  return `<div class="stats-rank-row">
+    <span class="stats-rank-pos">${rank}</span>
+    <strong>${escapeHtml(label||"—")}</strong>
+    <span class="stats-rank-value">${statsNumber(value)} <small>${escapeHtml(suffix)}</small></span>
+  </div>`;
+}
+function renderStatsHistory(){
+  if(!statsData)return;
+  const history=Array.isArray(statsData.historial)?statsData.historial:[];
+  const q=norm($("statsPlayerSearch").value),user=$("statsUserFilter").value;
+  const rows=history.filter(x=>{
+    const playerOk=!q||norm(x.jugador).includes(q);
+    const userOk=!user||x.vendedor===user||x.comprador===user;
+    return playerOk&&userOk;
+  }).slice(0,50);
+
+  $("statsHistoryList").innerHTML=rows.length?rows.map(x=>`
+    <article class="stats-transfer-row">
+      <div class="stats-transfer-date">${statsDateES(x.fecha)}</div>
+      <div class="stats-transfer-body">
+        <div class="stats-transfer-route">${escapeHtml(x.vendedor||"—")} <span>→</span> ${escapeHtml(x.comprador||"—")}</div>
+        <div class="stats-transfer-player">${escapeHtml(x.jugador||"—")}${x.precio?` <small>· ${statsNumber(x.precio)} €</small>`:""}</div>
+      </div>
+    </article>`).join(""):'<div class="empty">No hay movimientos que coincidan con la búsqueda.</div>';
+}
+
 function showView(name){
   currentView=name;
   document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
-  const map={home:"homeView",myteam:"myteamView",clauses:"clausesView",news:"newsView",badteam:"badteamView",rules:"rulesView"};
+  const map={home:"homeView",myteam:"myteamView",clauses:"clausesView",news:"newsView",badteam:"badteamView",stats:"statsView",rules:"rulesView"};
   $(map[name]||"clausesView").classList.remove("hidden");
   document.querySelectorAll(".main-nav [data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
-  $("pageTitle").textContent=name==="home"?"Inicio":name==="myteam"?"Mi equipo":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="rules"?"Normas":"Cláusulas";
+  $("pageTitle").textContent=name==="home"?"Inicio":name==="myteam"?"Mi equipo":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="stats"?"Estadísticas":name==="rules"?"Normas":"Cláusulas";
   if(name==="myteam")renderMyTeam();
   if(name==="news")loadNews();
+  if(name==="stats")loadStatsData();
   if(name==="rules")openRulesTab(document.querySelector(".rules-tab.active")?.dataset.rulesTab||"general");
   window.scrollTo({top:0,behavior:"smooth"});
 }

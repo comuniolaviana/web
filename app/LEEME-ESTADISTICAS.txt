@@ -1,0 +1,17 @@
+COMUNIO LAVIANA - ESTADÍSTICAS EN LA APP
+
+Sustituye en la carpeta /app del repositorio estos 5 archivos:
+- index.html
+- app.js
+- styles.css
+- sw.js
+- manifest.json
+
+NO sustituyas config.js: la conexión actual con Supabase se mantiene tal como está.
+
+Después en GitHub Desktop (programa morado):
+1. Commit
+2. Push origin
+3. Esperar a que GitHub Pages termine la publicación.
+
+La nueva sección Estadísticas lee el mismo ../estadisticas.json que utiliza la web, por lo que web y app muestran la misma fuente de datos.
