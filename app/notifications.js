@@ -26,6 +26,10 @@ function b64ToUint8Array(base64String){
 function card(){
   return document.getElementById("notificationCard");
 }
+function closePanel(delay=0){
+  const run=()=>card()?.classList.remove("v65-notif-open");
+  if(delay) setTimeout(run,delay); else run();
+}
 function setState(kind, title, text, buttonText="", showTest=false){
   const el = card();
   if (!el) return;
@@ -59,9 +63,10 @@ function ensureUI(){
       <strong class="notif-title">Notificaciones</strong>
       <span class="notif-text">Comprobando este dispositivo…</span>
     </div>
+    <button id="notifCloseBtn" type="button" class="notif-close" aria-label="Cerrar">✕</button>
     <div class="notif-actions">
       <button id="notifMainBtn" type="button" class="notif-main hidden">Activar</button>
-      <button id="notifTestBtn" type="button" class="notif-test hidden">Probar</button>
+      <button id="notifTestBtn" type="button" class="notif-test hidden">Probar aviso</button>
     </div>`;
   hero.insertAdjacentElement("afterend", el);
 
@@ -80,6 +85,7 @@ function ensureUI(){
     }
   });
   el.querySelector("#notifTestBtn").addEventListener("click", testNotification);
+  el.querySelector("#notifCloseBtn").addEventListener("click",()=>closePanel());
 
   uiReady = true;
   refreshState();
@@ -140,6 +146,7 @@ async function enableNotifications(){
 
     await saveSubscription(sub);
     setState("ok","Notificaciones activadas","Recibirás todos los movimientos de Noticias. Si te pagan una cláusula, el aviso será especial.","Desactivar",true);
+    closePanel(850);
   } catch (e){
     console.error("Notificaciones:", e);
     setState("error","No se pudieron activar","Vuelve a intentarlo dentro de la app.","Reintentar");
@@ -155,6 +162,7 @@ async function disableNotifications(){
     }
     if (sub) await sub.unsubscribe();
     setState("off","Notificaciones desactivadas","Puedes volver a activarlas cuando quieras.","Activar");
+    closePanel(500);
   } catch (e){
     console.error(e);
     refreshState();
@@ -170,6 +178,9 @@ async function testNotification(){
     if (error) throw error;
     if (!data?.sent){
       setState("warning","No se pudo enviar la prueba","Revisa que las notificaciones sigan activadas.","Desactivar",true);
+    } else {
+      setState("ok","Prueba enviada","Te acabamos de enviar una notificación de prueba.","Desactivar",true);
+      closePanel(900);
     }
   } catch (e){
     console.error("Prueba push:", e);
