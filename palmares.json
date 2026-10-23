@@ -1,0 +1,943 @@
+{
+  "actualizado": "2026-10-23",
+  "tipos": {
+    "liga_oro": {
+      "label": "Campeón de Liga",
+      "short": "Liga · Oro"
+    },
+    "liga_plata": {
+      "label": "Segundo de Liga",
+      "short": "Liga · Plata"
+    },
+    "liga_bronce": {
+      "label": "Tercero de Liga",
+      "short": "Liga · Bronce"
+    },
+    "copa": {
+      "label": "Campeón de Copa",
+      "short": "Copa"
+    }
+  },
+  "aliases": {
+    "Adrián Montes": "Adrian",
+    "Carlos1926": "Carlos",
+    "David García": "David",
+    "Eduardo Iglesias": "Eduardo",
+    "Efrén": "Efren",
+    "Jesús": "Jesus",
+    "Jesús Montoro": "Jesus",
+    "Jonathan": "Jonatan",
+    "Juanín Valencia": "Juanin",
+    "Ordieres David": "Ordieres",
+    "Pablo": "PABLO",
+    "Vizcaíno": "Vizcaino"
+  },
+  "temporadas": [
+    {
+      "temporada": "2012/13",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 1807
+        },
+        "plata": {
+          "manager": "Belarmino",
+          "puntos": 1700
+        },
+        "bronce": {
+          "manager": "Langostino",
+          "puntos": 1654
+        }
+      },
+      "copa": null,
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Enol",
+          "puntos": 1807
+        },
+        {
+          "pos": 2,
+          "manager": "Belarmino",
+          "puntos": 1700
+        },
+        {
+          "pos": 3,
+          "manager": "Langostino",
+          "puntos": 1654
+        },
+        {
+          "pos": 4,
+          "manager": "Kurza SdeA",
+          "puntos": 1420
+        },
+        {
+          "pos": 5,
+          "manager": "Manchester City",
+          "puntos": 1395
+        },
+        {
+          "pos": 6,
+          "manager": "Pablo Sayeo",
+          "puntos": 1365
+        }
+      ]
+    },
+    {
+      "temporada": "2013/14",
+      "liga": {
+        "oro": {
+          "manager": "Jorge",
+          "puntos": null
+        },
+        "plata": {
+          "manager": "Efrén",
+          "puntos": null
+        },
+        "bronce": {
+          "manager": "Langostino",
+          "puntos": null
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2014/15",
+      "liga": {
+        "oro": {
+          "manager": "Jorge",
+          "puntos": null
+        },
+        "plata": {
+          "manager": "Enol",
+          "puntos": null
+        },
+        "bronce": {
+          "manager": "Borja",
+          "puntos": null
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2015/16",
+      "liga": {
+        "oro": {
+          "manager": "Langostino",
+          "puntos": 1921
+        },
+        "plata": {
+          "manager": "Enol",
+          "puntos": 1777
+        },
+        "bronce": {
+          "manager": "Efrén",
+          "puntos": 1742
+        }
+      },
+      "copa": null,
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Langostino",
+          "puntos": 1921
+        },
+        {
+          "pos": 2,
+          "manager": "Enol",
+          "puntos": 1777
+        },
+        {
+          "pos": 3,
+          "manager": "Efrén",
+          "puntos": 1742
+        },
+        {
+          "pos": 4,
+          "manager": "Nazaré",
+          "puntos": 1738
+        },
+        {
+          "pos": 5,
+          "manager": "Vicente",
+          "puntos": 1651
+        }
+      ]
+    },
+    {
+      "temporada": "2016/17",
+      "liga": {
+        "oro": {
+          "manager": "Nazaré",
+          "puntos": 1891
+        },
+        "plata": {
+          "manager": "Vicente",
+          "puntos": 1810
+        },
+        "bronce": {
+          "manager": "David García",
+          "puntos": 1749
+        }
+      },
+      "copa": null,
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Nazaré",
+          "puntos": 1891
+        },
+        {
+          "pos": 2,
+          "manager": "Vicente",
+          "puntos": 1810
+        },
+        {
+          "pos": 3,
+          "manager": "David García",
+          "puntos": 1749
+        },
+        {
+          "pos": 4,
+          "manager": "Efrén",
+          "puntos": 1742
+        },
+        {
+          "pos": 5,
+          "manager": "Borja",
+          "puntos": 1686
+        },
+        {
+          "pos": 6,
+          "manager": "Enol",
+          "puntos": 1686
+        }
+      ]
+    },
+    {
+      "temporada": "2017/18",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 1856
+        },
+        "plata": {
+          "manager": "Esteban",
+          "puntos": 1777
+        },
+        "bronce": {
+          "manager": "Vicente",
+          "puntos": 1751
+        }
+      },
+      "copa": null,
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Enol",
+          "puntos": 1856
+        },
+        {
+          "pos": 2,
+          "manager": "Esteban",
+          "puntos": 1777
+        },
+        {
+          "pos": 3,
+          "manager": "Vicente",
+          "puntos": 1751
+        },
+        {
+          "pos": 4,
+          "manager": "Borja",
+          "puntos": 1626
+        },
+        {
+          "pos": 5,
+          "manager": "Ubaldo",
+          "puntos": 1605
+        },
+        {
+          "pos": 6,
+          "manager": "David García",
+          "puntos": 1568
+        },
+        {
+          "pos": 7,
+          "manager": "Langostino",
+          "puntos": 1557
+        },
+        {
+          "pos": 8,
+          "manager": "Jorge",
+          "puntos": 1528
+        },
+        {
+          "pos": 9,
+          "manager": "Francisco Javier Jódar",
+          "puntos": 1465
+        },
+        {
+          "pos": 10,
+          "manager": "José Prieto",
+          "puntos": 1449
+        },
+        {
+          "pos": 11,
+          "manager": "Nazaré",
+          "puntos": 1419
+        },
+        {
+          "pos": 12,
+          "manager": "Efrén",
+          "puntos": 1345
+        },
+        {
+          "pos": 13,
+          "manager": "Miguel Casco",
+          "puntos": 1297
+        },
+        {
+          "pos": 14,
+          "manager": "Jonathan",
+          "puntos": 1201
+        },
+        {
+          "pos": 15,
+          "manager": "José",
+          "puntos": 1037
+        }
+      ]
+    },
+    {
+      "temporada": "2018/19",
+      "liga": {
+        "oro": {
+          "manager": "Langostino",
+          "puntos": 2329
+        },
+        "plata": {
+          "manager": "Nazaré",
+          "puntos": 2202
+        },
+        "bronce": {
+          "manager": "Enol",
+          "puntos": 2178
+        }
+      },
+      "copa": null,
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Langostino",
+          "puntos": 2329
+        },
+        {
+          "pos": 2,
+          "manager": "Nazaré",
+          "puntos": 2202
+        },
+        {
+          "pos": 3,
+          "manager": "Enol",
+          "puntos": 2178
+        },
+        {
+          "pos": 4,
+          "manager": "Esteban",
+          "puntos": 2000
+        },
+        {
+          "pos": 5,
+          "manager": "Jorge",
+          "puntos": 1982
+        },
+        {
+          "pos": 6,
+          "manager": "Diego Méndez",
+          "puntos": 1952
+        },
+        {
+          "pos": 7,
+          "manager": "Efrén",
+          "puntos": 1888
+        },
+        {
+          "pos": 8,
+          "manager": "Juan",
+          "puntos": 1826
+        },
+        {
+          "pos": 9,
+          "manager": "Vicente",
+          "puntos": 1774
+        },
+        {
+          "pos": 10,
+          "manager": "Stoika Txondo",
+          "puntos": 1755
+        },
+        {
+          "pos": 11,
+          "manager": "David García",
+          "puntos": 1725
+        },
+        {
+          "pos": 12,
+          "manager": "Ubaldo",
+          "puntos": 1697
+        },
+        {
+          "pos": 13,
+          "manager": "Jonathan",
+          "puntos": 1636
+        },
+        {
+          "pos": 14,
+          "manager": "Borja",
+          "puntos": 1535
+        },
+        {
+          "pos": 15,
+          "manager": "José",
+          "puntos": 1514
+        }
+      ]
+    },
+    {
+      "temporada": "2019/20",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2241
+        },
+        "plata": {
+          "manager": "Nazaré",
+          "puntos": 1979
+        },
+        "bronce": {
+          "manager": "Vicente",
+          "puntos": 1974
+        }
+      },
+      "copa": {
+        "manager": "Ubaldo"
+      },
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Enol",
+          "puntos": 2241
+        },
+        {
+          "pos": 2,
+          "manager": "Nazaré",
+          "puntos": 1979
+        },
+        {
+          "pos": 3,
+          "manager": "Vicente",
+          "puntos": 1974
+        },
+        {
+          "pos": 4,
+          "manager": "Rodolfo",
+          "puntos": 1893
+        },
+        {
+          "pos": 5,
+          "manager": "Esteban",
+          "puntos": 1879
+        },
+        {
+          "pos": 6,
+          "manager": "Diego Méndez",
+          "puntos": 1809
+        },
+        {
+          "pos": 7,
+          "manager": "Stoika Txondo",
+          "puntos": 1751
+        },
+        {
+          "pos": 8,
+          "manager": "Ubaldo",
+          "puntos": 1736
+        },
+        {
+          "pos": 9,
+          "manager": "Jorge",
+          "puntos": 1650
+        },
+        {
+          "pos": 10,
+          "manager": "Jonathan",
+          "puntos": 1635
+        },
+        {
+          "pos": 11,
+          "manager": "Borja",
+          "puntos": 1627
+        },
+        {
+          "pos": 12,
+          "manager": "José",
+          "puntos": 1519
+        },
+        {
+          "pos": 13,
+          "manager": "Efrén",
+          "puntos": 1505
+        },
+        {
+          "pos": 14,
+          "manager": "David García",
+          "puntos": 1469
+        },
+        {
+          "pos": 15,
+          "manager": "Miguel Casco",
+          "puntos": 1271
+        }
+      ]
+    },
+    {
+      "temporada": "2020/21",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2293
+        },
+        "plata": {
+          "manager": "Ubaldo",
+          "puntos": 2050
+        },
+        "bronce": {
+          "manager": "Nazaré",
+          "puntos": 2040
+        }
+      },
+      "copa": {
+        "manager": "Efrén"
+      }
+    },
+    {
+      "temporada": "2021/22",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2063
+        },
+        "plata": {
+          "manager": "Jonathan",
+          "puntos": 2057
+        },
+        "bronce": {
+          "manager": "Ubaldo",
+          "puntos": 1902
+        }
+      },
+      "copa": {
+        "manager": "Nazaré"
+      },
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Enol",
+          "puntos": 2063
+        },
+        {
+          "pos": 2,
+          "manager": "Jonathan",
+          "puntos": 2057
+        },
+        {
+          "pos": 3,
+          "manager": "Ubaldo",
+          "puntos": 1902
+        },
+        {
+          "pos": 4,
+          "manager": "Vicente",
+          "puntos": 1882
+        },
+        {
+          "pos": 5,
+          "manager": "Nazaré",
+          "puntos": 1789
+        },
+        {
+          "pos": 6,
+          "manager": "José",
+          "puntos": 1710
+        },
+        {
+          "pos": 7,
+          "manager": "Borja",
+          "puntos": 1707
+        },
+        {
+          "pos": 8,
+          "manager": "Laureano",
+          "puntos": 1670
+        },
+        {
+          "pos": 9,
+          "manager": "Jorge",
+          "puntos": 1656
+        },
+        {
+          "pos": 10,
+          "manager": "Jesús Montoro",
+          "puntos": 1612
+        },
+        {
+          "pos": 11,
+          "manager": "Efrén",
+          "puntos": 1585
+        },
+        {
+          "pos": 12,
+          "manager": "Esteban",
+          "puntos": 1566
+        },
+        {
+          "pos": 13,
+          "manager": "Eduardo Iglesias",
+          "puntos": 1467
+        },
+        {
+          "pos": 14,
+          "manager": "Sergio Marcos",
+          "puntos": 1464
+        },
+        {
+          "pos": 15,
+          "manager": "David García",
+          "puntos": 1453
+        },
+        {
+          "pos": 16,
+          "manager": "Diego Méndez",
+          "puntos": 1282
+        }
+      ]
+    },
+    {
+      "temporada": "2022/23",
+      "liga": {
+        "oro": {
+          "manager": "Nazaré",
+          "puntos": 2015
+        },
+        "plata": {
+          "manager": "Laureano",
+          "puntos": 1994
+        },
+        "bronce": {
+          "manager": "Enol",
+          "puntos": 1885
+        }
+      },
+      "copa": {
+        "manager": "Jesús"
+      }
+    },
+    {
+      "temporada": "2023/24",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2382
+        },
+        "plata": {
+          "manager": "Ubaldo",
+          "puntos": 2082
+        },
+        "bronce": {
+          "manager": "Jesús",
+          "puntos": 2075
+        }
+      },
+      "copa": {
+        "manager": "David García"
+      },
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Enol",
+          "puntos": 2382
+        },
+        {
+          "pos": 2,
+          "manager": "Ubaldo",
+          "puntos": 2082
+        },
+        {
+          "pos": 3,
+          "manager": "Jesús",
+          "puntos": 2075
+        },
+        {
+          "pos": 4,
+          "manager": "Laureano",
+          "puntos": 2074
+        },
+        {
+          "pos": 5,
+          "manager": "Efrén",
+          "puntos": 2069
+        },
+        {
+          "pos": 6,
+          "manager": "Langostino",
+          "puntos": 2028
+        },
+        {
+          "pos": 7,
+          "manager": "David García",
+          "puntos": 2023
+        },
+        {
+          "pos": 8,
+          "manager": "Nazaré",
+          "puntos": 2004
+        },
+        {
+          "pos": 9,
+          "manager": "Borja",
+          "puntos": 1967
+        },
+        {
+          "pos": 10,
+          "manager": "Jonathan",
+          "puntos": 1944
+        },
+        {
+          "pos": 11,
+          "manager": "Asturche",
+          "puntos": 1913
+        },
+        {
+          "pos": 12,
+          "manager": "Pablo",
+          "puntos": 1825
+        },
+        {
+          "pos": 13,
+          "manager": "Diego Méndez",
+          "puntos": 1818
+        },
+        {
+          "pos": 14,
+          "manager": "Esteban",
+          "puntos": 1738
+        },
+        {
+          "pos": 15,
+          "manager": "Jorge",
+          "puntos": 1722
+        }
+      ]
+    },
+    {
+      "temporada": "2024/25",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2474
+        },
+        "plata": {
+          "manager": "Nazaré",
+          "puntos": 2376
+        },
+        "bronce": {
+          "manager": "Ubaldo",
+          "puntos": 2354
+        }
+      },
+      "copa": {
+        "manager": "Nazaré"
+      },
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Enol",
+          "puntos": 2474
+        },
+        {
+          "pos": 2,
+          "manager": "Nazaré",
+          "puntos": 2376
+        },
+        {
+          "pos": 3,
+          "manager": "Ubaldo",
+          "puntos": 2354
+        },
+        {
+          "pos": 4,
+          "manager": "Langostino",
+          "puntos": 2309
+        },
+        {
+          "pos": 5,
+          "manager": "Laureano",
+          "puntos": 2290
+        },
+        {
+          "pos": 6,
+          "manager": "Borja",
+          "puntos": 2175
+        },
+        {
+          "pos": 7,
+          "manager": "David García",
+          "puntos": 2135
+        },
+        {
+          "pos": 8,
+          "manager": "Efrén",
+          "puntos": 2061
+        },
+        {
+          "pos": 9,
+          "manager": "Pablo",
+          "puntos": 2039
+        },
+        {
+          "pos": 10,
+          "manager": "Jorge",
+          "puntos": 2035
+        },
+        {
+          "pos": 11,
+          "manager": "Diego Méndez",
+          "puntos": 2003
+        },
+        {
+          "pos": 12,
+          "manager": "Esteban",
+          "puntos": 1999
+        },
+        {
+          "pos": 13,
+          "manager": "Jesús Montoro",
+          "puntos": 1969
+        }
+      ]
+    },
+    {
+      "temporada": "2025/26",
+      "liga": {
+        "oro": {
+          "manager": "Jesús Montoro",
+          "puntos": 2144
+        },
+        "plata": {
+          "manager": "Laureano",
+          "puntos": 2114
+        },
+        "bronce": {
+          "manager": "Enol",
+          "puntos": 2103
+        }
+      },
+      "copa": {
+        "manager": "Eduardo Iglesias"
+      },
+      "clasificacion": [
+        {
+          "pos": 1,
+          "manager": "Jesús Montoro",
+          "puntos": 2144
+        },
+        {
+          "pos": 2,
+          "manager": "Laureano",
+          "puntos": 2114
+        },
+        {
+          "pos": 3,
+          "manager": "Enol",
+          "puntos": 2103
+        },
+        {
+          "pos": 4,
+          "manager": "Nazaré",
+          "puntos": 2070
+        },
+        {
+          "pos": 5,
+          "manager": "Ubaldo",
+          "puntos": 2045
+        },
+        {
+          "pos": 6,
+          "manager": "Borja",
+          "puntos": 1955
+        },
+        {
+          "pos": 7,
+          "manager": "Eduardo Iglesias",
+          "puntos": 1928
+        },
+        {
+          "pos": 8,
+          "manager": "Vizcaíno",
+          "puntos": 1909
+        },
+        {
+          "pos": 9,
+          "manager": "Pablo",
+          "puntos": 1850
+        },
+        {
+          "pos": 10,
+          "manager": "Jonathan",
+          "puntos": 1830
+        },
+        {
+          "pos": 11,
+          "manager": "Ordieres David",
+          "puntos": 1792
+        },
+        {
+          "pos": 12,
+          "manager": "Juanín Valencia",
+          "puntos": 1768
+        },
+        {
+          "pos": 13,
+          "manager": "Mateo",
+          "puntos": 1762
+        },
+        {
+          "pos": 14,
+          "manager": "Efrén",
+          "puntos": 1752
+        },
+        {
+          "pos": 15,
+          "manager": "Carlos1926",
+          "puntos": 1702
+        },
+        {
+          "pos": 16,
+          "manager": "Jorge",
+          "puntos": 1667
+        },
+        {
+          "pos": 17,
+          "manager": "Adrián Montes",
+          "puntos": 1527
+        },
+        {
+          "pos": 18,
+          "manager": "David García",
+          "puntos": 1435
+        }
+      ]
+    }
+  ]
+}

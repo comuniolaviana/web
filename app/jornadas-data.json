@@ -1,0 +1,1481 @@
+{
+  "season": "2026/27",
+  "managers": [
+    {
+      "id": "Carlos",
+      "name": "Carlos",
+      "comunioName": "Carlos1926"
+    },
+    {
+      "id": "Efren",
+      "name": "Efren",
+      "comunioName": "efren garcia"
+    },
+    {
+      "id": "Adrian",
+      "name": "Adrian",
+      "comunioName": "Adrian Montes"
+    },
+    {
+      "id": "Ubaldo",
+      "name": "Ubaldo",
+      "comunioName": "Ubaldo Merino"
+    },
+    {
+      "id": "Jesus",
+      "name": "Jesus",
+      "comunioName": "Jesus Montoro Silva"
+    },
+    {
+      "id": "Jorge",
+      "name": "Jorge",
+      "comunioName": "Jorge Fernandez"
+    },
+    {
+      "id": "Dani",
+      "name": "Dani"
+    },
+    {
+      "id": "Ordieres",
+      "name": "Ordieres",
+      "comunioName": "Ordieres David"
+    },
+    {
+      "id": "Vizcaino",
+      "name": "Vizcaino"
+    },
+    {
+      "id": "Laureano",
+      "name": "Laureano"
+    },
+    {
+      "id": "Jonatan",
+      "name": "Jonatan",
+      "comunioName": "Jonatan M A"
+    },
+    {
+      "id": "Enol",
+      "name": "Enol",
+      "comunioName": "Enol Martínez"
+    },
+    {
+      "id": "Eduardo",
+      "name": "Eduardo",
+      "comunioName": "Eduardo Iglesias"
+    },
+    {
+      "id": "David",
+      "name": "David",
+      "comunioName": "David García"
+    },
+    {
+      "id": "PABLO",
+      "name": "PABLO"
+    },
+    {
+      "id": "Borja",
+      "name": "Borja"
+    },
+    {
+      "id": "Juanin",
+      "name": "Juanin",
+      "comunioName": "Juanin Valencia"
+    },
+    {
+      "id": "Nazaré",
+      "name": "Nazaré",
+      "comunioName": "Nazaré Álvarez"
+    }
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Carlos",
+          "position": 1,
+          "points": 54,
+          "value": 71520000
+        },
+        {
+          "id": "Efren",
+          "position": 2,
+          "points": 54,
+          "value": 45480000
+        },
+        {
+          "id": "Adrian",
+          "position": 3,
+          "points": 49,
+          "value": 65740000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 4,
+          "points": 46,
+          "value": 61190000
+        },
+        {
+          "id": "Jesus",
+          "position": 5,
+          "points": 43,
+          "value": 44390000
+        },
+        {
+          "id": "Jorge",
+          "position": 6,
+          "points": 38,
+          "value": 40690000
+        },
+        {
+          "id": "Dani",
+          "position": 7,
+          "points": 33,
+          "value": 63050000
+        },
+        {
+          "id": "Ordieres",
+          "position": 8,
+          "points": 32,
+          "value": 29540000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 9,
+          "points": 29,
+          "value": 50900000
+        },
+        {
+          "id": "Laureano",
+          "position": 10,
+          "points": 28,
+          "value": 66490000
+        },
+        {
+          "id": "Jonatan",
+          "position": 11,
+          "points": 27,
+          "value": 51990000
+        },
+        {
+          "id": "Enol",
+          "position": 12,
+          "points": 27,
+          "value": 47850000
+        },
+        {
+          "id": "Eduardo",
+          "position": 13,
+          "points": 26,
+          "value": 55790000
+        },
+        {
+          "id": "David",
+          "position": 14,
+          "points": 23,
+          "value": 55310000
+        },
+        {
+          "id": "PABLO",
+          "position": 15,
+          "points": 23,
+          "value": 42540000
+        },
+        {
+          "id": "Borja",
+          "position": 16,
+          "points": 18,
+          "value": 52770000
+        },
+        {
+          "id": "Juanin",
+          "position": 17,
+          "points": 13,
+          "value": 41900000
+        },
+        {
+          "id": "Nazaré",
+          "position": 18,
+          "points": 13,
+          "value": 39920000
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Laureano",
+          "position": 1,
+          "points": 82,
+          "value": 68050000
+        },
+        {
+          "id": "Carlos",
+          "position": 2,
+          "points": 68,
+          "value": 59920000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 3,
+          "points": 67,
+          "value": 50740000
+        },
+        {
+          "id": "Adrian",
+          "position": 4,
+          "points": 62,
+          "value": 63710000
+        },
+        {
+          "id": "David",
+          "position": 5,
+          "points": 60,
+          "value": 58850000
+        },
+        {
+          "id": "Eduardo",
+          "position": 6,
+          "points": 58,
+          "value": 55790000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 7,
+          "points": 56,
+          "value": 51880000
+        },
+        {
+          "id": "PABLO",
+          "position": 8,
+          "points": 54,
+          "value": 50570000
+        },
+        {
+          "id": "Jesus",
+          "position": 9,
+          "points": 51,
+          "value": 57260000
+        },
+        {
+          "id": "Jonatan",
+          "position": 10,
+          "points": 48,
+          "value": 50000000
+        },
+        {
+          "id": "Juanin",
+          "position": 11,
+          "points": 47,
+          "value": 35280000
+        },
+        {
+          "id": "Borja",
+          "position": 12,
+          "points": 45,
+          "value": 51510000
+        },
+        {
+          "id": "Jorge",
+          "position": 13,
+          "points": 42,
+          "value": 39540000
+        },
+        {
+          "id": "Dani",
+          "position": 14,
+          "points": 39,
+          "value": 73790000
+        },
+        {
+          "id": "Nazaré",
+          "position": 15,
+          "points": 38,
+          "value": 48990000
+        },
+        {
+          "id": "Ordieres",
+          "position": 16,
+          "points": 36,
+          "value": 30840000
+        },
+        {
+          "id": "Enol",
+          "position": 17,
+          "points": 35,
+          "value": 52190000
+        },
+        {
+          "id": "Efren",
+          "position": 18,
+          "points": 30,
+          "value": 41410000
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Enol",
+          "position": 1,
+          "points": 72,
+          "value": 61650000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 2,
+          "points": 64,
+          "value": 63340000
+        },
+        {
+          "id": "Laureano",
+          "position": 3,
+          "points": 62,
+          "value": 75760000
+        },
+        {
+          "id": "Adrian",
+          "position": 4,
+          "points": 61,
+          "value": 69740000
+        },
+        {
+          "id": "Jonatan",
+          "position": 5,
+          "points": 60,
+          "value": 52740000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 6,
+          "points": 59,
+          "value": 55070000
+        },
+        {
+          "id": "Jesus",
+          "position": 7,
+          "points": 58,
+          "value": 53900000
+        },
+        {
+          "id": "Juanin",
+          "position": 8,
+          "points": 58,
+          "value": 36010000
+        },
+        {
+          "id": "Eduardo",
+          "position": 9,
+          "points": 55,
+          "value": 57830000
+        },
+        {
+          "id": "Borja",
+          "position": 10,
+          "points": 54,
+          "value": 45400000
+        },
+        {
+          "id": "David",
+          "position": 11,
+          "points": 53,
+          "value": 62620000
+        },
+        {
+          "id": "Efren",
+          "position": 12,
+          "points": 52,
+          "value": 44590000
+        },
+        {
+          "id": "PABLO",
+          "position": 13,
+          "points": 51,
+          "value": 51490000
+        },
+        {
+          "id": "Ordieres",
+          "position": 14,
+          "points": 50,
+          "value": 33660000
+        },
+        {
+          "id": "Carlos",
+          "position": 15,
+          "points": 49,
+          "value": 57720000
+        },
+        {
+          "id": "Dani",
+          "position": 16,
+          "points": 42,
+          "value": 57500000
+        },
+        {
+          "id": "Nazaré",
+          "position": 17,
+          "points": 39,
+          "value": 42400000
+        },
+        {
+          "id": "Jorge",
+          "position": 18,
+          "points": 32,
+          "value": 43710000
+        }
+      ]
+    },
+    {
+      "round": "1A",
+      "label": "Jornada 1 aplazada",
+      "order": 4,
+      "type": "postponed",
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Ubaldo",
+          "position": 1,
+          "points": 42,
+          "value": 63340000
+        },
+        {
+          "id": "Efren",
+          "position": 2,
+          "points": 38,
+          "value": 44590000
+        },
+        {
+          "id": "Borja",
+          "position": 3,
+          "points": 34,
+          "value": 42610000
+        },
+        {
+          "id": "Juanin",
+          "position": 4,
+          "points": 33,
+          "value": 36560000
+        },
+        {
+          "id": "Eduardo",
+          "position": 5,
+          "points": 30,
+          "value": 57830000
+        },
+        {
+          "id": "Dani",
+          "position": 6,
+          "points": 30,
+          "value": 57500000
+        },
+        {
+          "id": "Jonatan",
+          "position": 7,
+          "points": 30,
+          "value": 50990000
+        },
+        {
+          "id": "David",
+          "position": 8,
+          "points": 29,
+          "value": 65150000
+        },
+        {
+          "id": "Ordieres",
+          "position": 9,
+          "points": 27,
+          "value": 33710000
+        },
+        {
+          "id": "Laureano",
+          "position": 10,
+          "points": 26,
+          "value": 75760000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 11,
+          "points": 25,
+          "value": 50680000
+        },
+        {
+          "id": "Jesus",
+          "position": 12,
+          "points": 23,
+          "value": 53900000
+        },
+        {
+          "id": "PABLO",
+          "position": 13,
+          "points": 20,
+          "value": 50020000
+        },
+        {
+          "id": "Jorge",
+          "position": 14,
+          "points": 18,
+          "value": 40700000
+        },
+        {
+          "id": "Enol",
+          "position": 15,
+          "points": 17,
+          "value": 57720000
+        },
+        {
+          "id": "Nazaré",
+          "position": 16,
+          "points": 14,
+          "value": 38500000
+        },
+        {
+          "id": "Adrian",
+          "position": 17,
+          "points": 11,
+          "value": 69740000
+        },
+        {
+          "id": "Carlos",
+          "position": 18,
+          "points": 10,
+          "value": 60150000
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "order": 5,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Laureano",
+          "position": 1,
+          "points": 72,
+          "value": 63850000
+        },
+        {
+          "id": "Nazaré",
+          "position": 2,
+          "points": 71,
+          "value": 59070000
+        },
+        {
+          "id": "Carlos",
+          "position": 3,
+          "points": 66,
+          "value": 62800000
+        },
+        {
+          "id": "Jonatan",
+          "position": 4,
+          "points": 65,
+          "value": 52920000
+        },
+        {
+          "id": "Enol",
+          "position": 5,
+          "points": 60,
+          "value": 56290000
+        },
+        {
+          "id": "Ordieres",
+          "position": 6,
+          "points": 60,
+          "value": 35220000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 7,
+          "points": 59,
+          "value": 65400000
+        },
+        {
+          "id": "Dani",
+          "position": 8,
+          "points": 53,
+          "value": 70530000
+        },
+        {
+          "id": "David",
+          "position": 9,
+          "points": 53,
+          "value": 50950000
+        },
+        {
+          "id": "Efren",
+          "position": 10,
+          "points": 51,
+          "value": 55880000
+        },
+        {
+          "id": "Jesus",
+          "position": 11,
+          "points": 48,
+          "value": 49120000
+        },
+        {
+          "id": "PABLO",
+          "position": 12,
+          "points": 46,
+          "value": 56040000
+        },
+        {
+          "id": "Eduardo",
+          "position": 13,
+          "points": 39,
+          "value": 60610000
+        },
+        {
+          "id": "Adrian",
+          "position": 14,
+          "points": 37,
+          "value": 59680000
+        },
+        {
+          "id": "Jorge",
+          "position": 15,
+          "points": 37,
+          "value": 43960000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 16,
+          "points": 36,
+          "value": 54000000
+        },
+        {
+          "id": "Borja",
+          "position": 17,
+          "points": 34,
+          "value": 51120000
+        },
+        {
+          "id": "Juanin",
+          "position": 18,
+          "points": 26,
+          "value": 37310000
+        }
+      ]
+    },
+    {
+      "round": "6A",
+      "label": "Jornada 6 aplazada",
+      "order": 8,
+      "type": "postponed",
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "note": "Jorge Fernández: 0 puntos, indicado por el administrador. Equipo Malo excluido por indicación del administrador.",
+      "results": [
+        {
+          "id": "Eduardo",
+          "position": 1,
+          "points": 27,
+          "value": 60610000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 2,
+          "points": 21,
+          "value": 55590000
+        },
+        {
+          "id": "Laureano",
+          "position": 3,
+          "points": 12,
+          "value": 77720000
+        },
+        {
+          "id": "Borja",
+          "position": 4,
+          "points": 12,
+          "value": 51120000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 5,
+          "points": 11,
+          "value": 64940000
+        },
+        {
+          "id": "Jesus",
+          "position": 6,
+          "points": 8,
+          "value": 49120000
+        },
+        {
+          "id": "Enol",
+          "position": 7,
+          "points": 6,
+          "value": 56290000
+        },
+        {
+          "id": "Ordieres",
+          "position": 8,
+          "points": 6,
+          "value": 35220000
+        },
+        {
+          "id": "Juanin",
+          "position": 9,
+          "points": 4,
+          "value": 36010000
+        },
+        {
+          "id": "Dani",
+          "position": 10,
+          "points": 3,
+          "value": 70530000
+        },
+        {
+          "id": "Adrian",
+          "position": 12,
+          "points": 0,
+          "value": 59680000
+        },
+        {
+          "id": "Carlos",
+          "position": 13,
+          "points": 0,
+          "value": 59380000
+        },
+        {
+          "id": "PABLO",
+          "position": 14,
+          "points": 0,
+          "value": 56040000
+        },
+        {
+          "id": "Jonatan",
+          "position": 15,
+          "points": 0,
+          "value": 52920000
+        },
+        {
+          "id": "Nazaré",
+          "position": 16,
+          "points": 0,
+          "value": 51640000
+        },
+        {
+          "id": "David",
+          "position": 17,
+          "points": 0,
+          "value": 51490000
+        },
+        {
+          "id": "Efren",
+          "position": 18,
+          "points": 0,
+          "value": 45190000
+        },
+        {
+          "id": "Jorge",
+          "position": 19,
+          "points": 0,
+          "value": null
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "order": 6,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Dani",
+          "position": 1,
+          "points": 84,
+          "value": 55280000
+        },
+        {
+          "id": "Laureano",
+          "position": 2,
+          "points": 71,
+          "value": 74440000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 3,
+          "points": 71,
+          "value": 65400000
+        },
+        {
+          "id": "Carlos",
+          "position": 4,
+          "points": 68,
+          "value": 58120000
+        },
+        {
+          "id": "Nazaré",
+          "position": 5,
+          "points": 62,
+          "value": 62780000
+        },
+        {
+          "id": "Adrian",
+          "position": 6,
+          "points": 61,
+          "value": 51670000
+        },
+        {
+          "id": "David",
+          "position": 7,
+          "points": 60,
+          "value": 48360000
+        },
+        {
+          "id": "Borja",
+          "position": 8,
+          "points": 57,
+          "value": 49850000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 9,
+          "points": 54,
+          "value": 57150000
+        },
+        {
+          "id": "Juanin",
+          "position": 10,
+          "points": 54,
+          "value": 37860000
+        },
+        {
+          "id": "Enol",
+          "position": 11,
+          "points": 51,
+          "value": 63910000
+        },
+        {
+          "id": "PABLO",
+          "position": 12,
+          "points": 43,
+          "value": 61610000
+        },
+        {
+          "id": "Ordieres",
+          "position": 13,
+          "points": 40,
+          "value": 36990000
+        },
+        {
+          "id": "Eduardo",
+          "position": 14,
+          "points": 38,
+          "value": 60610000
+        },
+        {
+          "id": "Jorge",
+          "position": 15,
+          "points": 36,
+          "value": 47310000
+        },
+        {
+          "id": "Efren",
+          "position": 16,
+          "points": 31,
+          "value": 54430000
+        },
+        {
+          "id": "Jonatan",
+          "position": 17,
+          "points": 27,
+          "value": 50880000
+        },
+        {
+          "id": "Jesus",
+          "position": 18,
+          "points": 25,
+          "value": 51920000
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "order": 7,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Enol",
+          "position": 1,
+          "points": 76,
+          "value": 58220000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 2,
+          "points": 69,
+          "value": 56750000
+        },
+        {
+          "id": "Jorge",
+          "position": 3,
+          "points": 56,
+          "value": 47310000
+        },
+        {
+          "id": "Eduardo",
+          "position": 4,
+          "points": 51,
+          "value": 65740000
+        },
+        {
+          "id": "Jonatan",
+          "position": 5,
+          "points": 51,
+          "value": 55850000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 6,
+          "points": 50,
+          "value": 69000000
+        },
+        {
+          "id": "PABLO",
+          "position": 7,
+          "points": 48,
+          "value": 60960000
+        },
+        {
+          "id": "Nazaré",
+          "position": 8,
+          "points": 43,
+          "value": 64740000
+        },
+        {
+          "id": "Juanin",
+          "position": 9,
+          "points": 40,
+          "value": 37760000
+        },
+        {
+          "id": "Carlos",
+          "position": 10,
+          "points": 39,
+          "value": 59020000
+        },
+        {
+          "id": "Laureano",
+          "position": 11,
+          "points": 36,
+          "value": 74800000
+        },
+        {
+          "id": "Efren",
+          "position": 12,
+          "points": 36,
+          "value": 53740000
+        },
+        {
+          "id": "Borja",
+          "position": 13,
+          "points": 36,
+          "value": 49850000
+        },
+        {
+          "id": "Jesus",
+          "position": 14,
+          "points": 36,
+          "value": 43580000
+        },
+        {
+          "id": "Adrian",
+          "position": 15,
+          "points": 27,
+          "value": 58710000
+        },
+        {
+          "id": "Dani",
+          "position": 16,
+          "points": 27,
+          "value": 54960000
+        },
+        {
+          "id": "Ordieres",
+          "position": 17,
+          "points": 24,
+          "value": 37500000
+        },
+        {
+          "id": "David",
+          "position": 18,
+          "points": 18,
+          "value": 45650000
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "order": 9,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Ubaldo",
+          "position": 1,
+          "points": 92,
+          "value": 69000000
+        },
+        {
+          "id": "Enol",
+          "position": 2,
+          "points": 84,
+          "value": 62150000
+        },
+        {
+          "id": "Jesus",
+          "position": 3,
+          "points": 65,
+          "value": 49140000
+        },
+        {
+          "id": "Nazaré",
+          "position": 4,
+          "points": 64,
+          "value": 64740000
+        },
+        {
+          "id": "Eduardo",
+          "position": 5,
+          "points": 63,
+          "value": 65740000
+        },
+        {
+          "id": "Laureano",
+          "position": 6,
+          "points": 60,
+          "value": 74960000
+        },
+        {
+          "id": "Carlos",
+          "position": 7,
+          "points": 54,
+          "value": 60410000
+        },
+        {
+          "id": "Jonatan",
+          "position": 8,
+          "points": 54,
+          "value": 55850000
+        },
+        {
+          "id": "Efren",
+          "position": 9,
+          "points": 54,
+          "value": 54900000
+        },
+        {
+          "id": "Dani",
+          "position": 10,
+          "points": 51,
+          "value": 54960000
+        },
+        {
+          "id": "Jorge",
+          "position": 11,
+          "points": 48,
+          "value": 46070000
+        },
+        {
+          "id": "David",
+          "position": 12,
+          "points": 46,
+          "value": 46510000
+        },
+        {
+          "id": "Borja",
+          "position": 13,
+          "points": 41,
+          "value": 49120000
+        },
+        {
+          "id": "Ordieres",
+          "position": 14,
+          "points": 40,
+          "value": 37500000
+        },
+        {
+          "id": "Adrian",
+          "position": 15,
+          "points": 38,
+          "value": 58710000
+        },
+        {
+          "id": "PABLO",
+          "position": 16,
+          "points": 37,
+          "value": 60130000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 17,
+          "points": 36,
+          "value": 56750000
+        },
+        {
+          "id": "Juanin",
+          "position": 18,
+          "points": 25,
+          "value": 37760000
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "order": 10,
+      "status": "provisional",
+      "label": "Jornada 8 (provisional)",
+      "pendingMatch": "Rayo Vallecano - Athletic Club",
+      "note": "Puntuaciones provisionales facilitadas por el administrador; pueden cambiar tras disputarse el partido pendiente Rayo Vallecano–Athletic Club.",
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Vizcaino",
+          "position": 1,
+          "points": 69,
+          "value": 49360000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 2,
+          "points": 66,
+          "value": 71790000
+        },
+        {
+          "id": "Eduardo",
+          "position": 3,
+          "points": 63,
+          "value": 61610000
+        },
+        {
+          "id": "Jesus",
+          "position": 4,
+          "points": 62,
+          "value": 60750000
+        },
+        {
+          "id": "Jonatan",
+          "position": 5,
+          "points": 58,
+          "value": 56690000
+        },
+        {
+          "id": "Efren",
+          "position": 6,
+          "points": 56,
+          "value": 58140000
+        },
+        {
+          "id": "PABLO",
+          "position": 7,
+          "points": 55,
+          "value": 78150000
+        },
+        {
+          "id": "Laureano",
+          "position": 8,
+          "points": 52,
+          "value": 86380000
+        },
+        {
+          "id": "Carlos",
+          "position": 9,
+          "points": 52,
+          "value": 58540000
+        },
+        {
+          "id": "Jorge",
+          "position": 10,
+          "points": 52,
+          "value": 54350000
+        },
+        {
+          "id": "David",
+          "position": 11,
+          "points": 48,
+          "value": 50170000
+        },
+        {
+          "id": "Adrian",
+          "position": 12,
+          "points": 47,
+          "value": 59980000
+        },
+        {
+          "id": "Nazaré",
+          "position": 13,
+          "points": 47,
+          "value": 55040000
+        },
+        {
+          "id": "Juanin",
+          "position": 14,
+          "points": 45,
+          "value": 38060000
+        },
+        {
+          "id": "Enol",
+          "position": 15,
+          "points": 42,
+          "value": 66840000
+        },
+        {
+          "id": "Dani",
+          "position": 16,
+          "points": 36,
+          "value": 52450000
+        },
+        {
+          "id": "Borja",
+          "position": 17,
+          "points": 36,
+          "value": 49590000
+        },
+        {
+          "id": "Ordieres",
+          "position": 18,
+          "points": 33,
+          "value": 32560000
+        }
+      ]
+    },
+    {
+      "round": "6B",
+      "order": 11,
+      "label": "Jornada 6 aplazada · segunda tanda",
+      "type": "postponed",
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "note": "Segunda clasificación de aplazados de la jornada 6 enviada por el administrador, independiente del bloque 6A. Se respetan puntuaciones negativas. No se incluye Equipo Malo.",
+      "results": [
+        {
+          "id": "PABLO",
+          "points": 22,
+          "value": 79540000,
+          "position": 1
+        },
+        {
+          "id": "David",
+          "points": 16,
+          "value": 50970000,
+          "position": 2
+        },
+        {
+          "id": "Dani",
+          "points": 14,
+          "value": 52450000,
+          "position": 3
+        },
+        {
+          "id": "Ordieres",
+          "points": 13,
+          "value": 32560000,
+          "position": 4
+        },
+        {
+          "id": "Nazaré",
+          "points": 12,
+          "value": 53510000,
+          "position": 5
+        },
+        {
+          "id": "Laureano",
+          "points": 7,
+          "value": 90270000,
+          "position": 6
+        },
+        {
+          "id": "Enol",
+          "points": 5,
+          "value": 70330000,
+          "position": 7
+        },
+        {
+          "id": "Efren",
+          "points": 3,
+          "value": 56780000,
+          "position": 8
+        },
+        {
+          "id": "Ubaldo",
+          "points": 0,
+          "value": 72580000,
+          "position": 9
+        },
+        {
+          "id": "Jorge",
+          "points": 0,
+          "value": 60180000,
+          "position": 10
+        },
+        {
+          "id": "Eduardo",
+          "points": 0,
+          "value": 58410000,
+          "position": 11
+        },
+        {
+          "id": "Jesus",
+          "points": 0,
+          "value": 55270000,
+          "position": 12
+        },
+        {
+          "id": "Jonatan",
+          "points": 0,
+          "value": 53270000,
+          "position": 13
+        },
+        {
+          "id": "Borja",
+          "points": 0,
+          "value": 50670000,
+          "position": 14
+        },
+        {
+          "id": "Vizcaino",
+          "points": 0,
+          "value": 43060000,
+          "position": 15
+        },
+        {
+          "id": "Juanin",
+          "points": 0,
+          "value": 38430000,
+          "position": 16
+        },
+        {
+          "id": "Adrian",
+          "points": -1,
+          "value": 59980000,
+          "position": 17
+        },
+        {
+          "id": "Carlos",
+          "points": -4,
+          "value": 76250000,
+          "position": 18
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "order": 12,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Eduardo",
+          "position": 1,
+          "points": 75,
+          "value": 58410000
+        },
+        {
+          "id": "PABLO",
+          "position": 2,
+          "points": 69,
+          "value": 78150000
+        },
+        {
+          "id": "Nazaré",
+          "position": 3,
+          "points": 63,
+          "value": 53510000
+        },
+        {
+          "id": "Jesus",
+          "position": 4,
+          "points": 62,
+          "value": 53560000
+        },
+        {
+          "id": "Juanin",
+          "position": 5,
+          "points": 62,
+          "value": 38430000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 6,
+          "points": 58,
+          "value": 73760000
+        },
+        {
+          "id": "Adrian",
+          "position": 7,
+          "points": 58,
+          "value": 59980000
+        },
+        {
+          "id": "Enol",
+          "position": 8,
+          "points": 57,
+          "value": 69680000
+        },
+        {
+          "id": "Ordieres",
+          "position": 9,
+          "points": 53,
+          "value": 32560000
+        },
+        {
+          "id": "David",
+          "position": 10,
+          "points": 50,
+          "value": 50970000
+        },
+        {
+          "id": "Efren",
+          "position": 11,
+          "points": 48,
+          "value": 56780000
+        },
+        {
+          "id": "Jorge",
+          "position": 12,
+          "points": 47,
+          "value": 56210000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 13,
+          "points": 41,
+          "value": 46940000
+        },
+        {
+          "id": "Carlos",
+          "position": 14,
+          "points": 37,
+          "value": 71460000
+        },
+        {
+          "id": "Jonatan",
+          "position": 15,
+          "points": 36,
+          "value": 54010000
+        },
+        {
+          "id": "Dani",
+          "position": 16,
+          "points": 36,
+          "value": 52450000
+        },
+        {
+          "id": "Laureano",
+          "position": 17,
+          "points": 31,
+          "value": 89440000
+        },
+        {
+          "id": "Borja",
+          "position": 18,
+          "points": 28,
+          "value": 50700000
+        }
+      ]
+    }
+  ]
+}

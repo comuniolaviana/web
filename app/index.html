@@ -7,6 +7,9 @@
   <title>Comunio Laviana</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="styles.css?v=5-5">
+<style>
+.my-league-summary{background:#132d1c;border:1px solid #426b4a;border-radius:14px;padding:16px;margin:16px 0;color:#ecffec}.my-league-summary[hidden]{display:none}.my-league-title{font-weight:800;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.my-league-title a{color:#a4edb4;font-size:12px;text-decoration:none}.my-league-numbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}.my-league-numbers>div{border-radius:10px;background:#20422a;padding:10px 6px;text-align:center}.my-league-numbers strong{display:block;font-size:23px}.my-league-numbers span{display:block;color:#c8dfca;font-size:11px;margin-top:3px}.my-league-warning{color:#ffe0a5;font-size:12px;margin:13px 0 0}
+</style>
 </head>
 <body>
 <div id="appShell" class="app-shell">
@@ -19,12 +22,11 @@
   </header>
 
   <nav class="main-nav" aria-label="Navegación">
-    <button data-view="home">🏠 <span>Inicio</span></button>
-    <button data-view="myteam">👕 <span>Mi equipo</span></button>
-    <button data-view="clauses" class="active">⚡ <span>Cláusulas</span></button>
+    <button data-view="home" class="active">🏠 <span>Inicio</span></button>
     <button data-view="news">📰 <span>Noticias</span></button>
-    <button data-view="badteam">💀 <span>Equipo Malo</span></button>
     <button data-view="stats">📊 <span>Estadísticas</span></button>
+    <a href="jornadas.html">📅 <span>Jornadas</span></a>
+    <button data-view="honours">🏆 <span>Palmarés</span></button>
     <button data-view="rules">📜 <span>Normas</span></button>
     <a id="adminNav" class="hidden" href="admin.html">🛠️ <span>Admin</span></a>
   </nav>
@@ -58,7 +60,7 @@
       <p id="loginMessage" class="message"></p>
     </section>
 
-    <section id="homeView" class="view hidden">
+    <section id="homeView" class="view">
       <div class="hero-card">
         <div>
           <span class="eyebrow">ESTADO DE CLÁUSULAS</span>
@@ -110,7 +112,21 @@
         “Puntos plantilla” es la suma de los puntos actuales de tus jugadores. No es la clasificación general de Comunio.
       </p>
 
+      <section id="myTeamLeagueSummary" class="my-league-summary" hidden aria-label="Mi clasificación de Comunio"></section>
+
       <div id="myTeamBadState" class="user-state hidden"></div>
+
+      <section id="myHonoursSection" class="my-honours hidden">
+        <div class="section-title-row">
+          <div>
+            <span class="eyebrow">MI HISTORIA</span>
+            <h2>🏆 Mi palmarés</h2>
+          </div>
+          <button class="text-btn" data-go="honours" type="button">Ver palmarés completo</button>
+        </div>
+        <div id="myHonoursSummary" class="honours-summary"></div>
+        <div id="myHonoursShelf" class="trophy-shelf"></div>
+      </section>
 
       <div class="myteam-sale-info">
         <span>💀 Vender al Equipo Malo</span>
@@ -122,7 +138,7 @@
       </div>
     </section>
 
-    <section id="clausesView" class="view">
+    <section id="clausesView" class="view hidden">
       <div id="userStateBanner" class="user-state hidden"></div>
 
       <div class="compact-tools">
@@ -323,6 +339,55 @@
 
         <div id="statsHistoryList" class="stats-history-list">
           <div class="loading">Cargando historial…</div>
+        </div>
+      </section>
+    </section>
+
+    <section id="honoursView" class="view hidden">
+      <div class="honours-hero">
+        <div>
+          <span class="eyebrow">HISTORIA DE LA LIGA</span>
+          <h2>🏆 Palmarés Comunio Laviana</h2>
+          <p>Campeones, podios y Copa desde 2012/13. Los jugadores históricos siguen apareciendo aunque ya no estén activos.</p>
+        </div>
+        <div class="honours-hero-trophy">🏆</div>
+      </div>
+
+      <div class="trophy-legend">
+        <article class="legend-card gold"><span>🏆</span><b>Campeón de Liga</b><small>Copa oro</small></article>
+        <article class="legend-card silver"><span>🏆</span><b>Segundo de Liga</b><small>Copa plata</small></article>
+        <article class="legend-card bronze"><span>🏆</span><b>Tercero de Liga</b><small>Copa bronce</small></article>
+        <article class="legend-card cup"><span>🏆</span><b>Campeón de Copa</b><small>Copa</small></article>
+      </div>
+
+      <section class="honours-card">
+        <div class="section-title-row">
+          <h2>👑 Clasificación histórica</h2>
+          <span class="muted small">títulos y podios</span>
+        </div>
+        <div id="honoursRanking" class="honours-ranking">
+          <div class="loading">Cargando palmarés…</div>
+        </div>
+      </section>
+
+      <section class="honours-card">
+        <div class="section-title-row">
+          <h2>📜 Temporada a temporada</h2>
+        </div>
+        <div id="honoursHistory" class="honours-history">
+          <div class="loading">Cargando historial…</div>
+        </div>
+      </section>
+
+      <section class="honours-card">
+        <div class="section-title-row">
+          <div>
+            <h2>🕰️ Clasificaciones históricas</h2>
+            <span class="muted small">Abre una temporada para ver la clasificación completa disponible</span>
+          </div>
+        </div>
+        <div id="honoursArchive" class="honours-archive">
+          <div class="loading">Cargando clasificaciones…</div>
         </div>
       </section>
     </section>
@@ -588,6 +653,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=5-5"></script>
 <script src="../calendario-engine.js"></script>
-<script src="app.js?v=5-5"></script>
+<script src="app.js?v=5-6"></script>
+<script src="mi-clasificacion.js?v=1"></script>
 </body>
 </html>
