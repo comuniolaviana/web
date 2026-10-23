@@ -52,62 +52,76 @@ function euros(n){
 
 function enhanceHome(){
   const home = $("homeView");
-  if (!home || homeEnhanced) return;
+  if (!home) return;
 
-  const oldTeam = home.querySelector('[data-go="myteam"]');
-  const oldClauses = home.querySelector('[data-go="clauses"]');
-  const oldBad = home.querySelector('[data-go="badteam"]');
-  if (!oldTeam || !oldClauses || !oldBad) return;
+  const oldTeam = home.querySelector('.home-actions [data-go="myteam"]');
+  const oldClauses = home.querySelector('.home-actions [data-go="clauses"]');
+  const oldBad = home.querySelector('.home-actions [data-go="badteam"]');
+  const oldHero = home.querySelector(":scope > .hero-card");
+  const oldStats = home.querySelector(":scope > .stats-grid");
+  const oldActions = home.querySelector(":scope > .home-actions");
+  if (!oldTeam || !oldClauses || !oldBad || !oldHero || !oldStats || !oldActions) return;
 
-  // Conservamos los botones originales para mantener los listeners de app.js.
-  oldTeam.className = "home-v63-team hero-card";
-  oldTeam.innerHTML = `
-    <span class="home-v63-team-icon">👕</span>
-    <span class="home-v63-team-copy">
-      <strong>Mi equipo</strong>
-      <small>Plantilla, puntos, valor y cláusulas</small>
-    </span>
-    <span class="home-v63-arrow">›</span>`;
+  oldHero.classList.add("v63-legacy-hidden");
+  oldStats.classList.add("v63-legacy-hidden");
+  oldActions.classList.add("v63-legacy-hidden");
 
-  oldClauses.className = "home-v63-status-card";
-  oldClauses.id = "homeClausesCard";
-  oldClauses.innerHTML = statusCardShell("⚡","CLÁUSULAS","Todas las cláusulas de la liga","clauses");
+  let root = $("homeV63Root");
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "homeV63Root";
+    root.className = "home-v63-root";
+    root.innerHTML = `
+      <button id="homeV63Team" class="home-v63-team" type="button">
+        <span class="home-v63-team-icon">👕</span>
+        <span class="home-v63-team-copy">
+          <strong>Mi equipo</strong>
+          <small>Plantilla, puntos, valor y cláusulas</small>
+        </span>
+        <span class="home-v63-arrow">›</span>
+      </button>
 
-  oldBad.className = "home-v63-status-card";
-  oldBad.id = "homeBadCard";
-  oldBad.innerHTML = statusCardShell("💀","EQUIPO MALO","Compras y ventas al Equipo Malo","bad");
+      <div id="homeNotificationSlot"></div>
 
-  const notificationCard = $("notificationCard");
-  home.innerHTML = "";
-  home.appendChild(oldTeam);
-  if (notificationCard) home.appendChild(notificationCard);
+      <div class="home-v63-status-grid">
+        <button id="homeClausesCard" class="home-v63-status-card" type="button">
+          ${statusCardShell("⚡","CLÁUSULAS","Todas las cláusulas de la liga","clauses")}
+        </button>
+        <button id="homeBadCard" class="home-v63-status-card" type="button">
+          ${statusCardShell("💀","EQUIPO MALO","Compras y ventas al Equipo Malo","bad")}
+        </button>
+      </div>
 
-  const statusGrid = document.createElement("div");
-  statusGrid.className = "home-v63-status-grid";
-  statusGrid.append(oldClauses, oldBad);
-  home.appendChild(statusGrid);
+      <section class="home-v63-news">
+        <div class="home-v63-news-head">
+          <div><span>📰</span><strong>Noticias</strong></div>
+          <button id="homeNewsAll" type="button">Ver todas ›</button>
+        </div>
+        <div id="homeNewsList" class="home-v63-news-list">
+          <div class="home-v63-empty">Cargando actividad…</div>
+        </div>
+      </section>`;
+    home.insertBefore(root, oldHero);
 
-  const news = document.createElement("section");
-  news.className = "home-v63-news";
-  news.innerHTML = `
-    <div class="home-v63-news-head">
-      <div><span>📰</span><strong>Noticias</strong></div>
-      <button id="homeNewsAll" type="button">Ver todas ›</button>
-    </div>
-    <div id="homeNewsList" class="home-v63-news-list">
-      <div class="home-v63-empty">Cargando actividad…</div>
-    </div>`;
-  home.appendChild(news);
+    $("homeV63Team")?.addEventListener("click",()=>oldTeam.click());
+    $("homeClausesCard")?.addEventListener("click",()=>oldClauses.click());
+    $("homeBadCard")?.addEventListener("click",()=>oldBad.click());
+    $("homeNewsAll")?.addEventListener("click",()=>{
+      document.querySelector('.main-nav [data-view="news"]')?.click();
+    });
+  }
 
   const topNews = document.querySelector('.main-nav [data-view="news"]');
-  if (topNews) {
-    topNews.classList.add("v63-news-nav-hidden");
-    $("homeNewsAll")?.addEventListener("click", () => topNews.click());
+  if (topNews) topNews.classList.add("v63-news-nav-hidden");
+
+  const notificationCard = $("notificationCard");
+  const slot = $("homeNotificationSlot");
+  if (notificationCard && slot && notificationCard.parentElement !== slot) {
+    slot.appendChild(notificationCard);
   }
 
   homeEnhanced = true;
 }
-
 function statusCardShell(icon,title,subtitle,key){
   return `
     <span class="home-v63-card-top">
@@ -209,10 +223,10 @@ function setStaleLock(selector, locked, label){
         btn.dataset.v63Stale="1";
         btn.dataset.v63WasDisabled=btn.disabled?"1":"0";
         btn.dataset.v63Html=btn.innerHTML;
+        if(label) btn.innerHTML=label;
       }
       btn.disabled=true;
       btn.classList.add("v63-stale-disabled");
-      if(label) btn.innerHTML=label;
       btn.title="Datos pendientes de actualizar";
     }else if(btn.dataset.v63Stale==="1"){
       btn.disabled=btn.dataset.v63WasDisabled==="1";
@@ -225,7 +239,6 @@ function setStaleLock(selector, locked, label){
     }
   });
 }
-
 function applyOperationLocks(){
   setStaleLock("#playersList .execute-btn", !freshness.clauses.updated, "SIN ACTUALIZAR");
   setStaleLock("#badPlayersList .bad-buy-btn", !freshness.team_malo.updated, "SIN ACTUALIZAR");
@@ -315,13 +328,17 @@ function init(){
   enhanceHome();
   refreshHome(true);
 
-  const observer=new MutationObserver(()=>{
+  // app.js pinta listas de forma asíncrona. Durante los primeros segundos
+  // reaplicamos los bloqueos sin observar/mutar el DOM en bucle.
+  let warmTicks=0;
+  const warm=setInterval(()=>{
     enhanceHome();
     paintCard("clauses",clausePeriod(),freshness.clauses);
     paintCard("bad",badPeriod(),freshness.team_malo);
     applyOperationLocks();
-  });
-  observer.observe(document.body,{childList:true,subtree:true});
+    warmTicks++;
+    if(warmTicks>=12) clearInterval(warm);
+  },1000);
 
   setInterval(()=>refreshHome(false),60000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshHome(true);});
@@ -330,7 +347,6 @@ function init(){
     if(session) setTimeout(()=>refreshHome(true),250);
   });
 }
-
 if(document.readyState==="loading"){
   document.addEventListener("DOMContentLoaded",()=>setTimeout(init,0),{once:true});
 }else{
