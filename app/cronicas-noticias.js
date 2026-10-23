@@ -16,7 +16,7 @@
        '<span>'+safe(a.excerpt)+'</span>'+
        '<em>Leer crónica completa →</em></a>'
      ).join("")||'<p>Todavía no hay crónicas publicadas.</p>';
-   }catch(e){host.innerHTML="<p>No se pudieron cargar las crónicas.</p>"}
+   }catch(e){if(!host.querySelector(".chronicle-card"))host.innerHTML='<a class="chronicle-card" href="cronica-jornada-9.html"><small>CRÓNICA · JORNADA 9</small><strong>Eduardo resucita, Ubaldo se escapa y Laureano entra en crisis</strong><em>Leer crónica completa →</em></a>';}
  }
  render();
 })();
