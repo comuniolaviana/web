@@ -118,7 +118,7 @@ let clauseExecutions=[], badPurchases=[], badSales=[];
 let dataSnapshotMs=0;
 let statsData=null, statsLoading=false;
 let palmaresData=null;
-let schedule=null, pendingAction=null, currentView="clauses", historyPeriod="today";
+let schedule=null, pendingAction=null, currentView="home", historyPeriod="today";
 
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
