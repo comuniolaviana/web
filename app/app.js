@@ -456,7 +456,7 @@ function renderMyHonours(){
   }).join("");
 }
 function renderHonours(){
-  const ranking=$("honoursRanking"),history=$("honoursHistory");
+  const ranking=$("honoursRanking"),history=$("honoursHistory"),archive=$("honoursArchive");
   if(!ranking||!history)return;
   if(!palmaresData){ranking.innerHTML='<div class="empty">No se pudo cargar el palmarés.</div>';history.innerHTML="";return;}
   const map=new Map();
@@ -477,6 +477,17 @@ function renderHonours(){
     const isMe=profile&&norm(x.name)===norm(profile.manager_name);
     return '<article class="honours-rank-row '+(isMe?"is-me":"")+'"><strong><span class="rank-num">'+(i+1)+'</span>'+escapeHtml(x.name)+(isMe?'<small>Tú</small>':"")+'</strong><div class="honours-counts"><span class="gold">🏆 '+x.gold+'</span><span class="silver">🥈 '+x.silver+'</span><span class="bronze">🥉 '+x.bronze+'</span><span class="cup">🏆 Copa '+x.cup+'</span></div></article>';
   }).join("");
+  if(archive){
+    const seasons=[...(palmaresData.temporadas||[])].filter(s=>Array.isArray(s.clasificacion)&&s.clasificacion.length).reverse();
+    archive.innerHTML=seasons.length?seasons.map(s=>{
+      const rows=s.clasificacion.map(r=>{
+        const me=profile&&norm(honourManagerName(r.manager))===norm(profile.manager_name);
+        return '<div class="archive-row '+(me?"is-me":"")+'"><span class="archive-pos">'+r.pos+'</span><b>'+escapeHtml(honourManagerName(r.manager))+'</b><span>'+Number(r.puntos)+' pts</span></div>';
+      }).join("");
+      return '<details class="archive-season"><summary><span>'+escapeHtml(s.temporada)+'</span><small>'+s.clasificacion.length+' jugadores</small></summary><div class="archive-table">'+rows+'</div></details>';
+    }).join(""):'<div class="empty">No hay clasificaciones históricas disponibles.</div>';
+  }
+
   history.innerHTML=[...(palmaresData.temporadas||[])].reverse().map(s=>{
     const l=s.liga||{};
     const item=(label,x,cls)=>'<div class="history-winner '+cls+'"><span>'+label+'</span><b>'+(x?escapeHtml(honourManagerName(x.manager)):"—")+'</b>'+(x&&x.puntos!=null?'<small>'+Number(x.puntos)+' pts</small>':"")+'</div>';
