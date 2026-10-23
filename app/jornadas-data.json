@@ -188,6 +188,120 @@
           "value": 39920000
         }
       ]
+    },
+    {
+      "round": 2,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Laureano",
+          "position": 1,
+          "points": 82,
+          "value": 68050000
+        },
+        {
+          "id": "Carlos",
+          "position": 2,
+          "points": 68,
+          "value": 59920000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 3,
+          "points": 67,
+          "value": 50740000
+        },
+        {
+          "id": "Adrian",
+          "position": 4,
+          "points": 62,
+          "value": 63710000
+        },
+        {
+          "id": "David",
+          "position": 5,
+          "points": 60,
+          "value": 58850000
+        },
+        {
+          "id": "Eduardo",
+          "position": 6,
+          "points": 58,
+          "value": 55790000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 7,
+          "points": 56,
+          "value": 51880000
+        },
+        {
+          "id": "PABLO",
+          "position": 8,
+          "points": 54,
+          "value": 50570000
+        },
+        {
+          "id": "Jesus",
+          "position": 9,
+          "points": 51,
+          "value": 57260000
+        },
+        {
+          "id": "Jonatan",
+          "position": 10,
+          "points": 48,
+          "value": 50000000
+        },
+        {
+          "id": "Juanin",
+          "position": 11,
+          "points": 47,
+          "value": 35280000
+        },
+        {
+          "id": "Borja",
+          "position": 12,
+          "points": 45,
+          "value": 51510000
+        },
+        {
+          "id": "Jorge",
+          "position": 13,
+          "points": 42,
+          "value": 39540000
+        },
+        {
+          "id": "Dani",
+          "position": 14,
+          "points": 39,
+          "value": 73790000
+        },
+        {
+          "id": "Nazaré",
+          "position": 15,
+          "points": 38,
+          "value": 48990000
+        },
+        {
+          "id": "Ordieres",
+          "position": 16,
+          "points": 36,
+          "value": 30840000
+        },
+        {
+          "id": "Enol",
+          "position": 17,
+          "points": 35,
+          "value": 52190000
+        },
+        {
+          "id": "Efren",
+          "position": 18,
+          "points": 30,
+          "value": 41410000
+        }
+      ]
     }
   ]
 }
