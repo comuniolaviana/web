@@ -26,20 +26,20 @@ window.COMUNIO_CONFIG = {
 if (!/admin\.html$/i.test(location.pathname)) {
   const notifCss = document.createElement("link");
   notifCss.rel = "stylesheet";
-  notifCss.href = "notifications.css?v=6-1";
+  notifCss.href = "notifications.css?v=6-3";
   document.head.appendChild(notifCss);
 
   const notifScript = document.createElement("script");
-  notifScript.src = "notifications.js?v=6-1";
+  notifScript.src = "notifications.js?v=6-3";
   document.head.appendChild(notifScript);
 
-  // Portada V6.3: estados independientes, control de actualización y Noticias en Inicio.
+  // Portada V6.8: estados independientes, control de actualización y Noticias en Inicio.
   const homeCss = document.createElement("link");
   homeCss.rel = "stylesheet";
-  homeCss.href = "home-v63.css?v=6-3";
+  homeCss.href = "home-v63.css?v=6-8";
   document.head.appendChild(homeCss);
 
   const homeScript = document.createElement("script");
-  homeScript.src = "home-v63.js?v=6-3";
+  homeScript.src = "home-v63.js?v=6-8";
   document.head.appendChild(homeScript);
 }

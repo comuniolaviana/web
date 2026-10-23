@@ -26,6 +26,10 @@ function b64ToUint8Array(base64String){
 function card(){
   return document.getElementById("notificationCard");
 }
+function closePanel(delay=0){
+  const run=()=>card()?.classList.remove("v65-notif-open");
+  if(delay) setTimeout(run,delay); else run();
+}
 function setState(kind, title, text, buttonText="", showTest=false){
   const el = card();
   if (!el) return;
@@ -41,6 +45,7 @@ function setState(kind, title, text, buttonText="", showTest=false){
     mainBtn.classList.add("hidden");
   }
   testBtn.classList.toggle("hidden", !showTest);
+  document.body.dataset.pushState = kind;
 }
 function ensureUI(){
   if (uiReady) return;
@@ -58,20 +63,29 @@ function ensureUI(){
       <strong class="notif-title">Notificaciones</strong>
       <span class="notif-text">Comprobando este dispositivo…</span>
     </div>
+    <button id="notifCloseBtn" type="button" class="notif-close" aria-label="Cerrar">✕</button>
     <div class="notif-actions">
       <button id="notifMainBtn" type="button" class="notif-main hidden">Activar</button>
-      <button id="notifTestBtn" type="button" class="notif-test hidden">Probar</button>
+      <button id="notifTestBtn" type="button" class="notif-test hidden">Probar aviso</button>
     </div>`;
   hero.insertAdjacentElement("afterend", el);
 
   el.querySelector("#notifMainBtn").addEventListener("click", async () => {
-    if (Notification.permission === "granted") {
+    let subscribed = false;
+    try {
+      if (supported()) {
+        const reg = await getRegistration();
+        subscribed = !!(await reg.pushManager.getSubscription());
+      }
+    } catch {}
+    if (Notification.permission === "granted" && subscribed) {
       await disableNotifications();
     } else {
       await enableNotifications();
     }
   });
   el.querySelector("#notifTestBtn").addEventListener("click", testNotification);
+  el.querySelector("#notifCloseBtn").addEventListener("click",()=>closePanel());
 
   uiReady = true;
   refreshState();
@@ -111,10 +125,10 @@ async function enableNotifications(){
       return;
     }
 
-    setState("loading","Activando…","Acepta el permiso de notificaciones cuando aparezca.");
-    const permission = await Notification.requestPermission();
+    setState("loading","Activando…",Notification.permission === "granted" ? "Registrando este dispositivo…" : "Acepta el permiso de notificaciones cuando aparezca.");
+    const permission = Notification.permission === "granted" ? "granted" : await Notification.requestPermission();
     if (permission !== "granted"){
-      refreshState();
+      await refreshState();
       return;
     }
 
@@ -131,7 +145,8 @@ async function enableNotifications(){
     }
 
     await saveSubscription(sub);
-    setState("ok","Notificaciones activadas","Recibirás avisos de cláusulas y operaciones del Equipo Malo.","Desactivar",true);
+    setState("ok","Notificaciones activadas","Recibirás todos los movimientos de Noticias. Si te pagan una cláusula, el aviso será especial.","Desactivar",true);
+    closePanel(850);
   } catch (e){
     console.error("Notificaciones:", e);
     setState("error","No se pudieron activar","Vuelve a intentarlo dentro de la app.","Reintentar");
@@ -147,6 +162,7 @@ async function disableNotifications(){
     }
     if (sub) await sub.unsubscribe();
     setState("off","Notificaciones desactivadas","Puedes volver a activarlas cuando quieras.","Activar");
+    closePanel(500);
   } catch (e){
     console.error(e);
     refreshState();
@@ -162,6 +178,9 @@ async function testNotification(){
     if (error) throw error;
     if (!data?.sent){
       setState("warning","No se pudo enviar la prueba","Revisa que las notificaciones sigan activadas.","Desactivar",true);
+    } else {
+      setState("ok","Prueba enviada","Te acabamos de enviar una notificación de prueba.","Desactivar",true);
+      closePanel(900);
     }
   } catch (e){
     console.error("Prueba push:", e);
@@ -200,7 +219,7 @@ async function refreshState(){
     const sub = await reg.pushManager.getSubscription();
     if (Notification.permission === "granted" && sub){
       await saveSubscription(sub);
-      setState("ok","Notificaciones activadas","Avisos de cláusulas, cláusulas recibidas y Equipo Malo.","Desactivar",true);
+      setState("ok","Notificaciones activadas","Todos los movimientos de Noticias + aviso especial si te pagan una cláusula.","Desactivar",true);
     } else {
       setState("off","Activa las notificaciones","Recibe avisos aunque la app esté cerrada.","Activar");
     }

@@ -1,4 +1,4 @@
-const CACHE="comunio-laviana-app-v6-3";
+const CACHE="comunio-laviana-app-v6-8";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js",
@@ -36,12 +36,17 @@ self.addEventListener("push",event=>{
   catch{ data={title:"Comunio Laviana",body:event.data?.text()||"Nueva actividad en la liga."}; }
 
   const title=data.title||"Comunio Laviana";
+  const special=data.special||data.type||"";
+  const receivedClause=special==="clause_received";
   const options={
     body:data.body||"Nueva actividad en la liga.",
     icon:"./icon-192.svg",
+    badge:"./icon-192.svg",
     tag:data.tag||"comunio-laviana",
     renotify:true,
-    data:{url:data.url||"./index.html",type:data.type||""}
+    silent:false,
+    vibrate:receivedClause?[220,90,220,90,520]:[180,80,180],
+    data:{url:data.url||"./index.html",type:data.type||"",special}
   };
   event.waitUntil(self.registration.showNotification(title,options));
 });
