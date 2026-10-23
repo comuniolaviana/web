@@ -65,7 +65,14 @@ function ensureUI(){
   hero.insertAdjacentElement("afterend", el);
 
   el.querySelector("#notifMainBtn").addEventListener("click", async () => {
-    if (Notification.permission === "granted") {
+    let subscribed = false;
+    try {
+      if (supported()) {
+        const reg = await getRegistration();
+        subscribed = !!(await reg.pushManager.getSubscription());
+      }
+    } catch {}
+    if (Notification.permission === "granted" && subscribed) {
       await disableNotifications();
     } else {
       await enableNotifications();
@@ -111,10 +118,10 @@ async function enableNotifications(){
       return;
     }
 
-    setState("loading","Activando…","Acepta el permiso de notificaciones cuando aparezca.");
-    const permission = await Notification.requestPermission();
+    setState("loading","Activando…",Notification.permission === "granted" ? "Registrando este dispositivo…" : "Acepta el permiso de notificaciones cuando aparezca.");
+    const permission = Notification.permission === "granted" ? "granted" : await Notification.requestPermission();
     if (permission !== "granted"){
-      refreshState();
+      await refreshState();
       return;
     }
 
@@ -131,7 +138,7 @@ async function enableNotifications(){
     }
 
     await saveSubscription(sub);
-    setState("ok","Notificaciones activadas","Recibirás avisos de cláusulas y operaciones del Equipo Malo.","Desactivar",true);
+    setState("ok","Notificaciones activadas","Recibirás todos los movimientos de Noticias. Si te pagan una cláusula, el aviso será especial.","Desactivar",true);
   } catch (e){
     console.error("Notificaciones:", e);
     setState("error","No se pudieron activar","Vuelve a intentarlo dentro de la app.","Reintentar");
@@ -200,7 +207,7 @@ async function refreshState(){
     const sub = await reg.pushManager.getSubscription();
     if (Notification.permission === "granted" && sub){
       await saveSubscription(sub);
-      setState("ok","Notificaciones activadas","Avisos de cláusulas, cláusulas recibidas y Equipo Malo.","Desactivar",true);
+      setState("ok","Notificaciones activadas","Todos los movimientos de Noticias + aviso especial si te pagan una cláusula.","Desactivar",true);
     } else {
       setState("off","Activa las notificaciones","Recibe avisos aunque la app esté cerrada.","Activar");
     }
