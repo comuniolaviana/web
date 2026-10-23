@@ -1111,6 +1111,125 @@
           "value": 37760000
         }
       ]
+    },
+    {
+      "round": 8,
+      "order": 10,
+      "status": "provisional",
+      "label": "Jornada 8 (provisional)",
+      "pendingMatch": "Rayo Vallecano - Athletic Club",
+      "note": "Puntuaciones provisionales facilitadas por el administrador; pueden cambiar tras disputarse el partido pendiente Rayo Vallecano–Athletic Club.",
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Vizcaino",
+          "position": 1,
+          "points": 69,
+          "value": 49360000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 2,
+          "points": 66,
+          "value": 71790000
+        },
+        {
+          "id": "Eduardo",
+          "position": 3,
+          "points": 63,
+          "value": 61610000
+        },
+        {
+          "id": "Jesus",
+          "position": 4,
+          "points": 62,
+          "value": 60750000
+        },
+        {
+          "id": "Jonatan",
+          "position": 5,
+          "points": 58,
+          "value": 56690000
+        },
+        {
+          "id": "Efren",
+          "position": 6,
+          "points": 56,
+          "value": 58140000
+        },
+        {
+          "id": "PABLO",
+          "position": 7,
+          "points": 55,
+          "value": 78150000
+        },
+        {
+          "id": "Laureano",
+          "position": 8,
+          "points": 52,
+          "value": 86380000
+        },
+        {
+          "id": "Carlos",
+          "position": 9,
+          "points": 52,
+          "value": 58540000
+        },
+        {
+          "id": "Jorge",
+          "position": 10,
+          "points": 52,
+          "value": 54350000
+        },
+        {
+          "id": "David",
+          "position": 11,
+          "points": 48,
+          "value": 50170000
+        },
+        {
+          "id": "Adrian",
+          "position": 12,
+          "points": 47,
+          "value": 59980000
+        },
+        {
+          "id": "Nazaré",
+          "position": 13,
+          "points": 47,
+          "value": 55040000
+        },
+        {
+          "id": "Juanin",
+          "position": 14,
+          "points": 45,
+          "value": 38060000
+        },
+        {
+          "id": "Enol",
+          "position": 15,
+          "points": 42,
+          "value": 66840000
+        },
+        {
+          "id": "Dani",
+          "position": 16,
+          "points": 36,
+          "value": 52450000
+        },
+        {
+          "id": "Borja",
+          "position": 17,
+          "points": 36,
+          "value": 49590000
+        },
+        {
+          "id": "Ordieres",
+          "position": 18,
+          "points": 33,
+          "value": 32560000
+        }
+      ]
     }
   ]
 }
