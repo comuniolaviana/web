@@ -652,7 +652,7 @@
     {
       "round": "6A",
       "label": "Jornada 6 aplazada",
-      "order": 6,
+      "order": 7,
       "type": "postponed",
       "source": "Capturas de Comunio proporcionadas por el administrador",
       "note": "Jorge Fernández: 0 puntos, indicado por el administrador. Equipo Malo excluido por indicación del administrador.",
@@ -764,6 +764,121 @@
           "position": 19,
           "points": 0,
           "value": null
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "order": 6,
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Dani",
+          "position": 1,
+          "points": 84,
+          "value": 55280000
+        },
+        {
+          "id": "Laureano",
+          "position": 2,
+          "points": 71,
+          "value": 74440000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 3,
+          "points": 71,
+          "value": 65400000
+        },
+        {
+          "id": "Carlos",
+          "position": 4,
+          "points": 68,
+          "value": 58120000
+        },
+        {
+          "id": "Nazaré",
+          "position": 5,
+          "points": 62,
+          "value": 62780000
+        },
+        {
+          "id": "Adrian",
+          "position": 6,
+          "points": 61,
+          "value": 51670000
+        },
+        {
+          "id": "David",
+          "position": 7,
+          "points": 60,
+          "value": 48360000
+        },
+        {
+          "id": "Borja",
+          "position": 8,
+          "points": 57,
+          "value": 49850000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 9,
+          "points": 54,
+          "value": 57150000
+        },
+        {
+          "id": "Juanin",
+          "position": 10,
+          "points": 54,
+          "value": 37860000
+        },
+        {
+          "id": "Enol",
+          "position": 11,
+          "points": 51,
+          "value": 63910000
+        },
+        {
+          "id": "PABLO",
+          "position": 12,
+          "points": 43,
+          "value": 61610000
+        },
+        {
+          "id": "Ordieres",
+          "position": 13,
+          "points": 40,
+          "value": 36990000
+        },
+        {
+          "id": "Eduardo",
+          "position": 14,
+          "points": 38,
+          "value": 60610000
+        },
+        {
+          "id": "Jorge",
+          "position": 15,
+          "points": 36,
+          "value": 47310000
+        },
+        {
+          "id": "Efren",
+          "position": 16,
+          "points": 31,
+          "value": 54430000
+        },
+        {
+          "id": "Jonatan",
+          "position": 17,
+          "points": 27,
+          "value": 50880000
+        },
+        {
+          "id": "Jesus",
+          "position": 18,
+          "points": 25,
+          "value": 51920000
         }
       ]
     }
