@@ -117,6 +117,7 @@ let players=[], badPlayers=[];
 let clauseExecutions=[], badPurchases=[], badSales=[];
 let dataSnapshotMs=0;
 let statsData=null, statsLoading=false;
+let palmaresData=null;
 let schedule=null, pendingAction=null, currentView="clauses", historyPeriod="today";
 
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
@@ -394,7 +395,8 @@ async function enterApp(){
   const adminNav=$("adminNav");
   if(adminNav)adminNav.classList.toggle("hidden",profile?.role!=="admin");
   if(isConfigured())await loadRealData();else await loadDemoData();
-  fillFilters();updateStatusUI();renderMyTeam();renderPlayers();renderBadPlayers();renderActivityMini();showView(currentView);
+  try{await loadPalmaresData();}catch(e){console.error("Palmarés:",e);}
+  fillFilters();updateStatusUI();renderMyTeam();renderPlayers();renderBadPlayers();renderActivityMini();renderHonours();showView(currentView);
 }
 
 async function firstJson(paths){
@@ -403,6 +405,85 @@ async function firstJson(paths){
   }
   throw new Error("No se pudo cargar "+paths.join(" / "));
 }
+async function loadPalmaresData(){
+  palmaresData=await firstJson(["../palmares.json","palmares.json"]);
+}
+function honourManagerName(name){
+  if(!palmaresData)return String(name||"");
+  return palmaresData.aliases?.[name]||String(name||"");
+}
+function honourManagerKey(name){
+  return norm(honourManagerName(name));
+}
+function collectHonours(managerName){
+  if(!palmaresData||!managerName)return[];
+  const key=norm(managerName),out=[];
+  for(const s of palmaresData.temporadas||[]){
+    const league=s.liga||{};
+    [["oro","liga_oro"],["plata","liga_plata"],["bronce","liga_bronce"]].forEach(pair=>{
+      const slot=pair[0],type=pair[1],item=league[slot];
+      if(item&&honourManagerKey(item.manager)===key)out.push({type,temporada:s.temporada,puntos:item.puntos??null,manager:item.manager});
+    });
+    if(s.copa&&honourManagerKey(s.copa.manager)===key)out.push({type:"copa",temporada:s.temporada,puntos:null,manager:s.copa.manager});
+  }
+  return out.sort((a,b)=>String(b.temporada).localeCompare(String(a.temporada)));
+}
+function trophyMeta(type){
+  return {
+    liga_oro:{label:"Campeón de Liga",short:"Liga · Oro",cls:"gold",icon:"🏆"},
+    liga_plata:{label:"Segundo de Liga",short:"Liga · Plata",cls:"silver",icon:"🏆"},
+    liga_bronce:{label:"Tercero de Liga",short:"Liga · Bronce",cls:"bronze",icon:"🏆"},
+    copa:{label:"Campeón de Copa",short:"Copa",cls:"cup",icon:"🏆"}
+  }[type]||{label:"Trofeo",short:"Trofeo",cls:"cup",icon:"🏆"};
+}
+function renderMyHonours(){
+  const section=$("myHonoursSection");
+  if(!section)return;
+  if(!palmaresData||!profile){section.classList.add("hidden");return;}
+  section.classList.remove("hidden");
+  const list=collectHonours(profile.manager_name);
+  const counts={liga_oro:0,liga_plata:0,liga_bronce:0,copa:0};
+  list.forEach(x=>counts[x.type]=(counts[x.type]||0)+1);
+  const totalTitles=counts.liga_oro+counts.copa;
+  const podiums=counts.liga_oro+counts.liga_plata+counts.liga_bronce;
+  $("myHonoursSummary").innerHTML="<span><b>"+totalTitles+"</b> títulos</span><span><b>"+podiums+"</b> podios de Liga</span><span><b>"+counts.copa+"</b> Copas</span>";
+  const shelf=$("myHonoursShelf");
+  if(!list.length){shelf.innerHTML='<div class="honours-empty">Aún no tienes trofeos históricos en el palmarés.</div>';return;}
+  shelf.innerHTML=list.map(x=>{
+    const m=trophyMeta(x.type);
+    const pts=x.puntos!=null?" · "+Number(x.puntos)+" pts":"";
+    return '<article class="trophy-card '+m.cls+'"><div class="trophy-icon">'+m.icon+'</div><div><b>'+m.label+'</b><span>'+escapeHtml(x.temporada)+pts+'</span></div></article>';
+  }).join("");
+}
+function renderHonours(){
+  const ranking=$("honoursRanking"),history=$("honoursHistory");
+  if(!ranking||!history)return;
+  if(!palmaresData){ranking.innerHTML='<div class="empty">No se pudo cargar el palmarés.</div>';history.innerHTML="";return;}
+  const map=new Map();
+  const ensure=name=>{
+    const display=honourManagerName(name),key=norm(display);
+    if(!map.has(key))map.set(key,{name:display,gold:0,silver:0,bronze:0,cup:0});
+    return map.get(key);
+  };
+  for(const s of palmaresData.temporadas||[]){
+    const l=s.liga||{};
+    if(l.oro)ensure(l.oro.manager).gold++;
+    if(l.plata)ensure(l.plata.manager).silver++;
+    if(l.bronce)ensure(l.bronce.manager).bronze++;
+    if(s.copa)ensure(s.copa.manager).cup++;
+  }
+  const rows=[...map.values()].sort((a,b)=>(b.gold+b.cup)-(a.gold+a.cup)||(b.gold+b.silver+b.bronze)-(a.gold+a.silver+a.bronze)||a.name.localeCompare(b.name,"es"));
+  ranking.innerHTML=rows.map((x,i)=>{
+    const isMe=profile&&norm(x.name)===norm(profile.manager_name);
+    return '<article class="honours-rank-row '+(isMe?"is-me":"")+'"><strong><span class="rank-num">'+(i+1)+'</span>'+escapeHtml(x.name)+(isMe?'<small>Tú</small>':"")+'</strong><div class="honours-counts"><span class="gold">🏆 '+x.gold+'</span><span class="silver">🥈 '+x.silver+'</span><span class="bronze">🥉 '+x.bronze+'</span><span class="cup">🏆 Copa '+x.cup+'</span></div></article>';
+  }).join("");
+  history.innerHTML=[...(palmaresData.temporadas||[])].reverse().map(s=>{
+    const l=s.liga||{};
+    const item=(label,x,cls)=>'<div class="history-winner '+cls+'"><span>'+label+'</span><b>'+(x?escapeHtml(honourManagerName(x.manager)):"—")+'</b>'+(x&&x.puntos!=null?'<small>'+Number(x.puntos)+' pts</small>':"")+'</div>';
+    return '<article class="season-card"><h3>'+escapeHtml(s.temporada)+'</h3><div class="season-podium">'+item("🏆 Liga",l.oro,"gold")+item("🥈 2.º",l.plata,"silver")+item("🥉 3.º",l.bronce,"bronze")+item("🏆 Copa",s.copa,"cup")+'</div></article>';
+  }).join("");
+}
+
 async function loadWebData(){
   const [d,e,b]=await Promise.all([
     firstJson(["../datos.json","datos.json"]),
@@ -595,6 +676,7 @@ function renderMyTeam(){
     });
     box.appendChild(section);
   });
+  renderMyHonours();
 }
 
 function renderPlayers(){
@@ -922,13 +1004,14 @@ function renderStatsHistory(){
 function showView(name){
   currentView=name;
   document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
-  const map={home:"homeView",myteam:"myteamView",clauses:"clausesView",news:"newsView",badteam:"badteamView",stats:"statsView",rules:"rulesView"};
+  const map={home:"homeView",myteam:"myteamView",clauses:"clausesView",news:"newsView",badteam:"badteamView",stats:"statsView",honours:"honoursView",rules:"rulesView"};
   $(map[name]||"clausesView").classList.remove("hidden");
   document.querySelectorAll(".main-nav [data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
-  $("pageTitle").textContent=name==="home"?"Inicio":name==="myteam"?"Mi equipo":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="stats"?"Estadísticas":name==="rules"?"Normas":"Cláusulas";
+  $("pageTitle").textContent=name==="home"?"Inicio":name==="myteam"?"Mi equipo":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="stats"?"Estadísticas":name==="honours"?"Palmarés":name==="rules"?"Normas":"Cláusulas";
   if(name==="myteam")renderMyTeam();
   if(name==="news")loadNews();
   if(name==="stats")loadStatsData();
+  if(name==="honours")renderHonours();
   if(name==="rules")openRulesTab(document.querySelector(".rules-tab.active")?.dataset.rulesTab||"general");
   window.scrollTo({top:0,behavior:"smooth"});
 }
