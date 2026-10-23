@@ -50,14 +50,13 @@ function ensureChrome(){
         <strong>Comunio Laviana</strong>
         <small>TEMPORADA 2026/27</small>
       </div>
-      <button id="v65Bell" class="v65-headbtn" type="button" aria-label="Notificaciones">🔔</button>
-      <button id="v65User" class="v65-headbtn v65-user" type="button" aria-label="Usuario">👤</button>`;
+      <button id="v65Bell" class="v65-headbtn" type="button" aria-label="Notificaciones">🔔</button>`;
     document.body.prepend(header);
-    $("v65User")?.addEventListener("click",()=>clickProxy("#sessionBtn"));
     $("v65Bell")?.addEventListener("click",()=>{
       const card=$("notificationCard");
-      if(card){
-        card.classList.toggle("v65-notif-open");
+      if(!card) return;
+      card.classList.toggle("v65-notif-open");
+      if(card.classList.contains("v65-notif-open")){
         card.scrollIntoView({behavior:"smooth",block:"center"});
       }
     });
@@ -69,55 +68,25 @@ function ensureChrome(){
     nav.className="v65-bottom-nav";
     nav.innerHTML=`
       <button data-v65-go="home"><span>🏠</span><b>Inicio</b></button>
-      <button data-v65-go="clauses"><span>👕</span><b>Cláusulas</b></button>
-      <button data-v65-go="badteam"><span>👹</span><b>Equipo Malo</b></button>
-      <button data-v65-go="stats"><span>📊</span><b>Clasificación</b></button>
-      <button id="v65MoreBtn" type="button"><span>☰</span><b>Más</b></button>`;
+      <button data-v65-go="rules"><span>📜</span><b>Normas</b></button>
+      <a href="jornadas.html"><span>📅</span><b>Jornadas</b></a>
+      <button data-v65-go="honours"><span>🏆</span><b>Palmarés</b></button>
+      <a id="v65AdminBottom" class="hidden" href="admin.html"><span>🛠️</span><b>Admin</b></a>`;
     document.body.appendChild(nav);
     nav.querySelectorAll("[data-v65-go]").forEach(btn=>btn.addEventListener("click",()=>{
       const name=btn.dataset.v65Go;
       clickProxy(`.main-nav [data-view="${name}"]`);
       setActiveNav(name);
     }));
-    $("v65MoreBtn")?.addEventListener("click",()=>toggleMore());
-  }
-
-  if(!$("v65More")){
-    const more=document.createElement("div");
-    more.id="v65More";
-    more.className="v65-more hidden";
-    more.innerHTML=`
-      <div class="v65-more-sheet">
-        <div class="v65-more-head"><strong>Más</strong><button id="v65MoreClose" type="button">✕</button></div>
-        <button data-v65-more="myteam">👕 Mi equipo</button>
-        <button data-v65-more="news">📰 Noticias</button>
-        <a href="jornadas.html">📅 Jornadas</a>
-        <button data-v65-more="honours">🏆 Palmarés</button>
-        <button data-v65-more="rules">📜 Normas</button>
-        <a id="v65AdminLink" class="hidden" href="admin.html">🛠️ Admin</a>
-      </div>`;
-    document.body.appendChild(more);
-    $("v65MoreClose")?.addEventListener("click",toggleMore);
-    more.addEventListener("click",e=>{ if(e.target===more) toggleMore(); });
-    more.querySelectorAll("[data-v65-more]").forEach(btn=>btn.addEventListener("click",()=>{
-      clickProxy(`.main-nav [data-view="${btn.dataset.v65More}"]`);
-      toggleMore(false);
-    }));
   }
 
   const admin=proxy("#adminNav");
-  $("v65AdminLink")?.classList.toggle("hidden",admin?.classList.contains("hidden")!==false);
+  $("v65AdminBottom")?.classList.toggle("hidden",admin?.classList.contains("hidden")!==false);
 }
 
 function setActiveNav(name){
   document.querySelectorAll("#v65BottomNav button").forEach(b=>b.classList.toggle("active",b.dataset.v65Go===name));
 }
-function toggleMore(force){
-  const el=$("v65More"); if(!el)return;
-  const open=force===undefined ? el.classList.contains("hidden") : !!force;
-  el.classList.toggle("hidden",!open);
-}
-
 function statusShell(icon,title,subtitle,key){
   return `
     <div class="v65-card-title">
@@ -157,8 +126,6 @@ function ensureHome(){
         <i>›</i>
       </button>
 
-      <div id="homeNotificationSlot"></div>
-
       <div class="v65-status-grid">
         <button id="homeClausesCard" class="v65-status-card" type="button">
           ${statusShell("🔨","CLÁUSULAS","Todas las cláusulas de la liga","clauses")}
@@ -178,8 +145,6 @@ function ensureHome(){
     $("homeBadCard")?.addEventListener("click",()=>home.querySelector('.home-actions [data-go="badteam"]')?.click());
     $("homeNewsAll")?.addEventListener("click",()=>clickProxy('.main-nav [data-view="news"]'));
   }
-  const card=$("notificationCard"), slot=$("homeNotificationSlot");
-  if(card&&slot&&card.parentElement!==slot) slot.appendChild(card);
 }
 
 function clausePeriod(){
