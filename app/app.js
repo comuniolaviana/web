@@ -91,8 +91,8 @@ function renderCalendar(){
     b.addEventListener("click",()=>{
       grid.querySelectorAll(".selected").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");
       const f=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-      const status=info.state==="special"?"Periodo especial · ABIERTO":info.state==="open"?"ABIERTO":"CERRADO";
-      $("calendarDetail").innerHTML=`<strong>${f} · ${status}</strong>${escapeHtml(info.reason)}${info.state!=="closed"?`<br>Horario: ${motorCalendario.config.horario.inicio}–${motorCalendario.config.horario.fin}.`:""}`;
+      const status=info.state==="especial"?"Periodo especial · ABIERTO":info.state==="abierto"?"ABIERTO":"CERRADO";
+      $("calendarDetail").innerHTML=`<strong>${f} · ${status}</strong>${escapeHtml(info.reason)}${info.state!=="cerrado"?`<br>Horario: ${motorCalendario.config.horario.inicio}–${motorCalendario.config.horario.fin}.`:""}`;
     });
     grid.appendChild(b);
   }
