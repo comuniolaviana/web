@@ -1230,6 +1230,124 @@
           "value": 32560000
         }
       ]
+    },
+    {
+      "round": "6B",
+      "order": 11,
+      "label": "Jornada 6 aplazada · segunda tanda",
+      "type": "postponed",
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "note": "Segunda clasificación de aplazados de la jornada 6 enviada por el administrador, independiente del bloque 6A. Se respetan puntuaciones negativas. No se incluye Equipo Malo.",
+      "results": [
+        {
+          "id": "PABLO",
+          "points": 22,
+          "value": 79540000,
+          "position": 1
+        },
+        {
+          "id": "David",
+          "points": 16,
+          "value": 50970000,
+          "position": 2
+        },
+        {
+          "id": "Dani",
+          "points": 14,
+          "value": 52450000,
+          "position": 3
+        },
+        {
+          "id": "Ordieres",
+          "points": 13,
+          "value": 32560000,
+          "position": 4
+        },
+        {
+          "id": "Nazaré",
+          "points": 12,
+          "value": 53510000,
+          "position": 5
+        },
+        {
+          "id": "Laureano",
+          "points": 7,
+          "value": 90270000,
+          "position": 6
+        },
+        {
+          "id": "Enol",
+          "points": 5,
+          "value": 70330000,
+          "position": 7
+        },
+        {
+          "id": "Efren",
+          "points": 3,
+          "value": 56780000,
+          "position": 8
+        },
+        {
+          "id": "Ubaldo",
+          "points": 0,
+          "value": 72580000,
+          "position": 9
+        },
+        {
+          "id": "Jorge",
+          "points": 0,
+          "value": 60180000,
+          "position": 10
+        },
+        {
+          "id": "Eduardo",
+          "points": 0,
+          "value": 58410000,
+          "position": 11
+        },
+        {
+          "id": "Jesus",
+          "points": 0,
+          "value": 55270000,
+          "position": 12
+        },
+        {
+          "id": "Jonatan",
+          "points": 0,
+          "value": 53270000,
+          "position": 13
+        },
+        {
+          "id": "Borja",
+          "points": 0,
+          "value": 50670000,
+          "position": 14
+        },
+        {
+          "id": "Vizcaino",
+          "points": 0,
+          "value": 43060000,
+          "position": 15
+        },
+        {
+          "id": "Juanin",
+          "points": 0,
+          "value": 38430000,
+          "position": 16
+        },
+        {
+          "id": "Adrian",
+          "points": -1,
+          "value": 59980000,
+          "position": 17
+        },
+        {
+          "id": "Carlos",
+          "points": -4,
+          "value": 76250000,
+          "position": 18
+        }
+      ]
     }
   ]
 }
