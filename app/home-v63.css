@@ -61,3 +61,21 @@ body.v65-ui .topbar,body.v65-ui .main-nav{position:absolute!important;width:1px!
 
 /* V6.7 · estado visual de notificaciones */
 #v65Bell{position:relative}body[data-push-state="ok"] #v65Bell::after{content:"";position:absolute;right:3px;top:3px;width:9px;height:9px;border-radius:50%;background:#27d267;border:2px solid #071d2c}body[data-push-state="error"] #v65Bell::after,body[data-push-state="warning"] #v65Bell::after{content:"";position:absolute;right:3px;top:3px;width:9px;height:9px;border-radius:50%;background:#f2ad22;border:2px solid #071d2c}#notificationCard.v65-notif-open{max-width:720px!important;margin-left:auto!important;margin-right:auto!important}
+
+/* V6.8 · campana = estado real */
+#v65Bell{transition:background .18s ease,box-shadow .18s ease,opacity .18s ease}
+body[data-push-state="ok"] #v65Bell{
+  background:#18a84a!important;color:#fff!important;box-shadow:0 0 0 3px rgba(24,168,74,.18),0 0 18px rgba(24,168,74,.45)!important;opacity:1
+}
+body[data-push-state="off"] #v65Bell{
+  background:transparent!important;color:#9db0bf!important;box-shadow:none!important;opacity:.72
+}
+body[data-push-state="warning"] #v65Bell,
+body[data-push-state="error"] #v65Bell{
+  background:#bd7d00!important;color:#fff!important;box-shadow:0 0 0 3px rgba(189,125,0,.16)!important;opacity:1
+}
+body[data-push-state="loading"] #v65Bell{opacity:.7}
+body[data-push-state="ok"] #v65Bell::after,
+body[data-push-state="off"] #v65Bell::after,
+body[data-push-state="warning"] #v65Bell::after,
+body[data-push-state="error"] #v65Bell::after{display:none!important}
