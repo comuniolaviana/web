@@ -3,27 +3,33 @@
   "managers": [
     {
       "id": "Carlos",
-      "name": "Carlos1926"
+      "name": "Carlos",
+      "comunioName": "Carlos1926"
     },
     {
       "id": "Efren",
-      "name": "efren garcia"
+      "name": "Efren",
+      "comunioName": "efren garcia"
     },
     {
       "id": "Adrian",
-      "name": "Adrian Montes"
+      "name": "Adrian",
+      "comunioName": "Adrian Montes"
     },
     {
       "id": "Ubaldo",
-      "name": "Ubaldo Merino"
+      "name": "Ubaldo",
+      "comunioName": "Ubaldo Merino"
     },
     {
       "id": "Jesus",
-      "name": "Jesus Montoro Silva"
+      "name": "Jesus",
+      "comunioName": "Jesus Montoro Silva"
     },
     {
       "id": "Jorge",
-      "name": "Jorge Fernandez"
+      "name": "Jorge",
+      "comunioName": "Jorge Fernandez"
     },
     {
       "id": "Dani",
@@ -31,7 +37,8 @@
     },
     {
       "id": "Ordieres",
-      "name": "Ordieres David"
+      "name": "Ordieres",
+      "comunioName": "Ordieres David"
     },
     {
       "id": "Vizcaino",
@@ -43,19 +50,23 @@
     },
     {
       "id": "Jonatan",
-      "name": "Jonatan M A"
+      "name": "Jonatan",
+      "comunioName": "Jonatan M A"
     },
     {
       "id": "Enol",
-      "name": "Enol Martínez"
+      "name": "Enol",
+      "comunioName": "Enol Martínez"
     },
     {
       "id": "Eduardo",
-      "name": "Eduardo Iglesias"
+      "name": "Eduardo",
+      "comunioName": "Eduardo Iglesias"
     },
     {
       "id": "David",
-      "name": "David García"
+      "name": "David",
+      "comunioName": "David García"
     },
     {
       "id": "PABLO",
@@ -67,11 +78,13 @@
     },
     {
       "id": "Juanin",
-      "name": "Juanin Valencia"
+      "name": "Juanin",
+      "comunioName": "Juanin Valencia"
     },
     {
       "id": "Nazaré",
-      "name": "Nazaré Álvarez"
+      "name": "Nazaré",
+      "comunioName": "Nazaré Álvarez"
     }
   ],
   "rounds": [
