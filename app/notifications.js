@@ -41,6 +41,7 @@ function setState(kind, title, text, buttonText="", showTest=false){
     mainBtn.classList.add("hidden");
   }
   testBtn.classList.toggle("hidden", !showTest);
+  document.body.dataset.pushState = kind;
 }
 function ensureUI(){
   if (uiReady) return;
