@@ -586,7 +586,7 @@ function renderMyTeam(){
         <div>
           <div class="player-name">${escapeHtml(p.name)}</div>
           <div class="player-meta">${escapeHtml(p.team||"Sin equipo")}</div>
-          <div class="player-extra">${Number(p.points)||0} pts · ${escapeHtml(profile.manager_name)}</div>
+          <div class="player-extra">${Number(p.points)||0} pts · Cláusula ${euros(p.clause_value)}</div>
         </div>
         <div class="myteam-value"><span>VALOR</span><b>${euros(p.market_value)}</b></div>
         <button class="sell-bad-btn" ${!bad.open?"disabled":""}>${bad.open?"VENDER":"CERRADO"}<small>AL 💀</small></button>`;
