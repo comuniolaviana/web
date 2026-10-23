@@ -236,3 +236,10 @@
   .home-v63-meta b{font-size:9px}
   .home-v63-fresh{margin:8px 8px 9px}
 }
+
+
+/* V6.4 · compatibilidad con app.js: no eliminamos sus nodos, solo los ocultamos */
+.v63-legacy-hidden{display:none!important}
+.home-v63-root{display:grid;gap:10px}
+#homeNotificationSlot:empty{display:none}
+#homeNotificationSlot{display:block}
