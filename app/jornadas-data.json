@@ -416,6 +416,123 @@
           "value": 43710000
         }
       ]
+    },
+    {
+      "round": "1A",
+      "label": "Jornada 1 aplazada",
+      "order": 4,
+      "type": "postponed",
+      "source": "Capturas de Comunio proporcionadas por el administrador",
+      "results": [
+        {
+          "id": "Ubaldo",
+          "position": 1,
+          "points": 42,
+          "value": 63340000
+        },
+        {
+          "id": "Efren",
+          "position": 2,
+          "points": 38,
+          "value": 44590000
+        },
+        {
+          "id": "Borja",
+          "position": 3,
+          "points": 34,
+          "value": 42610000
+        },
+        {
+          "id": "Juanin",
+          "position": 4,
+          "points": 33,
+          "value": 36560000
+        },
+        {
+          "id": "Eduardo",
+          "position": 5,
+          "points": 30,
+          "value": 57830000
+        },
+        {
+          "id": "Dani",
+          "position": 6,
+          "points": 30,
+          "value": 57500000
+        },
+        {
+          "id": "Jonatan",
+          "position": 7,
+          "points": 30,
+          "value": 50990000
+        },
+        {
+          "id": "David",
+          "position": 8,
+          "points": 29,
+          "value": 65150000
+        },
+        {
+          "id": "Ordieres",
+          "position": 9,
+          "points": 27,
+          "value": 33710000
+        },
+        {
+          "id": "Laureano",
+          "position": 10,
+          "points": 26,
+          "value": 75760000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 11,
+          "points": 25,
+          "value": 50680000
+        },
+        {
+          "id": "Jesus",
+          "position": 12,
+          "points": 23,
+          "value": 53900000
+        },
+        {
+          "id": "PABLO",
+          "position": 13,
+          "points": 20,
+          "value": 50020000
+        },
+        {
+          "id": "Jorge",
+          "position": 14,
+          "points": 18,
+          "value": 40700000
+        },
+        {
+          "id": "Enol",
+          "position": 15,
+          "points": 17,
+          "value": 57720000
+        },
+        {
+          "id": "Nazaré",
+          "position": 16,
+          "points": 14,
+          "value": 38500000
+        },
+        {
+          "id": "Adrian",
+          "position": 17,
+          "points": 11,
+          "value": 69740000
+        },
+        {
+          "id": "Carlos",
+          "position": 18,
+          "points": 10,
+          "value": 60150000
+        }
+      ]
     }
   ]
 }
