@@ -1,0 +1,303 @@
+{
+  "actualizado": "2026-10-23",
+  "tipos": {
+    "liga_oro": {
+      "label": "Campeón de Liga",
+      "short": "Liga · Oro"
+    },
+    "liga_plata": {
+      "label": "Segundo de Liga",
+      "short": "Liga · Plata"
+    },
+    "liga_bronce": {
+      "label": "Tercero de Liga",
+      "short": "Liga · Bronce"
+    },
+    "copa": {
+      "label": "Campeón de Copa",
+      "short": "Copa"
+    }
+  },
+  "aliases": {
+    "Adrián Montes": "Adrian",
+    "Carlos1926": "Carlos",
+    "David García": "David",
+    "Eduardo Iglesias": "Eduardo",
+    "Efrén": "Efren",
+    "Jesús": "Jesus",
+    "Jesús Montoro": "Jesus",
+    "Jonathan": "Jonatan",
+    "Juanín Valencia": "Juanin",
+    "Ordieres David": "Ordieres",
+    "Pablo": "PABLO",
+    "Vizcaíno": "Vizcaino"
+  },
+  "temporadas": [
+    {
+      "temporada": "2012/13",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 1807
+        },
+        "plata": {
+          "manager": "Belarmino",
+          "puntos": 1700
+        },
+        "bronce": {
+          "manager": "Langostino",
+          "puntos": 1654
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2013/14",
+      "liga": {
+        "oro": {
+          "manager": "Jorge",
+          "puntos": null
+        },
+        "plata": {
+          "manager": "Efrén",
+          "puntos": null
+        },
+        "bronce": {
+          "manager": "Langostino",
+          "puntos": null
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2014/15",
+      "liga": {
+        "oro": {
+          "manager": "Jorge",
+          "puntos": null
+        },
+        "plata": {
+          "manager": "Enol",
+          "puntos": null
+        },
+        "bronce": {
+          "manager": "Borja",
+          "puntos": null
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2015/16",
+      "liga": {
+        "oro": {
+          "manager": "Langostino",
+          "puntos": 1921
+        },
+        "plata": {
+          "manager": "Enol",
+          "puntos": 1777
+        },
+        "bronce": {
+          "manager": "Efrén",
+          "puntos": 1742
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2016/17",
+      "liga": {
+        "oro": {
+          "manager": "Nazaré",
+          "puntos": 1891
+        },
+        "plata": {
+          "manager": "Vicente",
+          "puntos": 1810
+        },
+        "bronce": {
+          "manager": "David García",
+          "puntos": 1749
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2017/18",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 1856
+        },
+        "plata": {
+          "manager": "Esteban",
+          "puntos": 1777
+        },
+        "bronce": {
+          "manager": "Vicente",
+          "puntos": 1751
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2018/19",
+      "liga": {
+        "oro": {
+          "manager": "Langostino",
+          "puntos": 2329
+        },
+        "plata": {
+          "manager": "Nazaré",
+          "puntos": 2202
+        },
+        "bronce": {
+          "manager": "Enol",
+          "puntos": 2178
+        }
+      },
+      "copa": null
+    },
+    {
+      "temporada": "2019/20",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2241
+        },
+        "plata": {
+          "manager": "Nazaré",
+          "puntos": 1979
+        },
+        "bronce": {
+          "manager": "Vicente",
+          "puntos": 1974
+        }
+      },
+      "copa": {
+        "manager": "Ubaldo"
+      }
+    },
+    {
+      "temporada": "2020/21",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2293
+        },
+        "plata": {
+          "manager": "Ubaldo",
+          "puntos": 2050
+        },
+        "bronce": {
+          "manager": "Nazaré",
+          "puntos": 2040
+        }
+      },
+      "copa": {
+        "manager": "Efrén"
+      }
+    },
+    {
+      "temporada": "2021/22",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2063
+        },
+        "plata": {
+          "manager": "Jonathan",
+          "puntos": 2057
+        },
+        "bronce": {
+          "manager": "Ubaldo",
+          "puntos": 1902
+        }
+      },
+      "copa": {
+        "manager": "Nazaré"
+      }
+    },
+    {
+      "temporada": "2022/23",
+      "liga": {
+        "oro": {
+          "manager": "Nazaré",
+          "puntos": 2015
+        },
+        "plata": {
+          "manager": "Laureano",
+          "puntos": 1994
+        },
+        "bronce": {
+          "manager": "Enol",
+          "puntos": 1885
+        }
+      },
+      "copa": {
+        "manager": "Jesús"
+      }
+    },
+    {
+      "temporada": "2023/24",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2382
+        },
+        "plata": {
+          "manager": "Ubaldo",
+          "puntos": 2082
+        },
+        "bronce": {
+          "manager": "Jesús",
+          "puntos": 2075
+        }
+      },
+      "copa": {
+        "manager": "David García"
+      }
+    },
+    {
+      "temporada": "2024/25",
+      "liga": {
+        "oro": {
+          "manager": "Enol",
+          "puntos": 2474
+        },
+        "plata": {
+          "manager": "Nazaré",
+          "puntos": 2376
+        },
+        "bronce": {
+          "manager": "Ubaldo",
+          "puntos": 2354
+        }
+      },
+      "copa": {
+        "manager": "Nazaré"
+      }
+    },
+    {
+      "temporada": "2025/26",
+      "liga": {
+        "oro": {
+          "manager": "Jesús Montoro",
+          "puntos": 2144
+        },
+        "plata": {
+          "manager": "Laureano",
+          "puntos": 2114
+        },
+        "bronce": {
+          "manager": "Enol",
+          "puntos": 2103
+        }
+      },
+      "copa": {
+        "manager": "Eduardo Iglesias"
+      }
+    }
+  ]
+}
