@@ -394,7 +394,7 @@ async function enterApp(){
   $("loginView").classList.add("hidden");$("sessionBtn").textContent=profile.manager_name||"Salir";
   const adminNav=$("adminNav");
   if(adminNav)adminNav.classList.toggle("hidden",profile?.role!=="admin");
-  if(isConfigured())await loadRealData();else await loadDemoData();
+  if(isConfigured()){await syncLeagueData();await loadRealData();}else await loadDemoData();
   try{await loadPalmaresData();}catch(e){console.error("Palmarés:",e);}
   fillFilters();updateStatusUI();renderMyTeam();renderPlayers();renderBadPlayers();renderActivityMini();renderHonours();showView(currentView);
 }
@@ -522,6 +522,19 @@ async function loadWebData(){
       clause_value:Math.round(value*specialMultiplier(value)),available:true
     };
   }).filter(x=>x.name&&x.position);
+}
+
+async function syncLeagueData(){
+  try{
+    const {data,error}=await supa.functions.invoke("sync-league-data",{body:{source:"app"}});
+    if(error)throw error;
+    if(data?.synced)console.info("Datos diarios sincronizados",data);
+    return data||null;
+  }catch(e){
+    console.error("Sincronización diaria:",e);
+    showToast("No se pudo sincronizar la actualización diaria",true);
+    return null;
+  }
 }
 
 async function loadRealData(){
