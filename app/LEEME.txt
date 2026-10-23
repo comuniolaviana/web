@@ -1,31 +1,50 @@
-COMUNIO LAVIANA · NOTIFICACIONES PUSH
+COMUNIO LAVIANA · PORTADA V6.3 · INSTALACIÓN MANUAL
 
-Copia estos 4 archivos dentro de la carpeta app:
+COPIAR ESTOS 4 ARCHIVOS DENTRO DE LA CARPETA app:
 
-1. config.js            -> SUSTITUIR el actual
-2. sw.js                -> SUSTITUIR el actual
-3. notifications.js     -> ARCHIVO NUEVO
-4. notifications.css    -> ARCHIVO NUEVO
+1. config.js       -> SUSTITUIR el actual
+2. sw.js           -> SUSTITUIR el actual
+3. home-v63.js     -> ARCHIVO NUEVO
+4. home-v63.css    -> ARCHIVO NUEVO
 
 NO TOCAR:
 - app.js
-- admin.js
-- Supabase
+- styles.css
+- notifications.js
+- notifications.css
 - datos.json
-- estadisticas.json
+- equipomalo.json
+- Supabase
 
-Después:
-- Commit
-- Push origin
+DESPUÉS EN EL PROGRAMA MORADO (GitHub Desktop):
+1. Comprobar que aparecen 4 cambios.
+2. Escribir un mensaje, por ejemplo: "Portada V6.3 estados y noticias".
+3. Commit to main.
+4. Push origin.
 
-FUNCIONAMIENTO
-- Nueva cláusula: aviso general.
-- Si la cláusula es contra tu equipo: aviso especial "Te han pagado una cláusula".
-- Compra al Equipo Malo: aviso general.
-- Venta al Equipo Malo: aviso general.
-- Cada usuario debe activar las notificaciones una sola vez en cada móvil/dispositivo.
-- En iPhone es necesario abrir la app desde el icono añadido a la pantalla de inicio.
-- Una vez activadas aparece un botón "Probar" para enviar una notificación de prueba.
+QUÉ CAMBIA:
+- Noticias desaparece visualmente de la navegación superior.
+- Noticias aparece en Inicio con los últimos movimientos y botón "Ver todas".
+- Se eliminan visualmente los contadores y botones duplicados de Inicio.
+- Mi equipo queda como acceso principal.
+- Tarjeta grande de Cláusulas:
+  * día permitido
+  * estado horario
+  * horario oficial
+  * actualización real de datos
+- Tarjeta grande de Equipo Malo:
+  * estado horario 12:00–00:00
+  * actualización real e independiente
+- Verde = abierto.
+- Ámbar = pendiente de apertura.
+- Rojo = día cerrado u horario terminado.
+- Si los datos no están actualizados, se muestra aviso y se desactivan botones.
+- El servidor ya bloquea también las operaciones con datos desactualizados, aunque alguien use una versión antigua de la app.
 
-IMPORTANTE
-Este sw.js ya incluye la caché V6.1 y las notificaciones. Si tenías pendiente el sw.js del paquete V6 anterior, NO lo vuelvas a copiar después de este.
+IMPORTANTE:
+La comprobación de datos NO depende de abrir la aplicación.
+Lee la fecha real de actualización guardada por el sincronizador para:
+- cláusulas
+- Equipo Malo
+
+Si Equipo Malo no está actualizado, quedan bloqueadas tanto las COMPRAS como las VENTAS.

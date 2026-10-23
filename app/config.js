@@ -22,16 +22,24 @@ window.COMUNIO_CONFIG = {
   BADTEAM_CLOSE: "00:00"
 };
 
-// Carga independiente del módulo de notificaciones.
-// No modifica la lógica principal de la app.
+// Módulo de notificaciones.
 if (!/admin\.html$/i.test(location.pathname)) {
-  const css = document.createElement("link");
-  css.rel = "stylesheet";
-  css.href = "notifications.css?v=6-1";
-  document.head.appendChild(css);
+  const notifCss = document.createElement("link");
+  notifCss.rel = "stylesheet";
+  notifCss.href = "notifications.css?v=6-1";
+  document.head.appendChild(notifCss);
 
-  const script = document.createElement("script");
-  script.src = "notifications.js?v=6-1";
-  script.defer = true;
-  document.head.appendChild(script);
+  const notifScript = document.createElement("script");
+  notifScript.src = "notifications.js?v=6-1";
+  document.head.appendChild(notifScript);
+
+  // Portada V6.3: estados independientes, control de actualización y Noticias en Inicio.
+  const homeCss = document.createElement("link");
+  homeCss.rel = "stylesheet";
+  homeCss.href = "home-v63.css?v=6-3";
+  document.head.appendChild(homeCss);
+
+  const homeScript = document.createElement("script");
+  homeScript.src = "home-v63.js?v=6-3";
+  document.head.appendChild(homeScript);
 }
