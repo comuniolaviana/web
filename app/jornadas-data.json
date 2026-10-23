@@ -655,18 +655,7 @@
       "order": 6,
       "type": "postponed",
       "source": "Capturas de Comunio proporcionadas por el administrador",
-      "note": "Jorge Fernandez no aparece en las capturas; resultado pendiente, no equivale a 0 puntos. equipomalo aparece 11º con 0 puntos y no participa en la general de usuarios.",
-      "externalEntries": [
-        {
-          "name": "equipomalo",
-          "position": 11,
-          "points": 0,
-          "value": 191320000
-        }
-      ],
-      "missingManagers": [
-        "Jorge"
-      ],
+      "note": "Jorge Fernández: 0 puntos, indicado por el administrador. Equipo Malo excluido por indicación del administrador.",
       "results": [
         {
           "id": "Eduardo",
@@ -769,6 +758,12 @@
           "position": 18,
           "points": 0,
           "value": 45190000
+        },
+        {
+          "id": "Jorge",
+          "position": 19,
+          "points": 0,
+          "value": null
         }
       ]
     }
