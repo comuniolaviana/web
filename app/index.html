@@ -10,6 +10,19 @@
 <style>
 .my-league-summary{background:#132d1c;border:1px solid #426b4a;border-radius:14px;padding:16px;margin:16px 0;color:#ecffec}.my-league-summary[hidden]{display:none}.my-league-title{font-weight:800;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.my-league-title a{color:#a4edb4;font-size:12px;text-decoration:none}.my-league-numbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}.my-league-numbers>div{border-radius:10px;background:#20422a;padding:10px 6px;text-align:center}.my-league-numbers strong{display:block;font-size:23px}.my-league-numbers span{display:block;color:#c8dfca;font-size:11px;margin-top:3px}.my-league-warning{color:#ffe0a5;font-size:12px;margin:13px 0 0}
 </style>
+<style>
+.chronicles-section{margin:0 0 18px;border:1px solid #3c6548;border-radius:18px;padding:15px;background:linear-gradient(150deg,#173623,#0b1e12)}
+.chronicles-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:13px;flex-wrap:wrap}
+.chronicles-heading span{font-size:10px;color:#acd7b5;letter-spacing:1px;font-weight:800}
+.chronicles-heading h2{margin:4px 0 0;font-size:20px;color:#f4fff4}
+.chronicles-heading a{color:#b5efc0;text-decoration:none;font-size:12px;font-weight:700}
+.chronicles-list{display:grid;gap:10px}.chronicles-list p{color:#b3c6b6;font-size:13px;margin:0}
+.chronicle-card{display:block;text-decoration:none;background:#1c3524;border:1px solid #416b4a;padding:15px;border-radius:14px;color:#fff}
+.chronicle-card:focus-visible{outline:3px solid #a7e7b5}.chronicle-card small{color:#b0ddb8;font-size:10px;font-weight:850;letter-spacing:1px}
+.chronicle-card strong{display:block;font-size:17px;line-height:1.3;margin:6px 0}
+.chronicle-card span{display:block;color:#ccddce;font-size:12px;line-height:1.5}
+.chronicle-card em{display:block;font-style:normal;color:#b8f3c3;font-size:12px;font-weight:800;margin-top:9px}
+</style>
 </head>
 <body>
 <div id="appShell" class="app-shell">
@@ -258,6 +271,11 @@
     </section>
 
     <section id="newsView" class="view hidden">
+      <section class="chronicles-section" aria-label="Crónicas oficiales de la liga">
+        <div class="chronicles-heading"><div><span>🎙️ REDACCIÓN COMUNIO LAVIANA</span><h2>Crónicas de jornada</h2></div><a href="jornadas.html">Ver clasificación →</a></div>
+        <div id="chroniclesList" class="chronicles-list"><p>Consultando crónicas...</p></div>
+      </section>
+
       <div class="history-toolbar">
         <button class="period-btn active" data-period="today">Hoy</button>
         <button class="period-btn" data-period="yesterday">Ayer</button>
@@ -655,5 +673,6 @@
 <script src="../calendario-engine.js"></script>
 <script src="app.js?v=5-6"></script>
 <script src="mi-clasificacion.js?v=1"></script>
+<script src="cronicas-noticias.js?v=1"></script>
 </body>
 </html>
