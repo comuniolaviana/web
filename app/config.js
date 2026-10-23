@@ -33,13 +33,13 @@ if (!/admin\.html$/i.test(location.pathname)) {
   notifScript.src = "notifications.js?v=6-1";
   document.head.appendChild(notifScript);
 
-  // Portada V6.5: estados independientes, control de actualización y Noticias en Inicio.
+  // Portada V6.6: estados independientes, control de actualización y Noticias en Inicio.
   const homeCss = document.createElement("link");
   homeCss.rel = "stylesheet";
-  homeCss.href = "home-v63.css?v=6-5";
+  homeCss.href = "home-v63.css?v=6-6";
   document.head.appendChild(homeCss);
 
   const homeScript = document.createElement("script");
-  homeScript.src = "home-v63.js?v=6-5";
+  homeScript.src = "home-v63.js?v=6-6";
   document.head.appendChild(homeScript);
 }
