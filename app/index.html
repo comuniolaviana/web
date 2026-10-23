@@ -25,6 +25,7 @@
     <button data-view="news">📰 <span>Noticias</span></button>
     <button data-view="badteam">💀 <span>Equipo Malo</span></button>
     <button data-view="stats">📊 <span>Estadísticas</span></button>
+    <button data-view="honours">🏆 <span>Palmarés</span></button>
     <button data-view="rules">📜 <span>Normas</span></button>
     <a id="adminNav" class="hidden" href="admin.html">🛠️ <span>Admin</span></a>
   </nav>
@@ -111,6 +112,18 @@
       </p>
 
       <div id="myTeamBadState" class="user-state hidden"></div>
+
+      <section id="myHonoursSection" class="my-honours hidden">
+        <div class="section-title-row">
+          <div>
+            <span class="eyebrow">MI HISTORIA</span>
+            <h2>🏆 Mi palmarés</h2>
+          </div>
+          <button class="text-btn" data-go="honours" type="button">Ver palmarés completo</button>
+        </div>
+        <div id="myHonoursSummary" class="honours-summary"></div>
+        <div id="myHonoursShelf" class="trophy-shelf"></div>
+      </section>
 
       <div class="myteam-sale-info">
         <span>💀 Vender al Equipo Malo</span>
@@ -322,6 +335,43 @@
         </div>
 
         <div id="statsHistoryList" class="stats-history-list">
+          <div class="loading">Cargando historial…</div>
+        </div>
+      </section>
+    </section>
+
+    <section id="honoursView" class="view hidden">
+      <div class="honours-hero">
+        <div>
+          <span class="eyebrow">HISTORIA DE LA LIGA</span>
+          <h2>🏆 Palmarés Comunio Laviana</h2>
+          <p>Campeones, podios y Copa desde 2012/13. Los jugadores históricos siguen apareciendo aunque ya no estén activos.</p>
+        </div>
+        <div class="honours-hero-trophy">🏆</div>
+      </div>
+
+      <div class="trophy-legend">
+        <article class="legend-card gold"><span>🏆</span><b>Campeón de Liga</b><small>Copa oro</small></article>
+        <article class="legend-card silver"><span>🏆</span><b>Segundo de Liga</b><small>Copa plata</small></article>
+        <article class="legend-card bronze"><span>🏆</span><b>Tercero de Liga</b><small>Copa bronce</small></article>
+        <article class="legend-card cup"><span>🏆</span><b>Campeón de Copa</b><small>Copa</small></article>
+      </div>
+
+      <section class="honours-card">
+        <div class="section-title-row">
+          <h2>👑 Clasificación histórica</h2>
+          <span class="muted small">títulos y podios</span>
+        </div>
+        <div id="honoursRanking" class="honours-ranking">
+          <div class="loading">Cargando palmarés…</div>
+        </div>
+      </section>
+
+      <section class="honours-card">
+        <div class="section-title-row">
+          <h2>📜 Temporada a temporada</h2>
+        </div>
+        <div id="honoursHistory" class="honours-history">
           <div class="loading">Cargando historial…</div>
         </div>
       </section>
