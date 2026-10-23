@@ -860,8 +860,9 @@ function executeDemoBadSale(p){
 }
 function humanError(e){
   const s=String(e?.message||e||"");
-  if(s.includes("one_clause_per_executor_day")||s.includes("EXECUTOR_ALREADY_USED"))return "Ya has ejecutado tu cláusula de hoy.";
-  if(s.includes("one_received_per_owner_day")||s.includes("OWNER_ALREADY_BLOCKED"))return "Ese propietario acaba de recibir una cláusula.";
+  if(s.includes("one_clause_per_executor_day")||s.includes("EXECUTOR_ALREADY_USED")||s.includes("ux_clause_one_per_executor_day"))return "Ya has ejecutado tu cláusula de hoy.";
+  if(s.includes("one_received_per_owner_day")||s.includes("OWNER_ALREADY_BLOCKED")||s.includes("ux_clause_one_per_owner_day_ci"))return "Ese propietario acaba de recibir una cláusula. Sus jugadores ya no están disponibles hoy.";
+  if(s.includes("ux_clause_one_player_per_day_ci"))return "Ese jugador acaba de recibir una cláusula de otro usuario. Se ha respetado la primera operación registrada por el servidor.";
   if(s.includes("CLAUSES_CLOSED"))return "Las cláusulas están cerradas ahora mismo.";
   if(s.includes("CLAUSE_DAY_CLOSED"))return "Hoy no es día de cláusulas.";
   if(s.includes("BADTEAM_CLOSED"))return "Equipo Malo está cerrado. Abre a las 12:00.";
