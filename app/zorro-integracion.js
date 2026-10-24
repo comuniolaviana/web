@@ -17,7 +17,15 @@ function insertDailyFox(){
  if(now<release||now>release+24*60*60*1000)return;
  const node=document.createElement("article");node.id="zorroDailyNews";node.className="history-item";
  node.innerHTML='<div class="history-time">14:55</div><div><span class="news-type" style="background:#3c5b33;color:#fff4cb">🦊 INAUGURACIÓN</span><div class="history-main">Operación Gallinero: ¡comienza la cacería!</div><div class="history-sub">Bienvenidos a la nueva aplicación de Comunio Laviana · Apertura 15:00</div><a href="zorro-inauguracion-2026.html" style="display:block;margin:10px 0"><img src="zorro-inauguracion-cover.svg" alt="Cartel de inauguración de Comunio Laviana" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px"></a><a href="zorro-inauguracion-2026.html" style="display:block;margin-top:8px;color:#d5a33e">Ver la ilustración y leer la noticia →</a></div>';
- list.prepend(node);
+ const foxTime=14*3600+55*60;
+ const toSeconds=(value)=>{
+   const match=String(value||"").trim().match(/(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+   return match?Number(match[1])*3600+Number(match[2])*60+Number(match[3]||0):-1;
+ };
+ const entries=[...list.children].filter(el=>el.classList.contains("history-item"));
+ const next=entries.find(el=>toSeconds(el.querySelector(".history-time")?.textContent)<foxTime);
+ if(next)list.insertBefore(node,next);
+ else list.appendChild(node);
  const count=document.getElementById("historyCount");if(count){const n=parseInt(count.textContent,10);if(Number.isFinite(n))count.textContent=(n+1)+" noticias"}
 }
 function watchDailyFox(){
