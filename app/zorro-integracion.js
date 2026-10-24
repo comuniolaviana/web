@@ -46,7 +46,8 @@ function insertHomeFox(){
  // Home entries are sorted newest-first; use native timestamps when supplied.
  const native=rows.map(el=>Date.parse(el.dataset.newsTime||""));
  const position=native.findIndex(t=>Number.isFinite(t)&&t<stamp);
- if(position>=0&&rows[position])box.insertBefore(btn,rows[position]);else if(!rows.length||stamp>=Date.now()-2*3600000)box.prepend(btn);else box.appendChild(btn);
+ if(position>=3||(position<0&&rows.length>=3))return;
+ if(position>=0&&rows[position])box.insertBefore(btn,rows[position]);else if(!rows.length)box.prepend(btn);else box.appendChild(btn);
  const all=[...box.querySelectorAll(".v65-news-row")];all.slice(3).forEach(el=>el.remove());
  box.querySelector(".v65-empty")?.remove();
 }
