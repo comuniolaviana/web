@@ -50,7 +50,11 @@ function ensureChrome(){
         <strong>Comunio Laviana</strong>
         <small>TEMPORADA 2026/27</small>
       </div>
-      <button id="v65Bell" class="v65-headbtn" type="button" aria-label="Notificaciones">🔔</button>`;
+      <nav class="v65-headlinks" aria-label="Accesos directos">
+        <a href="viejo-zorro.html" class="v65-shortcut" aria-label="Viejo Zorro"><span>🦊</span><small>Viejo Zorro</small></a>
+        <a href="fairplay.html" class="v65-shortcut" aria-label="Fair Play"><span>🟨</span><small>Fair Play</small></a>
+        <button id="v65Bell" class="v65-headbtn" type="button" aria-label="Notificaciones"><span>🔔</span><small>Notificaciones</small></button>
+      </nav>`;
     document.body.prepend(header);
     $("v65Bell")?.addEventListener("click",()=>{
       const card=$("notificationCard");
@@ -209,7 +213,9 @@ function relativeTime(v){
 function newsRow(e){
   const ago=relativeTime(e._time);
   let icon="🔨",cls="clause",title="";
-  if(e._type==="badteam"){
+  if(e._type==="fairplay"){
+    icon="🟨";cls="fairplay";title=`${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"dos tarjetas amarillas":"una tarjeta amarilla"}: ${escapeHtml(e.reason)}`;
+  }else if(e._type==="badteam"){
     icon="🪙";cls="buy";title=`${escapeHtml(e.buyer_name||"")} ficha a ${escapeHtml(e.player_name||"")} por ${euros(e.clause_value)}`;
   }else if(e._type==="badsale"){
     icon="↔";cls="sale";title=`${escapeHtml(e.player_name||"")} al Equipo Malo por ${euros(e.sale_value??e.market_value)}`;
@@ -221,18 +227,20 @@ function newsRow(e){
 async function loadHomeNews(){
   const box=$("homeNewsList");if(!box)return;
   const day=localDate();
-  const [c,b,s]=await Promise.all([
+  const [c,b,s,f]=await Promise.all([
     client.from("clause_executions").select("*").eq("clause_day",day).order("executed_at",{ascending:false}),
     client.from("team_malo_purchases").select("*").eq("purchase_day",day).order("executed_at",{ascending:false}),
-    client.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:false})
+    client.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:false}),
+    client.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.now()-48*3600000).toISOString()).order("sanctioned_at",{ascending:false})
   ]);
   const arr=[
     ...(c.data||[]).map(x=>({...x,_type:"clause",_time:x.executed_at})),
     ...(b.data||[]).map(x=>({...x,_type:"badteam",_time:x.executed_at})),
-    ...(s.data||[]).map(x=>({...x,_type:"badsale",_time:x.executed_at}))
+    ...(s.data||[]).map(x=>({...x,_type:"badsale",_time:x.executed_at})),
+    ...(f.data||[]).filter(x=>new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE||"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x.sanctioned_at))===day).map(x=>({...x,_type:"fairplay",_time:x.sanctioned_at}))
   ].sort((a,b)=>new Date(b._time)-new Date(a._time)).slice(0,3);
   box.innerHTML=arr.length?arr.map(newsRow).join(""):'<div class="v65-empty">Todavía no hay movimientos hoy.</div>';
-  box.querySelectorAll(".v65-news-row").forEach(x=>x.addEventListener("click",()=>clickProxy('.main-nav [data-view="news"]')));
+  box.querySelectorAll(".v65-news-row").forEach((node,i)=>node.addEventListener("click",()=>{if(arr[i]?._type==="fairplay")location.href="fairplay.html?card="+encodeURIComponent(arr[i].id);else clickProxy('.main-nav [data-view="news"]');}));
 }
 
 function setStaleLock(selector,locked,label){
