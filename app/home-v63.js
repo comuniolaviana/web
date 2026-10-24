@@ -213,7 +213,7 @@ function relativeTime(v){
 function newsRow(e){
   const ago=relativeTime(e._time);
   let icon="🔨",cls="clause",title="";
-  if(e._type==="fairplay"){
+  if(e._type==="inauguracion"){\n    icon="🦊";cls="fairplay";title=`<span style="display:block">🦊🐔 Operación Gallinero: ¡comienza la cacería!</span><img src="zorro-inauguracion-cover.svg" alt="Cartel de inauguración" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:9px 0"><span style="font-size:13px">¡Bienvenidos a la nueva aplicación! Pulsa para ver la noticia.</span>`;\n  }else if(e._type==="fairplay"){
     icon="🟨";cls="fairplay";title=`${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"dos tarjetas amarillas":"una tarjeta amarilla"}: ${escapeHtml(e.reason)}`;
   }else if(e._type==="badteam"){
     icon="🪙";cls="buy";title=`${escapeHtml(e.buyer_name||"")} ficha a ${escapeHtml(e.player_name||"")} por ${euros(e.clause_value)}`;
@@ -240,7 +240,7 @@ async function loadHomeNews(){
     ...(f.data||[]).filter(x=>new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE||"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x.sanctioned_at))===day).map(x=>({...x,_type:"fairplay",_time:x.sanctioned_at}))
   ].sort((a,b)=>new Date(b._time)-new Date(a._time)).slice(0,3);
   box.innerHTML=arr.length?arr.map(newsRow).join(""):'<div class="v65-empty">Todavía no hay movimientos hoy.</div>';
-  box.querySelectorAll(".v65-news-row").forEach((node,i)=>node.addEventListener("click",()=>{if(arr[i]?._type==="fairplay")location.href="fairplay.html?card="+encodeURIComponent(arr[i].id);else clickProxy('.main-nav [data-view="news"]');}));
+  box.querySelectorAll(".v65-news-row").forEach((node,i)=>node.addEventListener("click",()=>{if(arr[i]?._type==="inauguracion")location.href="zorro-inauguracion-2026.html";else if(arr[i]?._type==="fairplay")location.href="fairplay.html?card="+encodeURIComponent(arr[i].id);else clickProxy('.main-nav [data-view="news"]');}));
 }
 
 function setStaleLock(selector,locked,label){
