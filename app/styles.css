@@ -129,6 +129,7 @@ input:focus,select:focus{border-color:#76c795;box-shadow:0 0 0 2px rgba(118,199,
 }
 .execute-btn small{display:block;font-size:9px;margin-top:4px;font-weight:700;opacity:.75}
 .execute-btn:disabled{background:#2b3730;color:#7c8781}
+.execute-btn.used:disabled{background:#7c2d32;color:#ffd7da;border:1px solid #b84a53}
 .today-mini{margin-top:18px}
 .section-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .section-title-row h2{font-size:18px}
