@@ -171,3 +171,6 @@ body.v65-ui > .v65-header {
  .v65-header .v65-brandmark{width:38px!important;flex-basis:38px!important}
  .v65-header .v65-shortcut,.v65-header .v65-headlinks .v65-headbtn{flex-basis:38px!important;width:38px!important;min-width:38px!important;max-width:38px!important}
 }
+
+.v65-clause-name{color:#168646;font-weight:950}
+.v65-clause-amount{display:block;margin-top:3px;color:#263d31;font-size:12px;font-style:normal;font-weight:900}
