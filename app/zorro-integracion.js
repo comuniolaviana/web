@@ -23,7 +23,7 @@ function insertDailyFox(){
  if(active?.dataset.period&&active.dataset.period!=="today"){list.querySelectorAll("[data-zorro-article]").forEach(n=>n.remove());return}
  const dateInput=document.getElementById("historyDate");
  if(!active&&dateInput?.value&&dateInput.value!==madridDay(new Date()))return;
- const toSeconds=value=>{const m=String(value||"").match(/(\\d{1,2}):(\\d{2})(?::(\\d{2}))?/);return m?Number(m[1])*3600+Number(m[2])*60+Number(m[3]||0):-1};
+ const toSeconds=value=>{const m=String(value||"").match(/(\d{1,2}):(\d{2})(?::(\d{2}))?/);return m?Number(m[1])*3600+Number(m[2])*60+Number(m[3]||0):-1};
  for(const x of dailyArticles.filter(sameDay)){
   if([...list.querySelectorAll("[data-zorro-article]")].some(n=>n.dataset.zorroArticle===(x.id||x.url)))continue;
   const node=dailyNode(x),t=toSeconds(madridHour(new Date(x.published_at)));
@@ -44,8 +44,8 @@ function insertHomeFox(){
  const rows=[...box.querySelectorAll(".v65-news-row")];
  const stamp=new Date(fox.published_at).getTime();
  // Home entries are sorted newest-first; use native timestamps when supplied.
- const native=window.__zorroHomeTimes;
- const position=Array.isArray(native)?native.findIndex(t=>Number(t)<stamp):-1;
+ const native=rows.map(el=>Date.parse(el.dataset.newsTime||""));
+ const position=native.findIndex(t=>Number.isFinite(t)&&t<stamp);
  if(position>=0&&rows[position])box.insertBefore(btn,rows[position]);else if(!rows.length||stamp>=Date.now()-2*3600000)box.prepend(btn);else box.appendChild(btn);
  const all=[...box.querySelectorAll(".v65-news-row")];all.slice(3).forEach(el=>el.remove());
  box.querySelector(".v65-empty")?.remove();
