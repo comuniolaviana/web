@@ -1,4 +1,4 @@
-const CACHE="comunio-laviana-app-v6-15";
+const CACHE="comunio-laviana-app-v6-16";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js",
@@ -45,7 +45,9 @@ self.addEventListener("push",event=>{
     tag:data.tag||"comunio-laviana",
     renotify:true,
     silent:false,
-    vibrate:receivedClause?[220,90,220,90,520]:[180,80,180],
+    requireInteraction:receivedClause,
+    timestamp:Date.now(),
+    vibrate:receivedClause?[260,100,260,100,650]:[220,90,220],
     data:{url:data.url||"./index.html",type:data.type||"",special}
   };
   event.waitUntil(self.registration.showNotification(title,options));
