@@ -909,7 +909,7 @@ async function loadNews(){
     ...clauses.map(e=>({...e,_type:"clause",_time:e.executed_at})),
     ...buys.map(e=>({...e,_type:"badteam",_time:e.executed_at})),
     ...sales.map(e=>({...e,_type:"badsale",_time:e.executed_at}))
-  ].sort((a,b)=>new Date(a._time)-new Date(b._time));
+  ].sort((a,b)=>new Date(b._time)-new Date(a._time));
 
   $("historyCount").textContent=`${arr.length} noticias`;
   $("historyList").innerHTML=arr.length?arr.map(newsHtml).join(""):'<div class="empty">No hubo actividad ese día.</div>';
