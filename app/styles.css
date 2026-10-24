@@ -1108,3 +1108,7 @@ button:disabled{cursor:default}
 .cal-day.abierto.selected{background:#1b5732}
 .cal-day.especial.selected{background:#5a4816}
 .cal-day.cerrado.selected{background:#4a2428}
+
+/* Enlaces de sanciones oficiales dentro de Noticias */
+.news-type.fairplay{background:#fff0b8;color:#654500;border-radius:7px}
+.fairplay-news-link{display:inline-block;color:#facc15;font-weight:800;font-size:12px;margin-top:7px;text-decoration:underline;text-underline-offset:3px}
