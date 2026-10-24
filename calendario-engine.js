@@ -126,7 +126,7 @@ class MotorCalendario {
     const h=hoy.hora;
     return {
       ...hoy,
-      abiertoAhora:h>=inicio && h<fin,
+      abiertoAhora:h>=inicio && h<=fin,
       horarioInicio:inicio,
       horarioFin:fin
     };
