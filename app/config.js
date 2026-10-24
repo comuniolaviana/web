@@ -36,10 +36,10 @@ if (!/(?:admin|fairplay)\.html$/i.test(location.pathname)) {
   // Portada V6.8: estados independientes, control de actualización y Noticias en Inicio.
   const homeCss = document.createElement("link");
   homeCss.rel = "stylesheet";
-  homeCss.href = "home-v63.css?v=6-12";
+  homeCss.href = "home-v63.css?v=6-13";
   document.head.appendChild(homeCss);
 
   const homeScript = document.createElement("script");
-  homeScript.src = "home-v63.js?v=6-12";
+  homeScript.src = "home-v63.js?v=6-13";
   document.head.appendChild(homeScript);
 }
