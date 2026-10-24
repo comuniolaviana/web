@@ -1,8 +1,8 @@
-const CACHE="comunio-laviana-app-v6-9";
+const CACHE="comunio-laviana-app-v6-10";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js",
-  "./config.js","./app.js","./manifest.json",
+  "./config.js","./app.js","./manifest.json","./notification-badge.svg",
   "../calendario-engine.js","../calendario-clausulas.json"
 ];
 
@@ -41,7 +41,7 @@ self.addEventListener("push",event=>{
   const options={
     body:data.body||"Nueva actividad en la liga.",
     icon:"./icon-192.svg",
-    badge:"./icon-192.svg",
+    badge:"./notification-badge.svg",
     tag:data.tag||"comunio-laviana",
     renotify:true,
     silent:false,
