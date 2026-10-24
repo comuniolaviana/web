@@ -98,3 +98,38 @@ body[data-push-state="error"] #v65Bell::after{display:none!important}
  .v65-shortcut small,.v65-headlinks .v65-headbtn small{font-size:8px;letter-spacing:-.2px}
 }
 @media(max-width:370px){.v65-shortcut,.v65-headlinks .v65-headbtn{width:42px}.v65-headlinks{gap:1px}.v65-brandcopy strong{font-size:14px}}
+
+/* V6.12 · corrección de cabecera en móviles: los tres accesos siempre visibles */
+.v65-header{grid-template-columns:58px minmax(0,1fr) max-content}
+.v65-brandcopy{min-width:0;max-width:100%}
+.v65-headlinks{min-width:max-content;flex-shrink:0}
+.v65-headlinks .v65-headbtn{flex-shrink:0}
+.v65-headlinks .v65-headbtn span{display:grid;place-items:center;flex-shrink:0}
+body[data-push-state="ok"] #v65Bell,
+body[data-push-state="off"] #v65Bell,
+body[data-push-state="warning"] #v65Bell,
+body[data-push-state="error"] #v65Bell{
+ background:transparent!important;box-shadow:none!important;opacity:1!important;color:#fff!important
+}
+body[data-push-state="ok"] #v65Bell span{background:#18a84a}
+body[data-push-state="off"] #v65Bell span{background:#12434b}
+body[data-push-state="warning"] #v65Bell span,
+body[data-push-state="error"] #v65Bell span{background:#bd7d00}
+@media(max-width:560px){
+ .v65-header{grid-template-columns:42px minmax(0,1fr) max-content;gap:7px;padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+ .v65-brandmark{width:42px;height:53px}
+ .v65-brandcopy strong{font-size:clamp(13px,3.8vw,19px);line-height:1.06;white-space:normal;overflow-wrap:normal}
+ .v65-brandcopy small{font-size:clamp(7px,2.2vw,9px);letter-spacing:0;line-height:1.1}
+ .v65-headlinks{gap:2px}
+ .v65-shortcut,.v65-headlinks .v65-headbtn{width:42px;min-width:42px}
+ .v65-shortcut span,.v65-headlinks .v65-headbtn span{width:36px;height:36px;font-size:19px}
+ .v65-shortcut small,.v65-headlinks .v65-headbtn small{font-size:8px;letter-spacing:-.15px;max-width:42px;overflow:hidden;text-overflow:clip}
+}
+@media(max-width:365px){
+ .v65-header{grid-template-columns:38px minmax(0,1fr) max-content;gap:5px}
+ .v65-brandmark{width:38px;height:48px}
+ .v65-brandcopy strong{font-size:13px}
+ .v65-brandcopy small{font-size:7px}
+ .v65-shortcut,.v65-headlinks .v65-headbtn{width:40px;min-width:40px}
+ .v65-shortcut span,.v65-headlinks .v65-headbtn span{width:34px;height:34px}
+}
