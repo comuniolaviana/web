@@ -62,4 +62,5 @@ function watchDailyFox(){
 // El acceso a Viejo Zorro ya está incluido en la cabecera principal.
 // Evitamos añadir un segundo icono junto a Fair Play y Avisos.
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{refreshFox().catch(console.error);watchDailyFox()});else {refreshFox().catch(console.error);watchDailyFox()}document.addEventListener("visibilitychange",()=>{if(!document.hidden){refreshFox().catch(console.error)}});
+setInterval(()=>{if(!document.hidden)refreshFox().catch(console.error)},60000);
 })();
