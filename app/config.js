@@ -23,7 +23,7 @@ window.COMUNIO_CONFIG = {
 };
 
 // Módulo de notificaciones.
-if (!/admin\.html$/i.test(location.pathname)) {
+if (!/(?:admin|fairplay)\.html$/i.test(location.pathname)) {
   const notifCss = document.createElement("link");
   notifCss.rel = "stylesheet";
   notifCss.href = "notifications.css?v=6-3";
