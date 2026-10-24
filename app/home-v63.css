@@ -79,3 +79,22 @@ body[data-push-state="ok"] #v65Bell::after,
 body[data-push-state="off"] #v65Bell::after,
 body[data-push-state="warning"] #v65Bell::after,
 body[data-push-state="error"] #v65Bell::after{display:none!important}
+
+/* Fair Play · accesos superiores y noticias */
+.v65-header{grid-template-columns:58px minmax(0,1fr) auto}
+.v65-headlinks{display:flex;align-items:center;gap:12px}
+.v65-shortcut,.v65-headlinks .v65-headbtn{width:63px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;text-decoration:none;line-height:1.1;font-weight:700}
+.v65-shortcut span,.v65-headlinks .v65-headbtn span{font-size:25px;background:#12434b;border-radius:50%;width:43px;height:43px;display:grid;place-items:center}
+.v65-shortcut small,.v65-headlinks .v65-headbtn small{font-size:10px;text-align:center;white-space:nowrap}
+.v65-headlinks .v65-headbtn{height:auto;border-radius:0;background:transparent;border:0;padding:0;font-size:inherit;cursor:pointer}
+.v65-news-icon.fairplay{background:#fff3cc}
+@media(max-width:560px){
+ .v65-header{grid-template-columns:44px minmax(0,1fr) auto;gap:7px;padding:12px 8px}
+ .v65-brandcopy strong{font-size:clamp(15px,4vw,20px);white-space:nowrap}
+ .v65-brandcopy small{font-size:9px}
+ .v65-headlinks{gap:3px}
+ .v65-shortcut,.v65-headlinks .v65-headbtn{width:47px}
+ .v65-shortcut span,.v65-headlinks .v65-headbtn span{font-size:20px;width:35px;height:35px}
+ .v65-shortcut small,.v65-headlinks .v65-headbtn small{font-size:8px;letter-spacing:-.2px}
+}
+@media(max-width:370px){.v65-shortcut,.v65-headlinks .v65-headbtn{width:42px}.v65-headlinks{gap:1px}.v65-brandcopy strong{font-size:14px}}
