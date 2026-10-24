@@ -213,7 +213,9 @@ function relativeTime(v){
 function newsRow(e){
   const ago=relativeTime(e._time);
   let icon="🔨",cls="clause",title="";
-  if(e._type==="inauguracion"){\n    icon="🦊";cls="fairplay";title=`<span style="display:block">🦊🐔 Operación Gallinero: ¡comienza la cacería!</span><img src="zorro-inauguracion-cover.svg" alt="Cartel de inauguración" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:9px 0"><span style="font-size:13px">¡Bienvenidos a la nueva aplicación! Pulsa para ver la noticia.</span>`;\n  }else if(e._type==="fairplay"){
+  if(e._type==="inauguracion"){
+    icon="🦊";cls="fairplay";title=`<span style="display:block">🦊🐔 Operación Gallinero: ¡comienza la cacería!</span><img src="zorro-inauguracion-cover.svg" alt="Cartel de inauguración" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:9px 0"><span style="font-size:13px">¡Bienvenidos a la nueva aplicación! Pulsa para ver la noticia.</span>`;
+  }else if(e._type==="fairplay"){
     icon="🟨";cls="fairplay";title=`${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"dos tarjetas amarillas":"una tarjeta amarilla"}: ${escapeHtml(e.reason)}`;
   }else if(e._type==="badteam"){
     icon="🪙";cls="buy";title=`${escapeHtml(e.buyer_name||"")} ficha a ${escapeHtml(e.player_name||"")} por ${euros(e.clause_value)}`;
@@ -233,7 +235,10 @@ async function loadHomeNews(){
     client.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:false}),
     client.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.now()-48*3600000).toISOString()).order("sanctioned_at",{ascending:false})
   ]);
+  const launchAt=Date.parse("2026-10-24T14:55:00+02:00");
+  const launchVisible=day==="2026-10-24" && Date.now()>=launchAt;
   const arr=[
+    ...(launchVisible?[{_type:"inauguracion",_time:"2026-10-24T14:55:00+02:00"}]:[]),
     ...(c.data||[]).map(x=>({...x,_type:"clause",_time:x.executed_at})),
     ...(b.data||[]).map(x=>({...x,_type:"badteam",_time:x.executed_at})),
     ...(s.data||[]).map(x=>({...x,_type:"badsale",_time:x.executed_at})),
