@@ -36,10 +36,10 @@ if (!/admin\.html$/i.test(location.pathname)) {
   // Portada V6.8: estados independientes, control de actualización y Noticias en Inicio.
   const homeCss = document.createElement("link");
   homeCss.rel = "stylesheet";
-  homeCss.href = "home-v63.css?v=6-8";
+  homeCss.href = "home-v63.css?v=6-11";
   document.head.appendChild(homeCss);
 
   const homeScript = document.createElement("script");
-  homeScript.src = "home-v63.js?v=6-8";
+  homeScript.src = "home-v63.js?v=6-11";
   document.head.appendChild(homeScript);
 }
