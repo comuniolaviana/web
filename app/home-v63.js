@@ -157,7 +157,7 @@ function clausePeriod(){
   if(!schedule||!schedule.enabled) return {state:"closed",label:"HOY NO ES DÍA",sub:"Hoy no se pueden ejecutar cláusulas",day:"✕",dayLabel:"Hoy no es día de cláusulas",hours:`${open} – ${close}`,openNow:false};
   const t=localTime();
   if(t<open) return {state:"pending",label:`HOY SE ABRE A LAS ${open}`,sub:"Aún no puedes ejecutar cláusulas",day:"✓",dayLabel:"Hoy es día de cláusulas",hours:`${open} – ${close}`,openNow:false};
-  if(t>=close) return {state:"closed",label:"HORARIO TERMINADO",sub:`Cerró a las ${close}`,day:"✓",dayLabel:"Hoy es día de cláusulas",hours:`${open} – ${close}`,openNow:false};
+  if(t>close) return {state:"closed",label:"HORARIO TERMINADO",sub:`Cerró a las ${close}`,day:"✓",dayLabel:"Hoy es día de cláusulas",hours:`${open} – ${close}`,openNow:false};
   return {state:"open",label:"ABIERTO AHORA",sub:"Puedes ejecutar cláusulas",day:"✓",dayLabel:"Hoy es día de cláusulas",hours:`${open} – ${close}`,openNow:true};
 }
 function badPeriod(){
@@ -212,7 +212,7 @@ function relativeTime(v){
 }
 function newsRow(e){
   const ago=relativeTime(e._time);
-  let icon="🔨",cls="clause",title="";
+  let icon="🔨",cls="clause",title="",detail="";
   if(e._type==="fairplay"){
     icon="🟨";cls="fairplay";title=`${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"dos tarjetas amarillas":"una tarjeta amarilla"}: ${escapeHtml(e.reason)}`;
   }else if(e._type==="badteam"){
@@ -220,9 +220,10 @@ function newsRow(e){
   }else if(e._type==="badsale"){
     icon="↔";cls="sale";title=`${escapeHtml(e.player_name||"")} al Equipo Malo por ${euros(e.sale_value??e.market_value)}`;
   }else{
-    title=`${escapeHtml(e.executor_name||"")} ejecuta la cláusula de ${escapeHtml(e.player_name||"")}`;
+    title=`${escapeHtml(e.executor_name||"")} paga la cláusula de <span class="v65-clause-name">${escapeHtml(e.player_name||"")}</span> a <span class="v65-clause-name">${escapeHtml(e.target_owner_name||"")}</span>`;
+    detail=`<em class="v65-clause-amount">${euros(e.clause_value)}</em>`;
   }
-  return `<button class="v65-news-row" type="button"><span class="v65-news-icon ${cls}">${icon}</span><span><b>${title}</b><small>${ago}</small></span><i>›</i></button>`;
+  return `<button class="v65-news-row" type="button"><span class="v65-news-icon ${cls}">${icon}</span><span><b>${title}</b>${detail}<small>${ago}</small></span><i>›</i></button>`;
 }
 async function loadHomeNews(){
   const box=$("homeNewsList");if(!box)return;
