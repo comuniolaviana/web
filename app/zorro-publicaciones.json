@@ -1,4 +1,14 @@
 {
   "season": "2026/27",
-  "articles": []
+  "articles": [
+    {
+      "id": "inauguracion-2026",
+      "title": "🦊🐔 Operación Gallinero: ¡comienza la cacería!",
+      "excerpt": "Hoy a las 15:00 se abre el gallinero. ¡Bienvenidos a la nueva aplicación de Comunio Laviana!",
+      "url": "zorro-inauguracion-2026.html",
+      "image": "zorro-inauguracion-cover.svg",
+      "category": "clausulas",
+      "published_at": "2026-10-24T14:55:00+02:00"
+    }
+  ]
 }
