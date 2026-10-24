@@ -892,14 +892,16 @@ async function loadNews(){
   const title=day===localDate()?"Noticias de hoy":day===localDate(-1)?"Noticias de ayer":`Noticias del ${formatDate(day)}`;
   $("historyTitle").querySelector("h2").textContent=title;
 
-  let clauses=[],buys=[],sales=[];
+  let clauses=[],buys=[],sales=[],fairplay=[];
   if(isConfigured()){
-    const [c,b,s]=await Promise.all([
+    const [c,b,s,f]=await Promise.all([
       supa.from("clause_executions").select("*").eq("clause_day",day).order("executed_at",{ascending:true}),
       supa.from("team_malo_purchases").select("*").eq("purchase_day",day).order("executed_at",{ascending:true}),
-      supa.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:true})
+      supa.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:true}),
+      supa.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.parse(day+"T00:00:00Z")-14*3600000).toISOString()).lt("sanctioned_at",new Date(Date.parse(day+"T00:00:00Z")+38*3600000).toISOString()).order("sanctioned_at",{ascending:true})
     ]);
     clauses=c.data||[];buys=b.data||[];sales=s.data||[];
+    fairplay=(f.data||[]).filter(x=>new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE||"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x.sanctioned_at))===day);
   }else{
     clauses=JSON.parse(localStorage.getItem(demoKey("clauses_"+day))||"[]");
     buys=JSON.parse(localStorage.getItem(demoKey("badbuys_"+day))||"[]");
@@ -908,7 +910,8 @@ async function loadNews(){
   const arr=[
     ...clauses.map(e=>({...e,_type:"clause",_time:e.executed_at})),
     ...buys.map(e=>({...e,_type:"badteam",_time:e.executed_at})),
-    ...sales.map(e=>({...e,_type:"badsale",_time:e.executed_at}))
+    ...sales.map(e=>({...e,_type:"badsale",_time:e.executed_at})),
+    ...fairplay.map(e=>({...e,_type:"fairplay",_time:e.sanctioned_at}))
   ].sort((a,b)=>new Date(b._time)-new Date(a._time));
 
   $("historyCount").textContent=`${arr.length} noticias`;
@@ -916,6 +919,15 @@ async function loadNews(){
 }
 function newsHtml(e){
   const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(new Date(e._time||e.executed_at));
+  if(e._type==="fairplay"){
+    const numbers=e.card_count===2?e.card_number+" y "+(e.card_number+1):String(e.card_number);
+    return `<article class="history-item"><div class="history-time">${time}</div><div>
+      <span class="news-type fairplay">🟨 SANCIÓN FAIR PLAY · N.º ${numbers}</span>
+      <div class="history-main">${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"2 tarjetas amarillas":"1 tarjeta amarilla"}</div>
+      <div class="history-sub">${escapeHtml(e.reason)}${Number(e.direct_fine)?" · Multa directa: "+euros(e.direct_fine):""}</div>
+      <a href="fairplay.html?card=${encodeURIComponent(e.id)}" class="fairplay-news-link">Consultar en Fair Play →</a>
+    </div></article>`;
+  }
   if(e._type==="badteam"){
     return `<article class="history-item"><div class="history-time">${time}</div><div>
       <span class="news-type badteam">💀 COMPRA AL EQUIPO MALO</span>
