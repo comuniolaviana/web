@@ -1,4 +1,9 @@
 {
   "season": "2026/27",
-  "participants": []
+  "participants": [
+    {
+      "name": "Jorge",
+      "hens": 1
+    }
+  ]
 }
