@@ -57,12 +57,17 @@ function ensureChrome(){
       </nav>`;
     document.body.prepend(header);
     $("v65Bell")?.addEventListener("click",()=>{
-      const card=$("notificationCard");
-      if(!card) return;
-      card.classList.toggle("v65-notif-open");
-      if(card.classList.contains("v65-notif-open")){
-        card.scrollIntoView({behavior:"smooth",block:"center"});
-      }
+      const toggle=()=>{
+        const card=$("notificationCard");
+        if(!card)return false;
+        card.classList.toggle("v65-notif-open");
+        if(card.classList.contains("v65-notif-open")){
+          card.scrollIntoView({behavior:"smooth",block:"center"});
+        }
+        return true;
+      };
+      if(toggle())return;
+      setTimeout(()=>{ if(!toggle()) console.warn("Panel de notificaciones no disponible todavía."); },250);
     });
   }
 
