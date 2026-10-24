@@ -335,6 +335,11 @@ input:focus,select:focus{border-color:#76c795;box-shadow:0 0 0 2px rgba(118,199,
   display:block;color:#92e7af;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .myteam-stats span{display:block;color:var(--muted);font-size:9px;margin-top:3px}
+.myteam-stats article.over-limit{
+  border-color:#a63b43;background:#2b1115
+}
+.myteam-stats article.over-limit strong{color:#ff5f69}
+.myteam-stats article.over-limit span{color:#ffb0b5}
 .myteam-note{margin:0 2px 9px;color:#77867d;font-size:9px;line-height:1.35}
 .myteam-sale-info{
   display:flex;justify-content:space-between;align-items:center;gap:8px;
