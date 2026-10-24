@@ -588,7 +588,7 @@ function clauseAvailability(){
   if(!schedule||!schedule.enabled)return{open:false,label:"Día cerrado",detail:"Hoy no es día de cláusulas"};
   const t=localTime(),open=String(schedule.opens_at||"15:00").slice(0,5),close=String(schedule.closes_at||"21:00").slice(0,5);
   if(t<open)return{open:false,label:"Todavía cerrado",detail:`Abre a las ${open}`};
-  if(t>=close)return{open:false,label:"Horario cerrado",detail:`Cerró a las ${close}`};
+  if(t>close)return{open:false,label:"Horario cerrado",detail:`Cerró a las ${close}`};
   return{open:true,label:"Cláusulas abiertas",detail:`Disponible hasta las ${close}`};
 }
 function badTeamAvailability(){
@@ -642,7 +642,7 @@ function updateStatusUI(){
   $("statNews").textContent=todayNews().length;
 
   const state=$("userStateBanner");
-  if(executorUsed()){state.textContent="✓ Ya has utilizado tu cláusula de hoy. Puedes seguir consultando.";state.classList.remove("hidden");}
+  if(executorUsed()){state.textContent="🔴 CLÁUSULA USADA";state.classList.remove("hidden");}
   else if(!a.open){state.textContent=`🔒 ${a.detail}. El servidor validará el horario.`;state.classList.remove("hidden");}
   else state.classList.add("hidden");
 
@@ -728,13 +728,13 @@ function renderPlayers(){
   box.innerHTML="";
   list.forEach(p=>{
     const row=document.createElement("article");row.className="player-row";
-    const btnText=used?"YA USADA":(a.open?"EJECUTAR":"CERRADO");
+    const btnText=used?"USADA":(a.open?"EJECUTAR":"CERRADO");
     row.innerHTML=`
       <div><div class="player-name">${escapeHtml(p.name)}</div>
       <div class="player-meta">${escapeHtml(p.owner_name)} · ${escapeHtml(p.team||"Sin equipo")}</div>
       <div class="player-extra">${Number(p.points)||0} pts · Valor ${euros(p.market_value)}</div></div>
       <div class="clause-col"><div class="clause-label">CLÁUSULA</div><div class="clause-value">${euros(p.clause_value)}</div></div>
-      <button class="execute-btn" ${(!a.open||used)?"disabled":""}>${btnText}</button>`;
+      <button class="execute-btn${used?" used":""}" ${(!a.open||used)?"disabled":""}>${btnText}</button>`;
     row.querySelector(".execute-btn").addEventListener("click",()=>openAction("clause",p));
     box.appendChild(row);
   });
