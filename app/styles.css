@@ -1113,3 +1113,11 @@ button:disabled{cursor:default}
 /* Enlaces de sanciones oficiales dentro de Noticias */
 .news-type.fairplay{background:#fff0b8;color:#654500;border-radius:7px}
 .fairplay-news-link{display:inline-block;color:#facc15;font-weight:800;font-size:12px;margin-top:7px;text-decoration:underline;text-underline-offset:3px}
+
+/* Cláusulas en noticias: más claras sin ocupar más altura */
+.clause-highlight{color:#91e5ad;font-weight:950}
+.clause-mini .history-main{line-height:1.18}
+.clause-mini-amount{font-size:12px;font-weight:900;color:#38453d;margin-top:3px}
+.clause-news .history-main{font-size:16px;line-height:1.2}
+.clause-news .clause-highlight{font-size:1.05em}
+.clause-amount{font-size:18px!important;font-weight:950!important;color:#91e5ad!important;margin-top:4px!important}
