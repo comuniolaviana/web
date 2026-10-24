@@ -879,7 +879,7 @@ function humanError(e){
 
 function renderActivityMini(){
   const arr=[...todayNews()].sort((a,b)=>new Date(b._time)-new Date(a._time)).slice(0,5);
-  $("activityMiniList").innerHTML=arr.length?arr.map(newsHtml).join(""):'<div class="empty">Todavía no hay actividad hoy.</div>';
+  $("activityMiniList").innerHTML=arr.length?arr.map(miniNewsHtml).join(""):'<div class="empty">Todavía no hay actividad hoy.</div>';
   const badActivity=[
     ...badPurchases.map(e=>({...e,_type:"badteam",_time:e.executed_at})),
     ...badSales.map(e=>({...e,_type:"badsale",_time:e.executed_at}))
@@ -917,6 +917,16 @@ async function loadNews(){
   $("historyCount").textContent=`${arr.length} noticias`;
   $("historyList").innerHTML=arr.length?arr.map(newsHtml).join(""):'<div class="empty">No hubo actividad ese día.</div>';
 }
+function miniNewsHtml(e){
+  if(e._type!=="clause")return newsHtml(e);
+  const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit"}).format(new Date(e._time||e.executed_at));
+  return `<article class="history-item clause-mini"><div class="history-time">${time}</div><div>
+    <span class="news-type clause">⚡ CLÁUSULA</span>
+    <div class="history-main">${escapeHtml(e.executor_name||"")} paga la cláusula de <span class="clause-highlight">${escapeHtml(e.player_name||"")}</span> a <span class="clause-highlight">${escapeHtml(e.target_owner_name||"")}</span></div>
+    <div class="history-sub clause-mini-amount">${euros(e.clause_value)}</div>
+  </div></article>`;
+}
+
 function newsHtml(e){
   const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(new Date(e._time||e.executed_at));
   if(e._type==="fairplay"){
@@ -942,10 +952,10 @@ function newsHtml(e){
       <div class="history-sub">${euros(e.sale_value??e.market_value)} · ${escapeHtml(e.team||"")}</div>
     </div></article>`;
   }
-  return `<article class="history-item"><div class="history-time">${time}</div><div>
+  return `<article class="history-item clause-news"><div class="history-time">${time}</div><div>
     <span class="news-type clause">⚡ CLÁUSULA</span>
-    <div class="history-main">${escapeHtml(e.executor_name||"")} → ${escapeHtml(e.player_name||"")}</div>
-    <div class="history-sub">de ${escapeHtml(e.target_owner_name||"")} · ${euros(e.clause_value)}</div>
+    <div class="history-main"><strong>${escapeHtml(e.executor_name||"")}</strong> paga la cláusula de <span class="clause-highlight">${escapeHtml(e.player_name||"")}</span> a <span class="clause-highlight">${escapeHtml(e.target_owner_name||"")}</span></div>
+    <div class="history-sub clause-amount">${euros(e.clause_value)}</div>
   </div></article>`;
 }
 
