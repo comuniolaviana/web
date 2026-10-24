@@ -228,7 +228,7 @@ function newsRow(e){
     title=`${escapeHtml(e.executor_name||"")} paga la cláusula de <span class="v65-clause-name">${escapeHtml(e.player_name||"")}</span> a <span class="v65-clause-name">${escapeHtml(e.target_owner_name||"")}</span>`;
     detail=`<em class="v65-clause-amount">${euros(e.clause_value)}</em>`;
   }
-  return `<button class="v65-news-row" type="button"><span class="v65-news-icon ${cls}">${icon}</span><span><b>${title}</b>${detail}<small>${ago}</small></span><i>›</i></button>`;
+  return `<button class="v65-news-row" type="button" data-news-time="${escapeHtml(e._time||"")}"><span class="v65-news-icon ${cls}">${icon}</span><span><b>${title}</b>${detail}<small>${ago}</small></span><i>›</i></button>`;
 }
 async function loadHomeNews(){
   const box=$("homeNewsList");if(!box)return;
