@@ -133,3 +133,41 @@ body[data-push-state="error"] #v65Bell span{background:#bd7d00}
  .v65-shortcut,.v65-headlinks .v65-headbtn{width:40px;min-width:40px}
  .v65-shortcut span,.v65-headlinks .v65-headbtn span{width:34px;height:34px}
 }
+
+
+/* V6.13: reserva siempre espacio para los tres accesos superiores */
+body.v65-ui > .v65-header {
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ width:100%!important;
+ max-width:100vw!important;
+ min-width:0!important;
+ box-sizing:border-box!important;
+}
+.v65-header .v65-brandmark{flex-shrink:0}
+.v65-header .v65-brandcopy{flex:1 1 0;min-width:0;width:0;max-width:none;overflow:hidden}
+.v65-header .v65-headlinks{
+ display:flex!important;flex:0 0 auto!important;align-items:center;justify-content:flex-end;
+ width:auto!important;min-width:0!important;gap:3px;margin-left:auto
+}
+.v65-header .v65-shortcut,.v65-header .v65-headlinks .v65-headbtn{
+ display:flex!important;flex:0 0 43px!important;
+ width:43px!important;min-width:43px!important;max-width:43px!important;
+ align-items:center;justify-content:center;position:relative;visibility:visible!important
+}
+.v65-header .v65-headlinks .v65-headbtn span{display:grid!important;place-items:center}
+@media(max-width:560px){
+ .v65-header{gap:7px!important;padding-left:max(8px,env(safe-area-inset-left))!important;padding-right:max(8px,env(safe-area-inset-right))!important}
+ .v65-header .v65-brandmark{width:42px!important;flex-basis:42px!important}
+ .v65-header .v65-brandcopy strong{font-size:clamp(13px,3.6vw,18px);white-space:normal;line-height:1.12}
+ .v65-header .v65-brandcopy small{font-size:8px;letter-spacing:0}
+ .v65-header .v65-shortcut,.v65-header .v65-headlinks .v65-headbtn{flex-basis:40px!important;width:40px!important;min-width:40px!important;max-width:40px!important}
+ .v65-header .v65-shortcut span,.v65-header .v65-headlinks .v65-headbtn span{width:35px!important;height:35px!important;font-size:20px!important}
+ .v65-header .v65-shortcut small,.v65-header .v65-headlinks .v65-headbtn small{font-size:8px;max-width:40px;white-space:nowrap}
+}
+@media(max-width:365px){
+ .v65-header{gap:5px!important}
+ .v65-header .v65-brandmark{width:38px!important;flex-basis:38px!important}
+ .v65-header .v65-shortcut,.v65-header .v65-headlinks .v65-headbtn{flex-basis:38px!important;width:38px!important;min-width:38px!important;max-width:38px!important}
+}
