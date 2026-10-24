@@ -233,7 +233,8 @@ async function loadHomeNews(){
     client.from("clause_executions").select("*").eq("clause_day",day).order("executed_at",{ascending:false}),
     client.from("team_malo_purchases").select("*").eq("purchase_day",day).order("executed_at",{ascending:false}),
     client.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:false}),
-    client.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.now()-48*3600000).toISOString()).order("sanctioned_at",{ascending:false}),\n    fetch("zorro-publicaciones.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():{articles:[]}).catch(()=>({articles:[]}))
+    client.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.now()-48*3600000).toISOString()).order("sanctioned_at",{ascending:false}),
+    fetch("zorro-publicaciones.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():{articles:[]}).catch(()=>({articles:[]}))
   ]);
   const arr=[
     ...((pubs.articles||[]).filter(x=>x.published_at&&Date.parse(x.published_at)<=Date.now()&&new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE||"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x.published_at))===day).map(x=>({...x,_type:"inauguracion",_time:x.published_at}))),
