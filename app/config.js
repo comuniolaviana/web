@@ -40,6 +40,6 @@ if (!/(?:admin|fairplay)\.html$/i.test(location.pathname)) {
   document.head.appendChild(homeCss);
 
   const homeScript = document.createElement("script");
-  homeScript.src = "home-v63.js?v=6-13";
+  homeScript.src = "home-v63.js?v=6-14";
   document.head.appendChild(homeScript);
 }
