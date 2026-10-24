@@ -213,9 +213,7 @@ function relativeTime(v){
 function newsRow(e){
   const ago=relativeTime(e._time);
   let icon="🔨",cls="clause",title="";
-  if(e._type==="inauguracion"){
-    icon="🦊";cls="fairplay";title=`<span style="display:block">${escapeHtml(e.title)}</span><img src="zorro-inauguracion-cover.svg" alt="Cartel de inauguración" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:9px 0"><span style="font-size:13px">¡Bienvenidos a la nueva aplicación! Pulsa para ver la noticia.</span>`;
-  }else if(e._type==="fairplay"){
+  if(e._type==="fairplay"){
     icon="🟨";cls="fairplay";title=`${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"dos tarjetas amarillas":"una tarjeta amarilla"}: ${escapeHtml(e.reason)}`;
   }else if(e._type==="badteam"){
     icon="🪙";cls="buy";title=`${escapeHtml(e.buyer_name||"")} ficha a ${escapeHtml(e.player_name||"")} por ${euros(e.clause_value)}`;
@@ -229,22 +227,20 @@ function newsRow(e){
 async function loadHomeNews(){
   const box=$("homeNewsList");if(!box)return;
   const day=localDate();
-  const [c,b,s,f,pubs]=await Promise.all([
+  const [c,b,s,f]=await Promise.all([
     client.from("clause_executions").select("*").eq("clause_day",day).order("executed_at",{ascending:false}),
     client.from("team_malo_purchases").select("*").eq("purchase_day",day).order("executed_at",{ascending:false}),
     client.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:false}),
-    client.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.now()-48*3600000).toISOString()).order("sanctioned_at",{ascending:false}),
-    fetch("zorro-publicaciones.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():{articles:[]}).catch(()=>({articles:[]}))
+    client.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.now()-48*3600000).toISOString()).order("sanctioned_at",{ascending:false})
   ]);
   const arr=[
-    ...((pubs.articles||[]).filter(x=>x.published_at&&Date.parse(x.published_at)<=Date.now()&&new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE||"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x.published_at))===day).map(x=>({...x,_type:"inauguracion",_time:x.published_at}))),
     ...(c.data||[]).map(x=>({...x,_type:"clause",_time:x.executed_at})),
     ...(b.data||[]).map(x=>({...x,_type:"badteam",_time:x.executed_at})),
     ...(s.data||[]).map(x=>({...x,_type:"badsale",_time:x.executed_at})),
     ...(f.data||[]).filter(x=>new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE||"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x.sanctioned_at))===day).map(x=>({...x,_type:"fairplay",_time:x.sanctioned_at}))
   ].sort((a,b)=>new Date(b._time)-new Date(a._time)).slice(0,3);
   box.innerHTML=arr.length?arr.map(newsRow).join(""):'<div class="v65-empty">Todavía no hay movimientos hoy.</div>';
-  box.querySelectorAll(".v65-news-row").forEach((node,i)=>node.addEventListener("click",()=>{if(arr[i]?._type==="inauguracion")location.href="zorro-inauguracion-2026.html";else if(arr[i]?._type==="fairplay")location.href="fairplay.html?card="+encodeURIComponent(arr[i].id);else clickProxy('.main-nav [data-view="news"]');}));
+  box.querySelectorAll(".v65-news-row").forEach((node,i)=>node.addEventListener("click",()=>{if(arr[i]?._type==="fairplay")location.href="fairplay.html?card="+encodeURIComponent(arr[i].id);else clickProxy('.main-nav [data-view="news"]');}));
 }
 
 function setStaleLock(selector,locked,label){
