@@ -664,6 +664,11 @@ function renderMyTeam(){
   const bad=badTeamAvailability();
   $("myTeamManager").textContent=String(profile.manager_name||"Mi equipo").toUpperCase();
   $("myTeamCount").textContent=list.length;
+  const squadCountCard=$("myTeamCount")?.closest("article");
+  if(squadCountCard){
+    squadCountCard.classList.toggle("over-limit",list.length>16);
+    squadCountCard.title=list.length>16?`Exceso de plantilla: ${list.length} jugadores (máximo 16)`:"Plantilla dentro del límite";
+  }
   $("myTeamValue").textContent=euros(list.reduce((s,p)=>s+(Number(p.market_value)||0),0));
   $("myTeamPoints").textContent=list.reduce((s,p)=>s+(Number(p.points)||0),0);
 
