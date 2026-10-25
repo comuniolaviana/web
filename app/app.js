@@ -118,7 +118,7 @@ let clauseExecutions=[], badPurchases=[], badSales=[];
 let dataSnapshotMs=0;
 let statsData=null, statsLoading=false;
 let palmaresData=null;
-let schedule=null, pendingAction=null, currentView="home", historyPeriod="today";
+let schedule=null, pendingAction=null, currentView="home", historyPeriod="latest";
 
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
@@ -887,47 +887,29 @@ function renderActivityMini(){
   $("badTodayMiniList").innerHTML=badActivity.length?badActivity.map(newsHtml).join(""):'<div class="empty">Todavía no hay actividad con el Equipo Malo hoy.</div>';
 }
 
+let newsRequest=0;
 async function loadNews(){
-  let day=historyPeriod==="today"?localDate():historyPeriod==="yesterday"?localDate(-1):($("historyDate").value||localDate());
-  const title=day===localDate()?"Noticias de hoy":day===localDate(-1)?"Noticias de ayer":`Noticias del ${formatDate(day)}`;
+  const request=++newsRequest;
+  const day=historyPeriod==="latest"?null:historyPeriod==="today"?localDate():historyPeriod==="yesterday"?localDate(-1):($("historyDate").value||localDate());
+  const title=!day?"Últimas noticias":day===localDate()?"Noticias de hoy":day===localDate(-1)?"Noticias de ayer":`Noticias del ${formatDate(day)}`;
   $("historyTitle").querySelector("h2").textContent=title;
-
-  let clauses=[],buys=[],sales=[],fairplay=[];
-  if(isConfigured()){
-    const [c,b,s,f]=await Promise.all([
-      supa.from("clause_executions").select("*").eq("clause_day",day).order("executed_at",{ascending:true}),
-      supa.from("team_malo_purchases").select("*").eq("purchase_day",day).order("executed_at",{ascending:true}),
-      supa.from("team_malo_sales").select("*").eq("sale_day",day).order("executed_at",{ascending:true}),
-      supa.from("fairplay_cards").select("*").gte("sanctioned_at",new Date(Date.parse(day+"T00:00:00Z")-14*3600000).toISOString()).lt("sanctioned_at",new Date(Date.parse(day+"T00:00:00Z")+38*3600000).toISOString()).order("sanctioned_at",{ascending:true})
-    ]);
-    clauses=c.data||[];buys=b.data||[];sales=s.data||[];
-    fairplay=(f.data||[]).filter(x=>new Intl.DateTimeFormat("sv-SE",{timeZone:CFG.TIMEZONE||"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x.sanctioned_at))===day);
-  }else{
-    clauses=JSON.parse(localStorage.getItem(demoKey("clauses_"+day))||"[]");
-    buys=JSON.parse(localStorage.getItem(demoKey("badbuys_"+day))||"[]");
-    sales=JSON.parse(localStorage.getItem(demoKey("badsales_"+day))||"[]");
-  }
-  const arr=[
-    ...clauses.map(e=>({...e,_type:"clause",_time:e.executed_at})),
-    ...buys.map(e=>({...e,_type:"badteam",_time:e.executed_at})),
-    ...sales.map(e=>({...e,_type:"badsale",_time:e.executed_at})),
-    ...fairplay.map(e=>({...e,_type:"fairplay",_time:e.sanctioned_at}))
-  ].sort((a,b)=>new Date(b._time)-new Date(a._time));
-
-  $("historyCount").textContent=`${arr.length} noticias`;
-  $("historyList").innerHTML=arr.length?arr.map(newsHtml).join(""):'<div class="empty">No hubo actividad ese día.</div>';
-}
-function miniNewsHtml(e){
-  if(e._type!=="clause")return newsHtml(e);
-  const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit"}).format(new Date(e._time||e.executed_at));
-  return `<article class="history-item clause-mini"><div class="history-time">${time}</div><div>
-    <span class="news-type clause">⚡ CLÁUSULA</span>
-    <div class="history-main">${escapeHtml(e.executor_name||"")} paga la cláusula de <span class="clause-highlight">${escapeHtml(e.player_name||"")}</span> a <span class="clause-highlight">${escapeHtml(e.target_owner_name||"")}</span></div>
-    <div class="history-sub clause-mini-amount">${euros(e.clause_value)}</div>
-  </div></article>`;
+  try{
+    let demoEvents=[];
+    if(!isConfigured()){
+      const d=day||localDate();
+      for(const [key,type] of [["clauses_","clause"],["badbuys_","badteam"],["badsales_","badsale"]]){
+        demoEvents.push(...JSON.parse(localStorage.getItem(demoKey(key+d))||"[]").map(e=>({...e,_type:type,_time:e.executed_at})));
+      }
+    }
+    const arr=await window.ComunioNews.load({client:isConfigured()?supa:null,day,limit:100,demoEvents});
+    if(request!==newsRequest)return;
+    $("historyCount").textContent=`${arr.length} noticias`;
+    $("historyList").innerHTML=arr.length?arr.map(newsHtml).join(""):'<div class="empty">No hubo actividad ese día.</div>';
+  }catch(e){console.error("Noticias:",e);if(request===newsRequest)$("historyCount").textContent="No se pudieron actualizar las noticias";}
 }
 
 function newsHtml(e){
+  if(e._type==="editorial")return window.ComunioNews.articleHtml(e);
   const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(new Date(e._time||e.executed_at));
   if(e._type==="fairplay"){
     const numbers=e.card_count===2?e.card_number+" y "+(e.card_number+1):String(e.card_number);
@@ -1074,3 +1056,4 @@ boot().catch(e=>{
   document.body.innerHTML='<div style="padding:30px;color:white;font-family:sans-serif">No se pudo iniciar la aplicación.<br><small>'+escapeHtml(e.message)+'</small></div>';
 });
 })();
+

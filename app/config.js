@@ -34,6 +34,8 @@ if (!/(?:admin|fairplay)\.html$/i.test(location.pathname)) {
   notifScript.async = false;
   document.head.appendChild(notifScript);
 
+  // Inicio carga su diseño en el HTML para evitar mostrar la portada antigua.
+  if(!/\/(?:index\.html)?$/i.test(location.pathname)){
   // Portada V6.8: estados independientes, control de actualización y Noticias en Inicio.
   const homeCss = document.createElement("link");
   homeCss.rel = "stylesheet";
@@ -44,4 +46,5 @@ if (!/(?:admin|fairplay)\.html$/i.test(location.pathname)) {
   homeScript.src = "home-v63.js?v=6-14";
   homeScript.async = false;
   document.head.appendChild(homeScript);
+  }
 }

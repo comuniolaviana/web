@@ -1,7 +1,7 @@
-const CACHE="comunio-laviana-app-v6-17";
+const CACHE="comunio-laviana-app-v6-18";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
-  "./home-v63.css","./home-v63.js",
+  "./home-v63.css","./home-v63.js","./news-feed.js",
   "./config.js","./app.js","./fairplay.html","./manifest.json","./notification-badge.svg",
   "../calendario-engine.js","../calendario-clausulas.json"
 ];
@@ -22,8 +22,8 @@ self.addEventListener("fetch",e=>{
   e.respondWith(
     fetch(e.request,{cache:"no-store"})
       .then(r=>{
-        const copy=r.clone();
-        caches.open(CACHE).then(c=>c.put(e.request,copy));
+        if(r.ok){const copy=r.clone();
+        caches.open(CACHE).then(c=>c.put(e.request,copy));}
         return r;
       })
       .catch(()=>caches.match(e.request))
@@ -67,3 +67,4 @@ self.addEventListener("notificationclick",event=>{
     return clients.openWindow(target);
   })());
 });
+
