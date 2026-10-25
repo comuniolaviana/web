@@ -118,7 +118,7 @@ let clauseExecutions=[], badPurchases=[], badSales=[];
 let dataSnapshotMs=0;
 let statsData=null, statsLoading=false;
 let palmaresData=null;
-let schedule=null, pendingAction=null, currentView="home", historyPeriod="latest";
+let schedule=null, pendingAction=null, currentView="home", historyPeriod="today";
 
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
@@ -890,8 +890,8 @@ function renderActivityMini(){
 let newsRequest=0;
 async function loadNews(){
   const request=++newsRequest;
-  const day=historyPeriod==="latest"?null:historyPeriod==="today"?localDate():historyPeriod==="yesterday"?localDate(-1):($("historyDate").value||localDate());
-  const title=!day?"Últimas noticias":day===localDate()?"Noticias de hoy":day===localDate(-1)?"Noticias de ayer":`Noticias del ${formatDate(day)}`;
+  const day=historyPeriod==="today"?localDate():historyPeriod==="yesterday"?localDate(-1):($("historyDate").value||localDate());
+  const title=day===localDate()?"Noticias de hoy":day===localDate(-1)?"Noticias de ayer":`Noticias del ${formatDate(day)}`;
   $("historyTitle").querySelector("h2").textContent=title;
   try{
     let demoEvents=[];
@@ -901,7 +901,7 @@ async function loadNews(){
         demoEvents.push(...JSON.parse(localStorage.getItem(demoKey(key+d))||"[]").map(e=>({...e,_type:type,_time:e.executed_at})));
       }
     }
-    const arr=await window.ComunioNews.load({client:isConfigured()?supa:null,day,limit:100,demoEvents});
+    const arr=await window.ComunioNews.load({client:isConfigured()?supa:null,day,limit:Infinity,demoEvents});
     if(request!==newsRequest)return;
     $("historyCount").textContent=`${arr.length} noticias`;
     $("historyList").innerHTML=arr.length?arr.map(newsHtml).join(""):'<div class="empty">No hubo actividad ese día.</div>';
@@ -1050,6 +1050,12 @@ function showView(name){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function formatDate(iso){const[y,m,d]=iso.split("-");return`${d}/${m}/${y}`;}
+
+function refreshVisibleNews(){
+  if(currentView==="news"&&profile&&!document.hidden)loadNews();
+}
+document.addEventListener("visibilitychange",refreshVisibleNews);
+setInterval(refreshVisibleNews,60000);
 
 boot().catch(e=>{
   console.error(e);
