@@ -605,10 +605,12 @@ function badTeamAvailability(){
 }
 const executorUsed=()=>clauseExecutions.some(e=>sameManager(e.executor_name,profile?.manager_name));
 const blockedOwners=()=>clauseExecutions.map(e=>e.target_owner_name).filter(Boolean);
+const playerClausedToday=name=>clauseExecutions.some(e=>String(e.player_name||"").trim().toLowerCase()===String(name||"").trim().toLowerCase());
 function availablePlayers(){
   const blocked=blockedOwners();
   return effectiveLeaguePlayers().filter(p=>
     p.active!==false &&
+    !playerClausedToday(p.name) &&
     !sameManager(p.owner_name,profile?.manager_name) &&
     !sameManager(p.owner_name,"Equipo Malo") &&
     !blocked.some(o=>sameManager(o,p.owner_name))
@@ -777,6 +779,7 @@ function renderChips(id,arr){
 
 function openAction(type,p){
   if(type==="clause"){
+    if(playerClausedToday(p.name)){showToast("Ese jugador ya ha recibido una cláusula y no está disponible hoy.",true);return;}
     if(executorUsed()){showToast("Ya has utilizado tu cláusula de hoy.",true);return;}
     if(!clauseAvailability().open){showToast("Las cláusulas están cerradas.",true);return;}
     $("modalIcon").textContent="⚡";$("modalTitle").textContent="Ejecutar cláusula";
@@ -799,6 +802,10 @@ async function executePending(){
   $("confirmExecuteBtn").disabled=true;
   try{
     const {type,player}=pendingAction;
+    if(type==="clause"&&playerClausedToday(player.name)){
+      closeModal();
+      throw new Error("ux_clause_one_player_per_day_ci");
+    }
     if(isConfigured()){
       if(type==="clause")await executeRealClause(player);
       else if(type==="badteam")await executeRealBadPurchase(player);
