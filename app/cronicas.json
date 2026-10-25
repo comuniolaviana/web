@@ -2,6 +2,18 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-10-provisional",
+      "title": "Adrián acelera, Ubaldo amenaza y Laureano pierde la silla",
+      "eyebrow": "CRÓNICA · JORNADA 10 · PROVISIONAL",
+      "excerpt": "Adrián manda con 49, Jesús y Jonatan persiguen con 42. Ubaldo guarda siete pendientes y Enol y Eduardo adelantan provisionalmente a Laureano en la general.",
+      "url": "cronica-jornada-10-provisional.html",
+      "round": 10,
+      "provisional": true,
+      "provisionalGeneral": true,
+      "published_at": "2026-10-25T07:44:02.489Z",
+      "consulted_at": "2026-10-25T08:40:00+01:00"
+    },
+    {
       "id": "cronica-jornada-9",
       "title": "Eduardo resucita, Ubaldo se escapa y Laureano entra en crisis",
       "eyebrow": "CRÓNICA · JORNADA 9",
