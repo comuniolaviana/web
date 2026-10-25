@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07160d">
+<title>Crónicas anteriores · Comunio Laviana</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07160d;color:#eef8ee;font-family:system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}header{padding:16px 19px;background:#0e2819;border-bottom:1px solid #31503b}a{color:#abe8b7}header a{text-decoration:none;font-weight:750}main{max-width:780px;margin:auto;padding:26px 19px 60px}.eyebrow{font-size:11px;letter-spacing:1.6px;color:#a5dfb1;font-weight:800}h1{font-size:clamp(28px,6vw,40px);line-height:1.15;margin:10px 0 14px}.intro,.date{color:#b3cbb8}.intro{margin-bottom:24px}.list{display:grid;gap:14px}.entry{display:block;padding:19px;background:#10281a;border:1px solid #365a3e;border-radius:16px;text-decoration:none;color:#eef8ee}.entry:hover{border-color:#8ac99a}.entry:focus-visible{outline:3px solid #b3edbf;outline-offset:3px}.meta{display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:12px;color:#c7e5cc}.badge{padding:3px 9px;border-radius:20px;background:#3b3119;color:#ffe2a2;font-weight:800}.badge.final{background:#164b2b;color:#b7f7cb}.badge.unknown{background:#293b31;color:#d1dfd5}h2{font-size:20px;line-height:1.3;margin:12px 0 8px}.date{display:block;font-size:12px}.read{display:block;margin-top:13px;color:#b7efc2;font-weight:750;font-size:13px}.notice{padding:17px;border:1px solid #365a3e;border-radius:12px;color:#c7e5cc}button{padding:10px 15px;border:0;border-radius:9px;background:#25894c;color:#fff;font:inherit;cursor:pointer}.season{color:#a5dfb1;font-size:13px}
+</style>
+</head>
+<body>
+<header><a href="index.html">← Comunio Laviana</a></header>
+<main>
+<span class="eyebrow">LA REDACCIÓN</span><h1>Crónicas anteriores</h1>
+<p class="intro">Las crónicas de jornada, de más reciente a más antigua. Las automáticas del domingo y del lunes son provisionales. La definitiva se publica con la clasificación confirmada por la organización.</p>
+<p id="season" class="season"></p>
+<div id="archive" class="list" aria-live="polite"><p class="notice">Cargando crónicas…</p></div>
+<noscript><p>Activa JavaScript para consultar el listado. Puedes abrir las crónicas de la <a href="cronica-jornada-10-provisional.html">jornada 10</a> y de la <a href="cronica-jornada-9.html">jornada 9</a>.</p></noscript>
+</main>
+<script>
+(()=>{"use strict";
+const host=document.getElementById("archive");
+const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const validLink=s=>/^[a-z0-9_-]+\.html$/i.test(String(s));
+function state(a){
+ if(a.provisional===true||a.status==="provisional")return{label:"Provisional",cls:""};
+ if(a.status==="definitiva"||a.status==="final"||a.definitive===true)return{label:"Definitiva",cls:"final"};
+ return{label:"Estado sin confirmar",cls:"unknown"};
+}
+function stamp(a){return Date.parse(a.published_at||"")||0;}
+function dateLabel(a){return stamp(a)?new Intl.DateTimeFormat("es-ES",{timeZone:"Europe/Madrid",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(a.published_at)):"Fecha de publicación no disponible";}
+function render(data){
+ const seen=new Set();
+ const articles=(data.articles||[]).filter(a=>a.title&&validLink(a.url)&&a.kind!=="zorro"&&Number(a.round)>0&&(!a.published_at||stamp(a)<=Date.now())&&!seen.has(a.url)&&seen.add(a.url)).sort((a,b)=>Number(b.round)-Number(a.round)||stamp(b)-stamp(a));
+ // Jornadas sin fecha histórica conservan su lugar por número de jornada.
+ articles.sort((a,b)=>stamp(a)&&stamp(b)?stamp(b)-stamp(a):Number(b.round)-Number(a.round)||stamp(b)-stamp(a));
+ document.getElementById("season").textContent=data.season?"Temporada "+data.season:"";
+ host.innerHTML=articles.length?articles.map(a=>{const s=state(a);return '<a class="entry" href="'+safe(a.url)+'"><div class="meta"><strong>Jornada '+safe(a.round)+'</strong><span class="badge '+s.cls+'">'+s.label+'</span></div><h2>'+safe(a.title)+'</h2><span class="date">'+safe(dateLabel(a))+'</span><span class="read">Leer crónica completa →</span></a>'}).join(""):'<p class="notice">Todavía no hay crónicas de jornada archivadas.</p>';
+}
+async function load(){try{const r=await fetch("cronicas.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("catalog");const data=await r.json();if(!Array.isArray(data.articles))throw Error("catalog");render(data);}catch(e){host.innerHTML='<div class="notice"><p>No se pudo cargar el histórico.</p><button type="button" id="retry">Volver a intentar</button></div>';document.getElementById("retry").addEventListener("click",load);}}
+load();
+})();
+</script>
+</body></html>
