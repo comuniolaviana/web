@@ -223,9 +223,9 @@ function newsRow(e){
   }else if(e._type==="fairplay"){
     icon="🟨";cls="fairplay";title=`${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"dos tarjetas amarillas":"una tarjeta amarilla"}: ${escapeHtml(e.reason)}`;
   }else if(e._type==="badteam"){
-    icon="🪙";cls="buy";title=`${escapeHtml(e.buyer_name||"")} ficha a ${escapeHtml(e.player_name||"")} por ${euros(e.clause_value)}`;
+    icon="🛒";cls="buy";title=`${escapeHtml(e.buyer_name||"")} ficha a ${escapeHtml(e.player_name||"")} por ${euros(e.clause_value)}`;
   }else if(e._type==="badsale"){
-    icon="↔";cls="sale";title=`${escapeHtml(e.player_name||"")} al Equipo Malo por ${euros(e.sale_value??e.market_value)}`;
+    icon="💰";cls="sale";title=`${escapeHtml(e.player_name||"")} al Equipo Malo por ${euros(e.sale_value??e.market_value)}`;
   }else{
     title=`${escapeHtml(e.executor_name||"")} paga la cláusula de <span class="v65-clause-name">${escapeHtml(e.player_name||"")}</span> a <span class="v65-clause-name">${escapeHtml(e.target_owner_name||"")}</span>`;
     detail=`<em class="v65-clause-amount">${euros(e.clause_value)}</em>`;
