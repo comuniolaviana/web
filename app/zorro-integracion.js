@@ -13,7 +13,7 @@ const sameDay=x=>x.published_at&&madridDay(new Date(x.published_at))===madridDay
 function dailyNode(x){
  const node=document.createElement("article");node.className="history-item";node.dataset.zorroArticle=x.id||x.url;
  const time=madridHour(new Date(x.published_at));
- node.innerHTML='<div class="history-time">'+safe(time)+'</div><div><span class="news-type" style="background:#3c5b33;color:#fff4cb">🦊 VIEJO ZORRO</span><div class="history-main">'+safe(x.title)+'</div><div class="history-sub">'+safe(x.excerpt||"")+'</div>'+(x.image&&linkImage(x.image)?'<a href="'+link(x.url)+'" style="display:block;margin:10px 0"><img src="'+linkImage(x.image)+'" alt="Ilustración" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px"></a>':'')+'<a href="'+link(x.url)+'" style="display:block;margin-top:8px;color:#d5a33e">Leer la crónica →</a></div>';
+ node.innerHTML='<div class="history-time">'+safe(time)+'</div><div><span class="news-type" style="background:#3c5b33;color:#fff4cb">'+(x.kind==="cronica"?"🎙️ CRÓNICA DE JORNADA":"🦊 VIEJO ZORRO")+'</span><div class="history-main">'+safe(x.title)+'</div><div class="history-sub">'+safe(x.excerpt||"")+'</div>'+(x.image&&linkImage(x.image)?'<a href="'+link(x.url)+'" style="display:block;margin:10px 0"><img src="'+linkImage(x.image)+'" alt="Ilustración" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px"></a>':'')+'<a href="'+link(x.url)+'" style="display:block;margin-top:8px;color:#d5a33e">Leer la crónica →</a></div>';
  return node;
 }
 let dailyArticles=[];
@@ -39,7 +39,7 @@ function insertHomeFox(){
  const now=new Date(fox.published_at),ago=Math.max(0,Math.floor((Date.now()-now.getTime())/60000));
  const label=ago<60?(ago<1?"Ahora":"Hace "+ago+" min"):(ago<1440?"Hace "+Math.floor(ago/60)+" h":madridDay(now));
  const btn=document.createElement("button");btn.type="button";btn.className="v65-news-row";btn.dataset.zorroHome=fox.id||fox.url;
- btn.innerHTML='<span class="v65-news-icon">🦊</span><span><b>'+safe(fox.title)+'</b><small>'+safe(label)+'</small></span><i>›</i>';
+ btn.innerHTML='<span class="v65-news-icon">'+(fox.kind==="cronica"?"🎙️":"🦊")+'</span><span><b>'+safe(fox.title)+'</b><small>'+safe(label)+'</small></span><i>›</i>';
  btn.addEventListener("click",()=>location.href=link(fox.url));
  const rows=[...box.querySelectorAll(".v65-news-row")];
  const stamp=new Date(fox.published_at).getTime();
@@ -51,7 +51,7 @@ function insertHomeFox(){
  const all=[...box.querySelectorAll(".v65-news-row")];all.slice(3).forEach(el=>el.remove());
  box.querySelector(".v65-empty")?.remove();
 }
-async function refreshFox(){const arr=await catalog();dailyArticles=arr.filter(x=>x.kind==="zorro");await render();insertDailyFox();insertHomeFox();}
+async function refreshFox(){const arr=await catalog();dailyArticles=arr;await render();insertDailyFox();insertHomeFox();}
 function watchDailyFox(){
  const list=document.getElementById("historyList");
  if(list)new MutationObserver(()=>{if(dailyArticles.some(x=>sameDay(x)&&![...list.querySelectorAll("[data-zorro-article]")].some(n=>n.dataset.zorroArticle===(x.id||x.url))))insertDailyFox()}).observe(list,{childList:true});
