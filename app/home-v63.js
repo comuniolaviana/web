@@ -78,7 +78,7 @@ function ensureChrome(){
     nav.innerHTML=`
       <button data-v65-go="home"><span>🏠</span><b>Inicio</b></button>
       <button data-v65-go="rules"><span>📜</span><b>Normas</b></button>
-      <a href="jornadas.html"><span>📅</span><b>Jornadas</b></a>
+      <a href="jornadas.html"><span>📅</span><b>Clasificación</b></a>
       <button data-v65-go="honours"><span>🏆</span><b>Palmarés</b></button>
       <a id="v65AdminBottom" class="hidden" href="admin.html"><span>🛠️</span><b>Admin</b></a>`;
     document.body.appendChild(nav);

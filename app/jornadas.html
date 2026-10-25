@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07130d"><title>Jornadas · Comunio Laviana</title>
+<meta name="theme-color" content="#07130d"><title>Clasificación · Comunio Laviana</title>
 <style>
 :root{color-scheme:dark;--bg:#07130d;--card:#13261b;--line:#304436;--muted:#b6c8b8;--mint:#a7efb5;--gold:#ffd773}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px system-ui,-apple-system,Segoe UI,sans-serif;color:#f3fff3}
@@ -12,11 +12,12 @@ main{max-width:960px;margin:0 auto;padding:22px 14px 45px}
 .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0}button,select{background:#1a3123;color:#fff;border:1px solid #456a4b;border-radius:10px;padding:11px 14px;font:inherit;cursor:pointer}button.active{background:#a7efb5;color:#08200f;border-color:#a7efb5;font-weight:800}label{color:var(--muted)}
 .section{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--card)}.section h2{font-size:18px;margin:0;padding:17px 15px;border-bottom:1px solid var(--line)}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:#192e20}th,td{padding:13px 12px;border-bottom:1px solid #29402e}tr:last-child td{border-bottom:0}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}td.name{font-weight:650}tr.top{background:#233925}tr.first{background:#354029}.pos{font-weight:850;color:var(--gold)}.note{color:var(--muted);font-size:12px;margin:15px 2px;line-height:1.6}.empty{padding:25px;text-align:center;color:var(--muted)}.provisional-notice{margin:15px 0;padding:14px 16px;background:#40320e;border:1px solid #b38b2e;border-radius:12px;color:#ffdfa0;line-height:1.45;font-weight:600}.provisional-notice[hidden]{display:none}
 @media(max-width:600px){.hero h1{font-size:24px}th,td{padding:12px 8px;font-size:13px}.stat{padding:11px}.stat b{font-size:18px}.value-col{display:none}}
+ .cronicas-link{display:inline-block;background:#1a3123;color:var(--mint);border:1px solid #456a4b;border-radius:10px;padding:11px 14px;font:inherit;text-decoration:none;font-weight:700}.cronicas-link:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 </style></head>
-<body><header><a href="index.html">← App</a><strong>🏆 Jornadas</strong></header>
-<main><section class="hero"><span class="eyebrow">Comunio Laviana · <span id="season">2026/27</span></span><h1>Clasificación y jornadas</h1><p>Consulta cada jornada y la clasificación general acumulada. Los puntos corresponden a los resultados oficiales que vamos registrando.</p></section>
+<body><header><a href="index.html">← App</a><strong>🏆 Clasificación</strong></header>
+<main><section class="hero"><span class="eyebrow">Comunio Laviana · <span id="season">2026/27</span></span><h1>Clasificación</h1><p>Consulta cada jornada y la clasificación general acumulada. Los puntos corresponden a los resultados oficiales que vamos registrando.</p></section>
 <div class="summary"><article class="stat"><b id="roundCount">—</b><span>Jornadas cargadas</span></article><article class="stat"><b id="leader">—</b><span>Líder de la general</span></article><article class="stat"><b id="leaderScore">—</b><span>Puntos del líder</span></article></div>
-<div class="controls"><button id="general" class="active" type="button">🏆 General</button><button id="single" type="button">📅 Por jornada</button><label id="roundLabel" hidden>Jornada <select id="roundSelect"></select></label></div>
+<div class="controls"><button id="general" class="active" type="button">🏆 General</button><button id="single" type="button">📅 Por jornada</button><label id="roundLabel" hidden>Jornada <select id="roundSelect"></select></label><a href="cronicas-anteriores.html" class="cronicas-link">📚 Ver crónicas</a></div>
 <div id="provisionalNotice" class="provisional-notice" hidden></div><section class="section"><h2 id="heading">Clasificación general</h2><div class="table-wrap" id="content"><div class="empty">Cargando clasificación…</div></div></section>
 <p class="note">La clasificación general suma todas las jornadas registradas, incluida la Jornada 1 aplazada como fecha extra independiente. Si aún faltan jornadas por cargar, no representa necesariamente la general actual de Comunio. En los empates de la general provisional se mantiene como criterio visual el puesto de la primera jornada registrada; no se atribuye un desempate oficial. El valor de equipo es el que aparece en la captura de cada jornada, no el valor de mercado actual.</p>
 </main>
