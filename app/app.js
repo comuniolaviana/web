@@ -537,7 +537,9 @@ async function syncLeagueData(){
   }
 }
 
+let leagueDataRequest=0;
 async function loadRealData(){
+  const request=++leagueDataRequest, client=supa, userId=session?.user?.id;
   const [p,b,s,c,m,v]=await Promise.all([
     supa.from("players").select("*").eq("active",true).order("clause_value",{ascending:false}),
     supa.from("team_malo_players").select("*").eq("available",true).order("clause_value",{ascending:false}),
@@ -546,9 +548,11 @@ async function loadRealData(){
     supa.from("team_malo_purchases").select("*").eq("purchase_day",localDate()).order("executed_at",{ascending:true}),
     supa.from("team_malo_sales").select("*").eq("sale_day",localDate()).order("executed_at",{ascending:true})
   ]);
-  if(p.error)throw p.error;if(b.error)throw b.error;if(v.error)throw v.error;
+  if(request!==leagueDataRequest||client!==supa||userId!==session?.user?.id)return false;
+  for(const result of [p,b,s,c,m,v])if(result.error)throw result.error;
   players=p.data||[];badPlayers=b.data||[];schedule=s.data||null;
   clauseExecutions=c.data||[];badPurchases=m.data||[];badSales=v.data||[];
+  return true;
 }
 async function loadDemoData(){
   if(!players.length||!badPlayers.length)await loadWebData();
@@ -1053,6 +1057,7 @@ function showView(name){
   document.querySelectorAll(".main-nav [data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
   $("pageTitle").textContent=name==="home"?"Inicio":name==="myteam"?"Mi equipo":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="stats"?"Estadísticas":name==="honours"?"Palmarés":name==="rules"?"Normas":"Cláusulas";
   if(name==="myteam")renderMyTeam();
+  if(["clauses","myteam","badteam"].includes(name))refreshOpenLists();
   if(name==="news")loadNews();
   if(name==="stats")loadStatsData();
   if(name==="honours")renderHonours();
@@ -1060,6 +1065,41 @@ function showView(name){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function formatDate(iso){const[y,m,d]=iso.split("-");return`${d}/${m}/${y}`;}
+
+
+let openListsRefreshing=false, openListsSignature="";
+async function refreshOpenLists(){
+  const visibleList=()=>["clauses","myteam","badteam"].includes(currentView);
+  if(openListsRefreshing||document.hidden||!visibleList()||!isConfigured()||!supa||!session||!profile)return;
+  // Do not interfere with an operation that the user is confirming.
+  if(pendingAction&&$("confirmExecuteBtn")?.disabled)return;
+  openListsRefreshing=true;
+  const userId=session.user.id;
+  try{
+    const loaded=await loadRealData();
+    if(loaded===false||!session||session.user.id!==userId||!profile||document.hidden||!visibleList())return;
+    if(pendingAction&&$("confirmExecuteBtn")?.disabled)return;
+    const signature=JSON.stringify([players,badPlayers,schedule,clauseExecutions,badPurchases,badSales,clauseAvailability().open,badTeamAvailability().open]);
+    if(signature===openListsSignature)return;
+    const owner=$("ownerFilter").value;
+    fillFilters();
+    if([...$("ownerFilter").options].some(o=>o.value===owner))$("ownerFilter").value=owner;
+    updateStatusUI();
+    renderPlayers();
+    renderBadPlayers();
+    renderMyTeam();
+    renderActivityMini();
+    openListsSignature=signature;
+  }catch(e){
+    // Keep the current lists on a network failure; the next refresh retries.
+    console.error("Actualización de listas:",e);
+  }finally{
+    openListsRefreshing=false;
+  }
+}
+document.addEventListener("visibilitychange",refreshOpenLists);
+window.addEventListener("focus",refreshOpenLists);
+setInterval(refreshOpenLists,5000);
 
 function refreshVisibleNews(){
   if(currentView==="news"&&profile&&!document.hidden)loadNews();
