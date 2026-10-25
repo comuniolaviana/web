@@ -16,10 +16,10 @@ main{max-width:960px;margin:0 auto;padding:22px 14px 45px}
 </style></head>
 <body><header><a href="index.html">← App</a><strong>🏆 Clasificación</strong></header>
 <main><section class="hero"><span class="eyebrow">Comunio Laviana · <span id="season">2026/27</span></span><h1>Clasificación</h1><p>Consulta cada jornada y la clasificación general acumulada. Los puntos corresponden a los resultados oficiales que vamos registrando.</p></section>
-<div class="summary"><article class="stat"><b id="roundCount">—</b><span>Jornadas cargadas</span></article><article class="stat"><b id="leader">—</b><span>Líder de la general</span></article><article class="stat"><b id="leaderScore">—</b><span>Puntos del líder</span></article></div>
+<div class="summary"><article class="stat"><b id="roundCount">—</b><span>Jornadas registradas</span></article><article class="stat"><b id="leader">—</b><span>Líder de la general</span></article><article class="stat"><b id="leaderScore">—</b><span>Puntos del líder</span></article></div>
 <div class="controls"><button id="general" class="active" type="button">🏆 General</button><button id="single" type="button">📅 Por jornada</button><label id="roundLabel" hidden>Jornada <select id="roundSelect"></select></label><a href="cronicas-anteriores.html" class="cronicas-link">📚 Ver crónicas</a></div>
 <div id="provisionalNotice" class="provisional-notice" hidden></div><section class="section"><h2 id="heading">Clasificación general</h2><div class="table-wrap" id="content"><div class="empty">Cargando clasificación…</div></div></section>
-<p class="note">La clasificación general suma todas las jornadas registradas, incluida la Jornada 1 aplazada como fecha extra independiente. Si aún faltan jornadas por cargar, no representa necesariamente la general actual de Comunio. En los empates de la general provisional se mantiene como criterio visual el puesto de la primera jornada registrada; no se atribuye un desempate oficial. El valor de equipo es el que aparece en la captura de cada jornada, no el valor de mercado actual.</p>
+<p class="note">La clasificación general suma los puntos de todas las jornadas y sus bloques extra o aplazados. Estos bloques se incluyen en los puntos, pero no cuentan como jornadas adicionales. Si aún faltan jornadas por cargar, no representa necesariamente la general actual de Comunio. En los empates de la general provisional se mantiene como criterio visual el puesto de la primera jornada registrada; no se atribuye un desempate oficial. El valor de equipo es el que aparece en la captura de cada jornada, no el valor de mercado actual.</p>
 </main>
 <script>
 (async()=>{
@@ -29,9 +29,11 @@ const safe=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;
 try{
  const resp=await fetch("jornadas-data.json?v=1",{cache:"no-store"});if(!resp.ok)throw Error("No se pudieron cargar los datos");
  const db=await resp.json();const rounds=[...db.rounds].sort((a,b)=>(a.order??Number(a.round))-(b.order??Number(b.round)));
- $("season").textContent=db.season;$("roundCount").textContent=rounds.length;const provisionalRounds=rounds.filter(r=>r.status==="provisional");
+ const isOrdinaryRound=r=>!['postponed','extra'].includes(r.type)&&Number.isInteger(Number(r.round))&&Number(r.round)>0;
+ const roundCount=new Set(rounds.filter(isOrdinaryRound).map(r=>Number(r.round))).size;
+ $("season").textContent=db.season;$("roundCount").textContent=roundCount;const provisionalRounds=rounds.filter(r=>r.status==="provisional");
  const names=Object.fromEntries(db.managers.map(m=>[m.id,m.name]));
- const totals=db.managers.map(m=>{const rs=rounds.map(r=>r.results.find(x=>x.id===m.id)).filter(Boolean);return {id:m.id,name:m.name,points:rs.reduce((s,x)=>s+x.points,0),played:rs.length,position:rs[0]?.position??999};}).sort((a,b)=>b.points-a.points||a.position-b.position);
+ const totals=db.managers.map(m=>{const rs=rounds.map(r=>r.results.find(x=>x.id===m.id)).filter(Boolean);return {id:m.id,name:m.name,points:rs.reduce((s,x)=>s+x.points,0),played:new Set(rounds.filter(isOrdinaryRound).filter(r=>r.results.some(x=>x.id===m.id)).map(r=>Number(r.round))).size,position:rs[0]?.position??999};}).sort((a,b)=>b.points-a.points||a.position-b.position);
  $("leader").textContent=totals[0]?.name||"—";$("leaderScore").textContent=totals[0]?fmt.format(totals[0].points):"—";
  rounds.forEach(r=>{let o=document.createElement("option");o.value=r.round;o.textContent=r.label||"Jornada "+r.round;$("roundSelect").append(o)});
  $("roundSelect").value=rounds.at(-1)?.round||"";
@@ -39,7 +41,7 @@ try{
  function paint(){
    const r=rounds.find(x=>String(x.round)===$("roundSelect").value)||rounds.at(-1);
    $("general").classList.toggle("active",mode==="general");$("single").classList.toggle("active",mode==="single");$("roundLabel").hidden=mode==="general";
-   $("heading").textContent=mode==="general"?"🏆 Clasificación general provisional · "+rounds.length+" fechas registradas":"📅 "+(r.label||"Jornada "+r.round);
+   $("heading").textContent=mode==="general"?"🏆 Clasificación general provisional · "+roundCount+" jornadas registradas":"📅 "+(r.label||"Jornada "+r.round);
    const pending=mode==="general"?provisionalRounds:(r.status==="provisional"?[r]:[]);
    const notice=$("provisionalNotice");notice.hidden=pending.length===0;notice.textContent=pending.length?("⚠️ PUNTUACIONES PROVISIONALES. Pendiente: "+pending.map(x=>(x.pendingMatch||x.label)).join(", ")+". Los puntos y la clasificación pueden cambiar cuando se dispute el partido."):"";
    const rows=mode==="general"?totals.map((x,i)=>({...x,position:i+1})):r.results.map(x=>({...x,name:names[x.id]})).sort((a,b)=>a.position-b.position);
