@@ -908,6 +908,16 @@ async function loadNews(){
   }catch(e){console.error("Noticias:",e);if(request===newsRequest)$("historyCount").textContent="No se pudieron actualizar las noticias";}
 }
 
+function miniNewsHtml(e){
+  if(e._type!=="clause")return newsHtml(e);
+  const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit"}).format(new Date(e._time||e.executed_at));
+  return `<article class="history-item clause-mini"><div class="history-time">${time}</div><div>
+    <span class="news-type clause">⚡ CLÁUSULA</span>
+    <div class="history-main">${escapeHtml(e.executor_name||"")} paga la cláusula de <span class="clause-highlight">${escapeHtml(e.player_name||"")}</span> a <span class="clause-highlight">${escapeHtml(e.target_owner_name||"")}</span></div>
+    <div class="history-sub clause-mini-amount">${euros(e.clause_value)}</div>
+  </div></article>`;
+}
+
 function newsHtml(e){
   if(e._type==="editorial")return window.ComunioNews.articleHtml(e);
   const time=new Intl.DateTimeFormat("es-ES",{timeZone:CFG.TIMEZONE,hour:"2-digit",minute:"2-digit",second:"2-digit"}).format(new Date(e._time||e.executed_at));
