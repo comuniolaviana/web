@@ -21,12 +21,13 @@
   </div>
 
   <main id="adminMain" class="hidden">
-    <section class="panel" style="margin-bottom:12px">
-      <h2>Sincronizar jugadores</h2>
-      <p class="muted">Lee <b>datos.json</b> y <b>equipos.json</b> de la web y actualiza la base de la app.</p>
-      <button id="syncBtn" class="primary full">Sincronizar ahora</button>
-      <p id="syncMsg" class="message"></p>
-    </section>
+    <!-- Sincronización de jugadores retirada de la interfaz de administración.
+         Conservamos los elementos ocultos para mantener la función syncPlayers()
+         y sus referencias de admin.js intactas, sin ofrecer el botón al usuario. -->
+    <div hidden aria-hidden="true">
+      <button id="syncBtn" type="button" disabled>Sincronizar ahora</button>
+      <p id="syncMsg"></p>
+    </div>
 
     <section class="panel admin-reconcile" style="margin-bottom:12px">
       <h2>✅ Comprobar operaciones</h2>
