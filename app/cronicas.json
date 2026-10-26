@@ -2,6 +2,19 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-10-lunes-provisional",
+      "title": "Adrián aguanta el asedio: Dani tiene la llave y Enol prepara la emboscada",
+      "eyebrow": "CRÓNICA · JORNADA 10 · PROVISIONAL DEL LUNES",
+      "excerpt": "Adrián manda con 63; Dani lleva 61 y espera a Robbie Ure. Enol conserva dos pendientes y Laureano recupera el segundo puesto de la general.",
+      "url": "cronica-jornada-10-lunes-provisional.html",
+      "round": 10,
+      "provisional": true,
+      "status": "provisional",
+      "provisionalGeneral": true,
+      "published_at": "2026-10-26T09:28:46.950Z",
+      "consulted_at": "2026-10-26T10:27:00+01:00"
+    },
+    {
       "id": "cronica-jornada-10-provisional",
       "title": "Adrián acelera, Ubaldo amenaza y Laureano pierde la silla",
       "eyebrow": "CRÓNICA · JORNADA 10 · PROVISIONAL",
