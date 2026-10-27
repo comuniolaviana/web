@@ -2,6 +2,16 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-10",
+      "title": "¡Enol asalta el segundo puesto! Jorge roza la gloria y Ubaldo sigue en su trono",
+      "eyebrow": "CRÓNICA · JORNADA 10 · FINAL",
+      "excerpt": "Enol gana con 67, Jorge se queda a uno y Ubaldo conserva el liderato con 671 puntos.",
+      "url": "cronica-jornada-10.html",
+      "round": 10,
+      "status": "final",
+      "provisionalGeneral": true
+    },
+    {
       "id": "cronica-jornada-10-lunes-provisional",
       "title": "Adrián aguanta el asedio: Dani tiene la llave y Enol prepara la emboscada",
       "eyebrow": "CRÓNICA · JORNADA 10 · PROVISIONAL DEL LUNES",
@@ -9,7 +19,7 @@
       "url": "cronica-jornada-10-lunes-provisional.html",
       "round": 10,
       "provisional": true,
-      "status": "provisional",
+      "status": "archived-provisional",
       "provisionalGeneral": true,
       "published_at": "2026-10-26T09:28:46.950Z",
       "consulted_at": "2026-10-26T10:27:00+01:00"
@@ -24,7 +34,8 @@
       "provisional": true,
       "provisionalGeneral": true,
       "published_at": "2026-10-25T07:44:02.489Z",
-      "consulted_at": "2026-10-25T08:40:00+01:00"
+      "consulted_at": "2026-10-25T08:40:00+01:00",
+      "status": "archived-provisional"
     },
     {
       "id": "cronica-jornada-9",
