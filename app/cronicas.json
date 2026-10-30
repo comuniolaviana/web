@@ -2,6 +2,17 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "noticia-rayo-athletic-9-diciembre-2026",
+      "title": "Oficial: el Rayo–Athletic se reanudará el 9 de diciembre",
+      "eyebrow": "NOTICIAS · JORNADA 8 · PARTIDO PENDIENTE",
+      "excerpt": "El encuentro se reanudará el 9 de diciembre a las 20:00. No es una jornada extra: cuentan las alineaciones originales de la jornada 8.",
+      "url": "noticia-rayo-athletic-9-diciembre-2026.html",
+      "round": 8,
+      "kind": "noticia",
+      "status": "publicado",
+      "published_at": "2026-10-30T14:31:47.572Z"
+    },
+    {
       "id": "cronica-jornada-10",
       "title": "¡Enol asalta el segundo puesto! Jorge roza la gloria y Ubaldo sigue en su trono",
       "eyebrow": "CRÓNICA · JORNADA 10 · FINAL",
