@@ -1,4 +1,4 @@
-name: Probar fichas individuales Comuniazo
+name: Inspeccionar historial individual Comuniazo
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
