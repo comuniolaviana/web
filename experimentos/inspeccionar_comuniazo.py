@@ -19,3 +19,7 @@ for tr in soup.find_all("tr",class_="btn")[:2]:
 for a in soup.find_all("a",href=True):
  if "jugador" in a.get("href","") and "comunio-apuestas" in a.get("href",""):
   print("PLAYER_LINK",a.get("href"));break
+
+for tr in soup.find_all("tr",class_="btn")[:1]:
+ print("FULL_ROW",str(tr).replace("\\n"," ")[:11000])
+print("LINKS_PLAYER",[(a.get_text(" ",strip=True)[:40],a.get("href")) for a in soup.find_all("a",href=True) if "raphinha" in (a.get("href","").lower())][:10])
