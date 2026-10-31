@@ -1,4 +1,4 @@
-name: Auditar puntos Comunio tablas corregidas
+name: Probar puntos temporada completa
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
@@ -18,4 +18,4 @@ jobs:
           ref: ${{ github.ref_name }}
           persist-credentials: true
       - run: python -m pip -q install beautifulsoup4
-      - run: python experimentos/auditar_puntos.py
+      - run: python experimentos/descargar_comunio.py
