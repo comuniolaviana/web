@@ -33,7 +33,10 @@ for position in ("t","a","m","s"):
             name=td[1].get_text(" ",strip=True)
             if not name:continue
             value=re.sub(r"[^0-9]","",td[3].get_text(" ",strip=True))
-            pts=td[7].get_text(" ",strip=True) if len(td)>=10 else ""\n            team_img=td[2].find("img")\n            team=team_img.get("title","") if team_img else ""\n            player_id=td[1].get("data-playerid","")
+            pts=td[7].get_text(" ",strip=True) if len(td)>=10 else ""
+            team_img=td[2].find("img")
+            team=team_img.get("title","") if team_img else ""
+            player_id=td[1].get("data-playerid","")
             if not value or not re.fullmatch(r"-?\d+",pts):continue
             playerlink=td[1].find("a",href=True)
             pid=playerlink["href"] if playerlink else name
