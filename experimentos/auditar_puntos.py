@@ -11,7 +11,8 @@ for end in (8,9,10,11,12,13,14):
    try:
     with urllib.request.urlopen(req,timeout=20) as r:soup=BeautifulSoup(r.read(),"html.parser")
    except Exception as e:print("ERROR",end,pos,e);break
-   table=next((t for t in soup.find_all("table") if (t.find("tr") and "Valor de mercado" in t.find("tr").get_text(" ",strip=True) and "Puntos" in t.find("tr").get_text(" ",strip=True))),None)
+   tables=[t for t in soup.find_all("table") if (t.find("tr") and "Valor de mercado" in t.find("tr").get_text(" ",strip=True) and "Puntos" in t.find("tr").get_text(" ",strip=True))]
+   table=tables[-1] if tables else None
    if not table:break
    rows=table.find_all("tr",recursive=False)[1:]
    for tr in rows:
