@@ -104,6 +104,7 @@ async function syncPlayers(){
 
 async function reconcileOperations(){
   const day=$("reconcileDate").value;
+  const isCanonical=day>="2026-10-31";
   if(!day){$("reconcileMsg").textContent="Selecciona una fecha.";return;}
   $("reconcileBtn").disabled=true;
   $("reconcileMsg").textContent="Comparando app con el historial oficial…";
@@ -112,14 +113,19 @@ async function reconcileOperations(){
 
   try{
     const [statsRes,clauses,badBuys,badSales]=await Promise.all([
-      fetch("../estadisticas.json?v="+Date.now(),{cache:"no-store"}),
+      isCanonical
+        ? supa.from("comunio_transfers").select("transfer_date,player_name,price,seller,buyer").eq("transfer_date",day).order("id")
+        : fetch("../estadisticas.json?v="+Date.now(),{cache:"no-store"}),
       supa.from("clause_executions").select("id,clause_day,executed_at,executor_name,target_owner_name,player_name,clause_value").eq("clause_day",day).order("executed_at"),
       supa.from("team_malo_purchases").select("id,purchase_day,executed_at,buyer_name,player_name,clause_value").eq("purchase_day",day).order("executed_at"),
       supa.from("team_malo_sales").select("id,sale_day,executed_at,seller_name,player_name,sale_value").eq("sale_day",day).order("executed_at")
     ]);
-    if(!statsRes.ok)throw new Error("No se pudo leer estadisticas.json.");
+    if(isCanonical){if(statsRes.error)throw statsRes.error;}
+    else if(!statsRes.ok)throw new Error("No se pudo leer estadisticas.json.");
     for(const q of [clauses,badBuys,badSales])if(q.error)throw q.error;
-    const stats=await statsRes.json();
+    const stats=isCanonical
+      ? {historial:(statsRes.data||[]).map(x=>({fecha:x.transfer_date,jugador:x.player_name,precio:x.price,vendedor:x.seller,comprador:x.buyer})),actualizado:"Supabase"}
+      : await statsRes.json();
 
     const expected=[
       ...(clauses.data||[]).map(x=>({kind:"Cláusula",player:x.player_name,seller:x.target_owner_name,buyer:x.executor_name,price:money(x.clause_value),time:x.executed_at})),
@@ -167,10 +173,10 @@ async function reconcileOperations(){
     $("reconcileIssueCount").textContent=issues;
     $("reconcileSummary").classList.remove("hidden");
 
-    const updated=stats.actualizado?` · estadísticas actualizadas ${esc(stats.actualizado)}`:"";
+    const updated=isCanonical?" · comprobado contra el registro en Supabase":(stats.actualizado?` · estadísticas actualizadas ${esc(stats.actualizado)}`:"");
     if(!expected.length){
       $("reconcileMsg").innerHTML=`No hay operaciones registradas desde la app el <b>${esc(day)}</b>. No hay nada que comprobar${updated}.`;
-      $("reconcileResult").innerHTML=extras.length?`<div class="reconcile-info">El Excel contiene ${extras.length} movimiento(s) ese día, pero son informativos y no se marcan como incidencia porque no proceden de la app.</div>`:"";
+      $("reconcileResult").innerHTML=extras.length?`<div class="reconcile-info">El registro contiene ${extras.length} movimiento(s) ese día, pero son informativos y no se marcan como incidencia porque no proceden de la app.</div>`:"";
       return;
     }
 
@@ -178,8 +184,8 @@ async function reconcileOperations(){
       ? `<span class="reconcile-good">🟢 Todo correcto · 0 incidencias</span>${updated}`
       : `<span class="reconcile-bad">🔴 ${issues} incidencia${issues===1?"":"s"}</span>${updated}`;
 
-    $("reconcileResult").innerHTML=results.map(renderReconcileRow).join("")+
-      (extras.length?`<div class="reconcile-info">ℹ️ El Excel tiene ${extras.length} movimiento(s) adicional(es) de ese día que no se usan para validar la app. Esto es normal, por ejemplo en compras o ventas con Computer.</div>`:"");
+    $("reconcileResult").innerHTML=results.map(x=>renderReconcileRow(x,isCanonical)).join("")+
+      (extras.length?`<div class="reconcile-info">ℹ️ El registro tiene ${extras.length} movimiento(s) adicional(es) de ese día que no se usan para validar la app. Esto es normal, por ejemplo en compras o ventas con Computer.</div>`:"");
   }catch(e){
     console.error(e);
     $("reconcileMsg").textContent="Error al comprobar: "+e.message;
@@ -202,10 +208,10 @@ function operationDifferences(exp,off){
   if(money(exp.price)!==money(off.price))out.push(`Precio: app ${moneyES(exp.price)} / Excel ${moneyES(off.price)}`);
   return out;
 }
-function renderReconcileRow(r){
+function renderReconcileRow(r,isCanonical=false){
   const ok=r.status==="ok";
   const title=ok?"🟢 Correcta":r.status==="missing"?"🔴 No encontrada":"🔴 Diferencia";
-  const actual=r.official?`<div class="reconcile-actual"><span>Excel</span><b>${esc(routeText(r.official))}</b><em>${moneyES(r.official.price)}</em></div>`:"";
+  const actual=r.official?`<div class="reconcile-actual"><span>${isCanonical?"Supabase":"Excel"}</span><b>${esc(routeText(r.official))}</b><em>${moneyES(r.official.price)}</em></div>`:"";
   const diffs=r.issues.length?`<ul>${r.issues.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"";
   return `<article class="reconcile-row ${ok?"ok":"issue"}">
     <div class="reconcile-row-head"><span>${title}</span><small>${esc(r.expected.kind)}</small></div>
