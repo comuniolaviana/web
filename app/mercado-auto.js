@@ -156,6 +156,8 @@
         }
         if(!data.already_applied && (!Number.isInteger(data.players_downloaded)||data.players_downloaded<550))
           throw new Error('No se ha podido verificar el número de jugadores descargados.');
+        if(!data.already_applied && (data.clubs_verified!==20 || data.players_with_team<490))
+          throw new Error('No se han confirmado los 20 equipos y sus jugadores desde Comuniazo.');
         await checkPublication();
         await loadStatus();
         saveDaily({day,status:'completed',completed_at:new Date().toISOString(),result:data});
