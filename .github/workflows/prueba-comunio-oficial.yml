@@ -1,4 +1,4 @@
-name: Examinar historial por jornada
+name: Identificar estadísticas ficha Comuniazo
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
@@ -18,7 +18,7 @@ jobs:
           ref: ${{ github.ref_name }}
           persist-credentials: true
       - run: python -m pip -q install beautifulsoup4
-      - run: python experimentos/estructura_jornadas.py
+      - run: python experimentos/identificar_estadisticas.py
       - name: Guardar descarga experimental
         run: |
           git config user.name "github-actions[bot]"
