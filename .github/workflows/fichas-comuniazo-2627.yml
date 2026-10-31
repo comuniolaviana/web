@@ -1,6 +1,9 @@
 name: Descargar fichas Comuniazo 2026-27
 run-name: "Comuniazo · ${{ inputs.request_id || 'manual' }}"
 on:
+  push:
+    branches: [main]
+    paths: [".github/comuniazo-prueba-unica.txt"]
   workflow_dispatch:
     inputs:
       request_id:
