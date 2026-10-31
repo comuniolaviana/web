@@ -1,0 +1,21 @@
+name: Descargar fichas Comuniazo 2026-27
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '45 7 * * *'
+permissions:
+  contents: write
+jobs:
+  fichas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip -q install beautifulsoup4
+      - run: python experimentos/descargar_fichas_comuniazo.py
+      - name: Publicar fichas experimentales
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datos-comuniazo-prueba/fichas-2627.json
+          git diff --cached --quiet || (git commit -m "Actualizar fichas Comuniazo 2026-27" && git push)
