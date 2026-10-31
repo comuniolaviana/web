@@ -1,7 +1,7 @@
 name: Descargar y guardar datos oficiales Comunio
 on:
   push:
-    branches: [experimento-datos-comunio-oficial]
+    branches: [main, experimento-datos-comunio-oficial]
     paths: ['.github/workflows/prueba-comunio-oficial.yml']
   workflow_dispatch:
   schedule:
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: experimento-datos-comunio-oficial
+          ref: ${{ github.ref_name }}
           persist-credentials: true
       - run: python -m pip -q install beautifulsoup4
       - run: python experimentos/descargar_comunio.py
