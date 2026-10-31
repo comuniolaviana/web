@@ -19,6 +19,7 @@ context = {
     "concurrent": concurrent, "BeautifulSoup": BeautifulSoup,
     "BASE": "https://www.comuniazo.com",
     "TEAM_INDEX": "https://www.comuniazo.com/laliga",
+    "norm": lambda s: "".join(c for c in unicodedata.normalize("NFD", str(s).lower()) if unicodedata.category(c) != "Mn").strip(),
 }
 exec(compile(ast.Module(body=functions, type_ignores=[]), str(SOURCE), "exec"), context)
 
