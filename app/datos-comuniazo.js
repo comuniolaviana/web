@@ -6,6 +6,25 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const slug=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const fmt=n=>new Intl.NumberFormat("es-ES").format(Number(n)||0);
 let rows=[];let fichas=null;let loaded=false;
+const updateButton=$("czActualizarTodo"),updateMessage=$("czActualizacionMsg");
+updateButton.addEventListener("click",async()=>{
+ if(updateButton.disabled)return;
+ updateButton.disabled=true;updateMessage.textContent="Solicitando actualización…";
+ try{
+  const cfg=window.COMUNIO_CONFIG;
+  const client=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);
+  const {data:{session}}=await client.auth.getSession();
+  if(!session)throw new Error("Debes iniciar sesión como administrador.");
+  const response=await fetch(cfg.SUPABASE_URL+"/functions/v1/actualizar-comuniazo",{
+   method:"POST",headers:{"Content-Type":"application/json","apikey":cfg.SUPABASE_ANON_KEY,"Authorization":"Bearer "+session.access_token},body:"{}"
+  });
+  const result=await response.json();
+  if(!response.ok)throw new Error(result.error||"No se pudo iniciar la descarga.");
+  updateMessage.textContent=result.message||"Actualización iniciada.";
+ }catch(error){updateMessage.textContent="No se ha actualizado: "+error.message}
+ finally{updateButton.disabled=false}
+});
+
 function render(){
  const q=$("czBuscar").value.toLocaleLowerCase("es");
  const equipo=$("czEquipo").value,pos=$("czPos").value,orden=$("czOrden").value,estado=$("czEstadoEquipo").value;
