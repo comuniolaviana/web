@@ -29,22 +29,6 @@
       <p id="syncMsg"></p>
     </div>
 
-    <section class="panel" style="margin-bottom:12px" id="datosComuniazoPanel">
-      <details id="czDesplegable">
-        <summary style="cursor:pointer;font-weight:700;font-size:1.1rem;padding:8px 0">Datos Comuniazo · jugadores 2026/27 <span style="font-size:.85rem;font-weight:400">— Pulsar para abrir</span></summary>
-        <p class="muted" id="czEstado">Abre esta sección para consultar los jugadores.</p>
-        <div class="reconcile-controls" style="display:flex;flex-wrap:wrap;gap:8px">
-          <input id="czBuscar" type="search" placeholder="Buscar jugador o equipo" aria-label="Buscar en Comuniazo">
-          <select id="czEstadoEquipo" aria-label="Estado de equipo"><option value="con">Con equipo asignado</option><option value="sin">Sin equipo / revisar</option><option value="todos">Todos los jugadores</option></select>
-          <select id="czEquipo" aria-label="Filtrar equipo"><option value="">Todos los equipos</option></select>
-          <select id="czPos" aria-label="Filtrar posición"><option value="">Todas las posiciones</option><option value="t">Porteros</option><option value="a">Defensas</option><option value="m">Centrocampistas</option><option value="s">Delanteros</option></select>
-          <select id="czOrden" aria-label="Ordenar jugadores"><option value="puntos-desc">Más puntos</option><option value="puntos-asc">Menos puntos</option><option value="valor-desc">Mayor valor</option><option value="valor-asc">Menor valor</option><option value="nombre-asc">Nombre A-Z</option><option value="nombre-desc">Nombre Z-A</option></select>
-        </div>
-        <div id="czListado" style="overflow-x:auto;margin-top:12px"></div>
-      </details>
-    </section>
-
-
     <section class="panel" id="autoMercadoPanel" style="margin-bottom:12px">
       <details id="maDesplegable">
         <summary style="cursor:pointer;font-weight:700;font-size:1.1rem;padding:8px 0">Actualización diaria · traspasos, puntos y cláusulas <span style="font-size:.85rem;font-weight:400">— Pulsar para abrir</span></summary>
@@ -108,7 +92,6 @@
 <script src="config.js"></script>
 <script src="../calendario-engine.js"></script>
 <script src="admin.js?v=3"></script>
-<script src="datos-comuniazo.js?v=4"></script>
 <script src="mercado-auto.js?v=5"></script>
 </body>
 </html>
