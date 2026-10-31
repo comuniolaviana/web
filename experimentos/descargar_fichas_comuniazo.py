@@ -6,7 +6,9 @@ source=json.loads(Path("datos-comuniazo-prueba/ultimo.json").read_text(encoding=
 def parse(player):
  name=player["jugador"]
  slug=re.sub(r"^-|-$","",re.sub(r"[^a-z0-9]+","-",__import__("unicodedata").normalize("NFKD",name).encode("ascii","ignore").decode().lower()))
- url=BASE+"/comunio-apuestas/jugadores/"+slug
+ url=player.get("url_ficha") or BASE+"/comunio-apuestas/jugadores/"+slug
+ if not url.startswith(BASE+"/comunio-apuestas/jugadores/"):
+  raise ValueError("URL de ficha no permitida: "+url)
  try:
   with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 (compatible; ComunioLaviana/1.0)"}),timeout=25) as r:
    if "/jugadores/" not in r.geturl():raise ValueError("Redirección inesperada")
