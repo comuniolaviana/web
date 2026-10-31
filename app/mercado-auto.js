@@ -103,6 +103,14 @@
     message(parsed.errors.length ? `${draft.length} reconocidos, ${parsed.errors.length} con errores: ${parsed.errors.slice(0,3).join(' | ')}` : `${draft.length} traspaso(s) preparados. Revísalos antes de guardarlos.`,!!parsed.errors.length);
     if(parsed.errors.length)message('Corrige los errores antes de actualizar.',true);
   });
+  // La previsualización aparece al pegar, sin exigir otro botón.
+  $('maTexto').addEventListener('input',()=>{
+    const parsed=parseText($('maTexto').value,yesterday());
+    draft=parsed.items;renderDraft();
+    if(parsed.errors.length) message('⚠ '+parsed.errors.slice(0,3).join(' | '),true);
+    else if(draft.length) message('✓ '+draft.length+' traspaso(s) reconocidos del día anterior. Pulsa «Actualizar todo».');
+    else message('Sin traspasos: puedes pulsar «Actualizar todo» igualmente.');
+  });
   // Estado local: permite retomar un trabajo iniciado, incluso al cerrar Administración.
   // El proceso se inicia SOLO al pulsar el botón.
   const dailyKey='comunio-actualizacion-diaria-2627-v2';
