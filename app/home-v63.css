@@ -180,3 +180,15 @@ body.v65-ui > .v65-header {
 .v65-bottom-nav.admin-visible button,.v65-bottom-nav.admin-visible a{min-width:0;padding:5px 1px;font-size:20px;line-height:1.15}
 .v65-bottom-nav.admin-visible b{font-size:10px;white-space:nowrap;letter-spacing:-.25px}
 @media(max-width:390px){.v65-bottom-nav.admin-visible button,.v65-bottom-nav.admin-visible a{font-size:18px}.v65-bottom-nav.admin-visible b{font-size:9px;letter-spacing:-.4px}}
+
+/* Información pública junto al Zorro: cuatro accesos con prioridad al espacio en móvil. */
+.v65-header .v65-info-shortcut span{background:linear-gradient(145deg,#21c676,#0c7f6a)!important;box-shadow:0 2px 12px #16a66e50}
+.v65-header .v65-info-shortcut small{color:#b2ffd9}
+@media(max-width:440px){
+ .v65-header .v65-brandcopy strong{font-size:clamp(11px,3.1vw,14px)!important;letter-spacing:-.5px}
+ .v65-header .v65-brandcopy small{font-size:7px!important;letter-spacing:-.15px}
+ .v65-header .v65-headlinks{gap:1px!important}
+ .v65-header .v65-shortcut,.v65-header .v65-headlinks .v65-headbtn{flex-basis:37px!important;min-width:37px!important;max-width:37px!important;width:37px!important}
+ .v65-header .v65-shortcut span,.v65-header .v65-headlinks .v65-headbtn span{width:32px!important;height:32px!important;font-size:18px!important}
+ .v65-header .v65-shortcut small,.v65-header .v65-headlinks .v65-headbtn small{font-size:7px!important;letter-spacing:-.35px;max-width:37px!important}
+}
