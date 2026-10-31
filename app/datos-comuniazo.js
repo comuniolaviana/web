@@ -12,7 +12,7 @@ function render(){
  const list=rows.filter(x=>(x.jugador+" "+x.equipo).toLocaleLowerCase("es").includes(q)&&(!equipo||x.equipo===equipo)&&(!pos||x.posicion_filtro===pos)&&(estado==="todos"||(estado==="con"?Boolean(x.equipo&&x.equipo.trim()):!x.equipo||!x.equipo.trim())));
  const [campo,dir]=orden.split("-");
  list.sort((a,b)=>{const diff=campo==="nombre"?a.jugador.localeCompare(b.jugador,"es"):(Number(a[campo==="valor"?"valor_eur":"puntos"])||0)-(Number(b[campo==="valor"?"valor_eur":"puntos"])||0);return dir==="desc"?-diff:diff;});
- $("czEstado").textContent=rows.length+" descargados · "+rows.filter(x=>x.equipo&&x.equipo.trim()).length+" con equipo · "+rows.filter(x=>!x.equipo||!x.equipo.trim()).length+" sin equipo (pendientes de revisar) · "+list.length+" visibles · Fuente puntos y valor: Comuniazo · equipo y posición: referencia previa de Comunio Stats";
+ $("czEstado").textContent=rows.length+" descargados · "+rows.filter(x=>x.equipo&&x.equipo.trim()).length+" con equipo · "+rows.filter(x=>!x.equipo||!x.equipo.trim()).length+" sin equipo (pendientes de revisar) · "+list.length+" visibles · Puntos y valores: Comuniazo · posiciones verificadas: "+rows.filter(x=>x.fuente_posicion==="Comuniazo").length+" · equipos: referencia previa hasta verificar su fuente";
  $("czListado").innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th>Jugador</th><th>Equipo</th><th>Pos.</th><th>Valor Comuniazo</th><th>Puntos Comuniazo</th></tr></thead><tbody>'+list.map(x=>'<tr><td><button type="button" class="czAbrir" data-name="'+esc(x.jugador)+'" style="background:none;border:0;text-decoration:underline;color:inherit;cursor:pointer;font:inherit;padding:0">'+esc(x.jugador)+'</button></td><td>'+esc(x.equipo||"—")+'</td><td>'+esc(({t:"POR",a:"DEF",m:"MED",s:"DEL"})[x.posicion_filtro]||"—")+'</td><td style="text-align:right;white-space:nowrap">'+fmt(x.valor_eur)+' €</td><td style="text-align:right">'+fmt(x.puntos)+'</td></tr>').join("")+'</tbody></table>';
 }
 for(const id of ["czBuscar","czEstadoEquipo","czEquipo","czPos","czOrden"])$(id).addEventListener(id==="czBuscar"?"input":"change",render);
@@ -45,6 +45,7 @@ async function load(){try{
  render();
  try{const f=await fetch("../datos-comuniazo-prueba/fichas-2627.json?v="+Date.now(),{cache:"no-store"});if(f.ok){const d=await f.json();if(d.temporada==="2026/27")fichas=d.fichas||[];}}catch(_){}
 }catch(e){$("czEstado").textContent="Datos no disponibles: "+e.message;}}
+document.addEventListener("comuniazo-updated",()=>{loaded=true;load();});
 const main=document.getElementById("adminMain");
 if(!main.classList.contains("hidden")&&$("czDesplegable").open){loaded=true;load();}
 else{const observer=new MutationObserver(()=>{if(!main.classList.contains("hidden")){observer.disconnect();if($("czDesplegable").open&&!loaded){loaded=true;load();}}});observer.observe(main,{attributes:true,attributeFilter:["class"]});}
