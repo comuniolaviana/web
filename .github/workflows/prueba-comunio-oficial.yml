@@ -1,4 +1,4 @@
-name: Publicar datos Comuniazo en prueba
+name: Investigar fichas Comuniazo
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
@@ -18,7 +18,7 @@ jobs:
           ref: ${{ github.ref_name }}
           persist-credentials: true
       - run: python -m pip -q install beautifulsoup4
-      - run: python experimentos/descargar_comuniazo.py
+      - run: python experimentos/inspeccionar_comuniazo.py
       - name: Guardar descarga experimental
         run: |
           git config user.name "github-actions[bot]"
