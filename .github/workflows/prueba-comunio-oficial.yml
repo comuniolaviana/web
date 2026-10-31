@@ -1,29 +1,27 @@
-name: Inspeccion oficial Comunio
+name: Extraccion experimental valores y puntos
 on:
   push:
     branches: [experimento-datos-comunio-oficial]
     paths: ['.github/workflows/prueba-comunio-oficial.yml']
 jobs:
-  inspeccionar:
+  extraer:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Inspeccionar HTML y rutas de datos
+      - name: Descargar tabla oficial y mostrar filas de prueba
         run: |
+          python -m pip -q install beautifulsoup4
           python - <<'PY'
-          import urllib.request,re,html
-          urls=["https://stats.comunio.es/search.php?lang=es","https://stats.comunio.es/search.php?direc=DESC&endGd=10&orderBy=points&pos%5B%5D=a&season=2026&startGd=1&startLimit=100"]
-          for u in urls:
-            print("URL",u)
-            try:
-              r=urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=15)
-              t=r.read(500000).decode("utf-8","replace")
-              print("STATUS",r.status,"LEN",len(t))
-              print("TITLE",re.findall(r"<title[^>]*>(.*?)</title>",t,re.I|re.S)[:1])
-              print("SCRIPTS",re.findall(r"<script[^>]+src=[\x22\x27]([^\x22\x27]+)",t,re.I)[:25])
-              print("FORMS",re.findall(r"<form[^>]*>",t,re.I)[:8])
-              print("TABLES",len(re.findall(r"<table",t,re.I)),"TR",len(re.findall(r"<tr",t,re.I)))
-              print("TEXT",re.sub(r"\s+"," ",re.sub(r"<[^>]+>"," ",t))[:1100])
-              print("KEYWORDS",[(k,len(re.findall(k,t,re.I))) for k in ["Carlos Romero","player","points","market","ajax","json","Spieler","Punkte"]])
-            except Exception as e:print("ERROR",repr(e))
+          import urllib.request
+          from bs4 import BeautifulSoup
+          u="https://stats.comunio.es/search.php?lang=es&direc=DESC&endGd=10&orderBy=points&season=2026&startGd=1&startLimit=0"
+          t=urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=20).read().decode("utf-8","replace")
+          s=BeautifulSoup(t,"html.parser")
+          for i,table in enumerate(s.find_all("table")):
+            rows=table.find_all("tr")
+            if len(rows)>3:
+              print("TABLA",i,"FILAS",len(rows))
+              for row in rows[:5]:
+                print("CELDAS",[x.get_text(" ",strip=True)[:95] for x in row.find_all(["th","td"])])
+          print("PAGINACION",[a.get("href") for a in s.find_all("a",href=True) if "startLimit" in a.get("href","")][:12])
           PY
