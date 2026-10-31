@@ -1,26 +1,19 @@
-name: Extraer tabla de jugadores oficial
+name: Descargar datos oficiales hoy
 on:
   push:
     branches: [experimento-datos-comunio-oficial]
     paths: ['.github/workflows/prueba-comunio-oficial.yml']
 jobs:
-  extraer:
+  descarga:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
-      - run: |
-          python -m pip -q install beautifulsoup4
-          python - <<'PY'
-          import urllib.request,re
-          from bs4 import BeautifulSoup
-          u="https://stats.comunio.es/search.php?lang=es&direc=DESC&endGd=10&orderBy=points&pos%5B%5D=a&season=2026&startGd=1&startLimit=0"
-          s=BeautifulSoup(urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=20).read(),"html.parser")
-          for i,table in enumerate(s.find_all("table")):
-            rows=table.find_all("tr",recursive=False)
-            if len(rows)>5:
-              print("TABLE",i,"ROWS",len(rows))
-              for row in rows[:8]:
-                print("ROW",[(x.name,x.get_text(" ",strip=True)[:85]) for x in row.find_all(["th","td"],recursive=False)])
-          print("RESULT LABELS",[(x.get_text(" ",strip=True)[:70]) for x in s.find_all(string=re.compile("resultado|jugador|resultados",re.I))][-15:])
-          print("LINKS",[(a.get_text(" ",strip=True)[:35],a.get("href")) for a in s.find_all("a",href=True) if "search.php" in a.get("href","")][:15])
-          PY
+      - uses: actions/checkout@v4
+      - run: python -m pip -q install beautifulsoup4
+      - run: python experimentos/descargar_comunio.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: datos-comunio-hoy
+          path: datos-comunio-prueba/*.csv
+          if-no-files-found: warn
