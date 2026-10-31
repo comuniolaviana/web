@@ -32,7 +32,11 @@ for i in range(1, 21):
         f'<a href="/comunio-apuestas/jugadores/jugador-{i}-{j}">Jugador {i} {j}</a>'
         for j in range(1, 26)
     )
-    rosters[f"/comunio-apuestas/equipos/club-{i}"] = f"<h1>Club {i}</h1><h2>Jugadores</h2>{links}"
+    rosters[f"/comunio-apuestas/equipos/club-{i}"] = (
+        f"<h1>Club {i}</h1><h2>Jugadores</h2>{links}"
+        '<h2>Valor de mercado</h2>'
+        '<a href="/comunio-apuestas/jugadores/jugador-2-1">Antiguo fichaje</a>'
+    )
 
 def fake_fetch(url):
     path = urlparse(url).path
@@ -48,8 +52,12 @@ assert context["slug"]("Álex Berenguer") == "alex-berenguer"
 assert context["path_of"]("https://www.otraweb.com/comunio-apuestas/jugadores/falso") == ""
 print("OK: 20 clubes y 500 jugadores, coincidencias y bloqueo de enlaces externos")
 
-rosters["/comunio-apuestas/equipos/club-2"] += (
+rosters["/comunio-apuestas/equipos/club-2"] = rosters[
+    "/comunio-apuestas/equipos/club-2"
+].replace(
+    "<h2>Valor de mercado</h2>",
     '<a href="/comunio-apuestas/jugadores/jugador-1-1">Conflicto</a>'
+    "<h2>Valor de mercado</h2>",
 )
 try:
     context["teams_from_comuniazo"]()
