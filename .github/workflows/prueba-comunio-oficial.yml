@@ -1,4 +1,4 @@
-name: Descargar datos oficiales corregidos
+name: Descargar datos oficiales corregidos reintento
 on:
   push:
     branches: [experimento-datos-comunio-oficial]
