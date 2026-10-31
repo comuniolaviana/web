@@ -498,14 +498,17 @@ function renderHonours(){
 async function loadWebData(){
   const [d,e,b]=await Promise.all([
     firstJson(["../datos.json","datos.json"]),
-    firstJson(["../equipos.json","equipos.json"]),
+    firstJson(["../datos-comuniazo-prueba/ultimo.json","datos-comuniazo-prueba/ultimo.json"]),
     firstJson(["../equipomalo.json","equipomalo.json"])
   ]);
-  const teams=e.equipos||e||{};
+  // Incluso sin Supabase, los clubes se leen del fichero diario de Comuniazo.
+  // No utilizar equipos.json ni equipos heredados del Excel.
+  const teams=new Map((e.jugadores||[]).filter(x=>x.fuente_equipo==="Comuniazo")
+    .map(x=>[norm(x.jugador),String(x.equipo||"")]));
   const p=[];
   Object.entries(POS).forEach(([group,pos])=>{
     (d[group]||[]).forEach(x=>p.push({
-      name:x.jugador,owner_name:x.propietario,team:teams[x.jugador]||"",
+      name:x.jugador,owner_name:x.propietario,team:teams.get(norm(x.jugador))||"",
       position:pos,points:Number(x.puntos)||0,market_value:Number(x.valor)||0,
       clause_value:Number(x.clausula)||0,active:true
     }));
@@ -516,7 +519,7 @@ async function loadWebData(){
   badPlayers=(b.jugadores||[]).map(x=>{
     const value=Number(x.valor)||0;
     return {
-      name:x.jugador,team:teams[x.jugador]||x.equipo||"",
+      name:x.jugador,team:teams.get(norm(x.jugador))||"",
       position:normalizePosition(x.posicion),points:Number(x.puntos)||0,
       market_value:value,multiplier:specialMultiplier(value),
       clause_value:Math.round(value*specialMultiplier(value)),available:true
