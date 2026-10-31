@@ -1,4 +1,4 @@
-name: Descargar datos Comuniazo prueba
+name: Descargar datos Comuniazo corregido
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
