@@ -87,6 +87,14 @@ for tr in tables[0].find_all("tr")[1:]:
  record.pop("fuente_equipo",None)
  record.pop("fuente_posicion",None)
  record.update({"jugador":name,"puntos":int(points),"valor_eur":int(value),"fecha":datetime.date.today().isoformat(),"fuente_puntos":"Comuniazo"})
+ # Usar el enlace de ficha que muestra Comuniazo; el slug deducido del nombre
+ # no siempre coincide (por ejemplo Pau Cubarsí -> cubarsi).
+ player_link=td[0].find("a",href=True)
+ player_path=path_of(player_link.get("href")) if player_link else ""
+ if re.fullmatch(r"/comunio-apuestas/jugadores/[a-z0-9-]+",player_path):
+  record["url_ficha"]=BASE+player_path
+ else:
+  record.pop("url_ficha",None)
  record.setdefault("equipo","")
  record.setdefault("posicion_filtro","")
  records.append(record)
