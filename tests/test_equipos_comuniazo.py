@@ -47,11 +47,24 @@ def fake_fetch(url):
 context["fetch_html"] = fake_fetch
 mapping, clubs = context["teams_from_comuniazo"]()
 assert clubs == 20 and len(mapping) == 500, (clubs, len(mapping))
-assert mapping["jugador-1-1"] == "Club 1"
-assert mapping["jugador-20-25"] == "Club 20"
+assert mapping["slug:jugador-1-1"] == "Club 1"
+assert mapping["slug:jugador-20-25"] == "Club 20"
 assert context["slug"]("Álex Berenguer") == "alex-berenguer"
 assert context["path_of"]("https://www.otraweb.com/comunio-apuestas/jugadores/falso") == ""
 print("OK: 20 clubes y 500 jugadores, coincidencias y bloqueo de enlaces externos")
+
+# Los nombres de fichero de Comuniazo no siempre coinciden con el nombre.
+# El club se debe identificar con el nombre visible en la plantilla.
+rosters["/comunio-apuestas/equipos/club-1"] = rosters[
+    "/comunio-apuestas/equipos/club-1"
+].replace(
+    '<a href="/comunio-apuestas/jugadores/jugador-1-1">Jugador 1 1</a>',
+    '<a href="/comunio-apuestas/jugadores/cubarsi">Pau Cubarsí 5,4 / 98 / 10.300.000</a>',
+)
+mapping, clubs = context["teams_from_comuniazo"]()
+assert mapping["name:pau cubarsi"] == "Club 1"
+assert mapping["slug:cubarsi"] == "Club 1"
+print("OK: identifica a Pau Cubarsí aunque el enlace se llame cubarsi")
 
 rosters["/comunio-apuestas/equipos/club-2"] = rosters[
     "/comunio-apuestas/equipos/club-2"
