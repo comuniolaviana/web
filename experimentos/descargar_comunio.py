@@ -10,7 +10,7 @@ records=[]
 for position in ("t","a","m","s"):
     seen=set()
     for offset in range(0,1250,25):
-        q=urllib.parse.urlencode({"lang":"es","season":"2026","startGd":"1","endGd":"13","pos[]":position,"startLimit":offset})
+        q=urllib.parse.urlencode({"lang":"es","season":"2026","startGd":"1","endGd":"38","pos[]":position,"startLimit":offset})
         url=BASE+"?"+q
         try:
             req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"})
