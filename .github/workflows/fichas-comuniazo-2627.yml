@@ -13,10 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python -m pip -q install beautifulsoup4
+      - run: python experimentos/actualizar_listado_comuniazo.py
       - run: python experimentos/descargar_fichas_comuniazo.py
       - name: Publicar fichas experimentales
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add datos-comuniazo-prueba/fichas-2627.json
-          git diff --cached --quiet || (git commit -m "Actualizar fichas Comuniazo 2026-27" && git pull --rebase origin main && git push)
+          git add datos-comuniazo-prueba/ultimo.json datos-comuniazo-prueba/fichas-2627.json
+          git diff --cached --quiet || (git commit -m "Actualizar todo Comuniazo 2026-27" && git pull --rebase origin main && git push)
