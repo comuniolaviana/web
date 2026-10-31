@@ -8,14 +8,14 @@ const fmt=n=>new Intl.NumberFormat("es-ES").format(Number(n)||0);
 let rows=[];let fichas=null;let loaded=false;
 function render(){
  const q=$("czBuscar").value.toLocaleLowerCase("es");
- const equipo=$("czEquipo").value,pos=$("czPos").value,orden=$("czOrden").value;
- const list=rows.filter(x=>(x.jugador+" "+x.equipo).toLocaleLowerCase("es").includes(q)&&(!equipo||x.equipo===equipo)&&(!pos||x.posicion_filtro===pos));
+ const equipo=$("czEquipo").value,pos=$("czPos").value,orden=$("czOrden").value,estado=$("czEstadoEquipo").value;
+ const list=rows.filter(x=>(x.jugador+" "+x.equipo).toLocaleLowerCase("es").includes(q)&&(!equipo||x.equipo===equipo)&&(!pos||x.posicion_filtro===pos)&&(estado==="todos"||(estado==="con"?Boolean(x.equipo&&x.equipo.trim()):!x.equipo||!x.equipo.trim())));
  const [campo,dir]=orden.split("-");
  list.sort((a,b)=>{const diff=campo==="nombre"?a.jugador.localeCompare(b.jugador,"es"):(Number(a[campo==="valor"?"valor_eur":"puntos"])||0)-(Number(b[campo==="valor"?"valor_eur":"puntos"])||0);return dir==="desc"?-diff:diff;});
- $("czEstado").textContent=rows.length+" jugadores · "+list.length+" visibles · Fuente puntos y valor: Comuniazo · equipo y posición: referencia previa de Comunio Stats";
+ $("czEstado").textContent=rows.length+" descargados · "+rows.filter(x=>x.equipo&&x.equipo.trim()).length+" con equipo · "+rows.filter(x=>!x.equipo||!x.equipo.trim()).length+" sin equipo (pendientes de revisar) · "+list.length+" visibles · Fuente puntos y valor: Comuniazo · equipo y posición: referencia previa de Comunio Stats";
  $("czListado").innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th>Jugador</th><th>Equipo</th><th>Pos.</th><th>Valor Comuniazo</th><th>Puntos Comuniazo</th></tr></thead><tbody>'+list.map(x=>'<tr><td><button type="button" class="czAbrir" data-name="'+esc(x.jugador)+'" style="background:none;border:0;text-decoration:underline;color:inherit;cursor:pointer;font:inherit;padding:0">'+esc(x.jugador)+'</button></td><td>'+esc(x.equipo||"—")+'</td><td>'+esc(({t:"POR",a:"DEF",m:"MED",s:"DEL"})[x.posicion_filtro]||"—")+'</td><td style="text-align:right;white-space:nowrap">'+fmt(x.valor_eur)+' €</td><td style="text-align:right">'+fmt(x.puntos)+'</td></tr>').join("")+'</tbody></table>';
 }
-for(const id of ["czBuscar","czEquipo","czPos","czOrden"])$(id).addEventListener(id==="czBuscar"?"input":"change",render);
+for(const id of ["czBuscar","czEstadoEquipo","czEquipo","czPos","czOrden"])$(id).addEventListener(id==="czBuscar"?"input":"change",render);
 $("czDesplegable").addEventListener("toggle",()=>{if($("czDesplegable").open&&!loaded){loaded=true;load();}});
 $("czListado").addEventListener("click",e=>{
  const btn=e.target.closest(".czAbrir");if(!btn)return;
