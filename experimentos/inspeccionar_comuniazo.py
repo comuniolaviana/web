@@ -12,3 +12,10 @@ for table in soup.find_all("table")[:4]:
 for a in soup.find_all("a",href=True):
  if "Raphinha" in a.get_text(" ",strip=True):print("RAPHINHA",[(td.get_text(" ",strip=True)[:90],td.get("class")) for td in a.find_parent("tr").find_all("td",recursive=False)]);break
 print("PAGINACION",[(a.get_text(" ",strip=True),a.get("href")) for a in soup.find_all("a",href=True) if any(s in a.get_text(" ",strip=True).lower() for s in ["siguiente","next","2","última"])][:15])
+
+for tr in soup.find_all("tr",class_="btn")[:2]:
+ print("TR_ATTRS",tr.attrs)
+ print("TR_HTML",str(tr)[:6000])
+for a in soup.find_all("a",href=True):
+ if "jugador" in a.get("href","") and "comunio-apuestas" in a.get("href",""):
+  print("PLAYER_LINK",a.get("href"));break
