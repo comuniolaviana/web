@@ -1,4 +1,4 @@
-name: Inspeccionar fuente Comuniazo
+name: Inspeccionar columnas Comuniazo
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
