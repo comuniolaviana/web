@@ -52,6 +52,7 @@ function ensureChrome(){
       </div>
       <nav class="v65-headlinks" aria-label="Accesos directos">
         <a href="viejo-zorro.html" class="v65-shortcut" aria-label="Viejo Zorro"><span>🦊</span><small>Viejo Zorro</small></a>
+         <a href="informacion.html" class="v65-shortcut v65-info-shortcut" aria-label="Información de jugadores Comuniazo"><span>📊</span><small>Información</small></a>
         <a href="fairplay.html" class="v65-shortcut" aria-label="Fair Play"><span>🟨</span><small>Fair Play</small></a>
         <button id="v65Bell" class="v65-headbtn" type="button" aria-label="Notificaciones"><span>🔔</span><small>Avisos</small></button>
       </nav>`;
