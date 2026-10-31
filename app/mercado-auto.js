@@ -161,7 +161,8 @@
         saveDaily({day,status:'completed',completed_at:new Date().toISOString(),result:data});
         message('✓ Actualización completada. '+(data.players_downloaded||'Los')+
           ' jugadores de Comuniazo; '+(data.updated_values||0)+' valores cambiados; '+
-          (data.updated_points||0)+' puntuaciones de Comuniazo actualizadas. '+
+          (data.updated_points||0)+' puntuaciones de Comuniazo actualizadas; '+
+          (data.updated_teams||0)+' equipos actualizados a partir de las 20 plantillas oficiales de Comuniazo. '+
           'Propietarios y cláusulas calculados con los 383 tramos originales. Puntos oficiales conservados.');
         document.dispatchEvent(new CustomEvent('comuniazo-updated'));
         return;
@@ -226,41 +227,6 @@
   else if(last?.status==='completed' && last.day===today())
     message('✓ Actualización de hoy finalizada. Puedes consultar los resultados o descargar una copia para Excel.');
 
-  $('maCotizaciones').addEventListener('click', async() => {
-    if(busy)return;
-    busy=true;$('maCotizaciones').disabled=true;message('Leyendo la última descarga de Comuniazo…');
-    try{
-      await adminSession();
-      const response=await fetch('../datos-comuniazo-prueba/ultimo.json?v='+Date.now(),{cache:'no-store'});
-      if(!response.ok)throw new Error('No se pudo leer el archivo de Comuniazo.');
-      const latest=await response.json();
-      if(!Array.isArray(latest.jugadores)||latest.jugadores.length<550)throw new Error('La descarga está incompleta; no se cambia nada.');
-      const existing=await getAll('comunio_market_quotes','player_name');
-      const map=new Map(existing.map(x=>[norm(x.player_name),x]));
-      const withPoints=$('maActualizarPuntos').checked;
-      const changes=[];
-      for (const x of latest.jugadores){
-        const previous=map.get(norm(x.jugador));
-        const v=Number(x.valor_eur),pts=Number(x.puntos);
-        if(!x.jugador || !Number.isFinite(v) || v<0 || !Number.isFinite(pts))continue;
-        const pos=({t:'1.Portero',a:'2.Defensa',m:'3.Medio',s:'4.Delantero'})[x.posicion_filtro]||previous?.position||'';
-        const team=x.equipo||previous?.team||'';
-        const row={player_name:previous?.player_name||x.jugador,market_value:Math.round(v),points:withPoints?Math.round(pts):(previous?.points??Math.round(pts)),position:pos,team,source:'comuniazo_'+(latest.fecha||today()),updated_at:new Date().toISOString()};
-        if(!previous || previous.market_value!==row.market_value || previous.points!==row.points || previous.position!==row.position || previous.team!==row.team)changes.push(row);
-      }
-      if(!changes.length){message(`✓ Sin cambios. Última descarga disponible: ${latest.fecha||'sin fecha'}.`);return;}
-      const stale=latest.fecha && latest.fecha<today();
-      const info=`Se aplicarán ${changes.length} cambios usando la descarga del ${latest.fecha||'día desconocido'}.`;
-      if(!window.confirm(info+(stale?' La descarga es anterior a hoy. ¿Continuar?':''))) {message('Actualización cancelada.');return;}
-      for(let i=0;i<changes.length;i+=80){
-        const {error}=await client.from('comunio_market_quotes').upsert(changes.slice(i,i+80),{onConflict:'player_name'});
-        if(error)throw error;
-      }
-      message(`✓ ${changes.length} cotizaciones actualizadas a partir de ${latest.fecha||'última descarga'}. Cláusulas recalculadas. ${withPoints?'Incluidos los puntos de Comuniazo.':'Puntos oficiales existentes conservados.'}`);
-      await loadStatus();
-    }catch(e){message('No se aplicaron todos los cambios: '+e.message,true)}
-    finally{busy=false;$('maCotizaciones').disabled=false;}
-  });
   $('maCopia').addEventListener('click', async() => {
     if(busy)return;
     busy=true;$('maCopia').disabled=true;message('Preparando copia de seguridad de Supabase…');
