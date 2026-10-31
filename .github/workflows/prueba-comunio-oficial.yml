@@ -1,34 +1,29 @@
-name: Prueba aislada Comunio oficial
+name: Inspeccion oficial Comunio
 on:
   push:
     branches: [experimento-datos-comunio-oficial]
     paths: ['.github/workflows/prueba-comunio-oficial.yml']
-  workflow_dispatch:
 jobs:
-  comprobar:
+  inspeccionar:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Probar HTTP y estructura sin credenciales
-        shell: bash
+      - name: Inspeccionar HTML y rutas de datos
         run: |
           python - <<'PY'
-          import urllib.request, urllib.error, socket, re, html
-          urls = [
-            "https://stats.comunio.es/search.php",
-            "https://www.comunio.es/soapservice.php?wsdl",
-          ]
-          for url in urls:
-              print("\nFUENTE:", url)
-              try:
-                  req=urllib.request.Request(url,headers={"User-Agent":"ComunioLaviana-Research/1.0 (manual test)"})
-                  with urllib.request.urlopen(req,timeout=20) as res:
-                      raw=res.read(300000)
-                      body=raw.decode("utf-8","replace")
-                      print("HTTP:",res.status,"BYTES:",len(raw),"FINAL:",res.url)
-                      print("TABLAS:",len(re.findall(r"<table\\b",body,re.I)))
-                      print("TITULO:",html.unescape(re.sub("<[^>]*>","",re.search(r"<title[^>]*>(.*?)</title>",body,re.I|re.S).group(1)))[:150] if re.search(r"<title[^>]*>(.*?)</title>",body,re.I|re.S) else "sin título")
-                      print("INDICIOS:",{k:bool(re.search(k,body,re.I)) for k in ["valor","puntos","jugador","wsdl"]})
-              except Exception as exc:
-                  print("ERROR:",type(exc).__name__,str(exc)[:350])
+          import urllib.request,re,html
+          urls=["https://stats.comunio.es/search.php?lang=es","https://stats.comunio.es/search.php?direc=DESC&endGd=10&orderBy=points&pos%5B%5D=a&season=2026&startGd=1&startLimit=100"]
+          for u in urls:
+            print("URL",u)
+            try:
+              r=urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=15)
+              t=r.read(500000).decode("utf-8","replace")
+              print("STATUS",r.status,"LEN",len(t))
+              print("TITLE",re.findall(r"<title[^>]*>(.*?)</title>",t,re.I|re.S)[:1])
+              print("SCRIPTS",re.findall(r"<script[^>]+src=[\x22\x27]([^\x22\x27]+)",t,re.I)[:25])
+              print("FORMS",re.findall(r"<form[^>]*>",t,re.I)[:8])
+              print("TABLES",len(re.findall(r"<table",t,re.I)),"TR",len(re.findall(r"<tr",t,re.I)))
+              print("TEXT",re.sub(r"\s+"," ",re.sub(r"<[^>]+>"," ",t))[:1100])
+              print("KEYWORDS",[(k,len(re.findall(k,t,re.I))) for k in ["Carlos Romero","player","points","market","ajax","json","Spieler","Punkte"]])
+            except Exception as e:print("ERROR",repr(e))
           PY
