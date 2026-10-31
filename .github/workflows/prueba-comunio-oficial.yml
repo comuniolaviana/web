@@ -1,4 +1,4 @@
-name: Descargar datos Comuniazo corregido
+name: Publicar datos Comuniazo en prueba
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
@@ -19,3 +19,9 @@ jobs:
           persist-credentials: true
       - run: python -m pip -q install beautifulsoup4
       - run: python experimentos/descargar_comuniazo.py
+      - name: Guardar descarga experimental
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datos-comuniazo-prueba/ultimo.json
+          git diff --cached --quiet || (git commit -m "Guardar prueba Comuniazo" && git push)
