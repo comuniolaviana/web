@@ -37,8 +37,16 @@ def club_roster(link):
   if getattr(element,"name",None)!="a":continue
   p=path_of(element.get("href"))
   m=re.fullmatch(r"/comunio-apuestas/jugadores/([a-z0-9-]+)",p)
-  if m:keys.add(m.group(1))
- if len(keys)<15:raise RuntimeError("Plantilla incompleta de "+club+": "+str(len(keys))+" jugadores")
+  if not m:continue
+  keys.add("slug:"+m.group(1))
+  # El slug puede diferir del nombre: por ejemplo "Pau Cubarsí" -> "/cubarsi".
+  # La ficha de club muestra "Pau Cubarsí 5,4 / 98 / 10.300.000".
+  text=element.get_text(" ",strip=True)
+  name_parts=re.split(r"\\s+-?\\d+(?:[.,]\\d+)?\\s*/",text,maxsplit=1)
+  if len(name_parts)==2 and len(name_parts[0].strip())>=2:
+   keys.add("name:"+norm(name_parts[0]))
+ count_players=sum(key.startswith("slug:") for key in keys)
+ if count_players<15:raise RuntimeError("Plantilla incompleta de "+club+": "+str(count_players)+" jugadores")
  return club,keys
 def teams_from_comuniazo():
  league=fetch_html(TEAM_INDEX)
@@ -57,8 +65,9 @@ def teams_from_comuniazo():
     if key in mapping and mapping[key]!=club:
      raise RuntimeError("El jugador "+key+" aparece en dos clubes: "+mapping[key]+" y "+club)
     mapping[key]=club
- if len(clubs)!=20 or len(mapping)<490:
-  raise RuntimeError("Las plantillas oficiales no contienen suficientes jugadores: "+str(len(mapping)))
+ player_slugs=sum(key.startswith("slug:") for key in mapping)
+ if len(clubs)!=20 or player_slugs<490:
+  raise RuntimeError("Las plantillas oficiales no contienen suficientes jugadores: "+str(player_slugs))
  return mapping,len(clubs)
 req=urllib.request.Request(URL,headers={"User-Agent":"Mozilla/5.0"})
 with urllib.request.urlopen(req,timeout=40) as response:soup=BeautifulSoup(response.read(),"html.parser")
@@ -88,7 +97,7 @@ assigned=0
 unmatched_previously_assigned=[]
 for record in records:
  player_name=record["jugador"]
- current=team_map.get(slug(player_name),"")
+ current=team_map.get("name:"+norm(player_name)) or team_map.get("slug:"+slug(player_name),"")
  previous_team=old.get(norm(player_name),{}).get("equipo","")
  if current:assigned+=1
  elif previous_team:unmatched_previously_assigned.append(player_name)
