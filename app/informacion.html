@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071d2c">
+<title>Información · Comunio Laviana</title>
+<link rel="stylesheet" href="informacion.css?v=1">
+</head>
+<body>
+<header class="inf-header">
+ <a class="inf-back" href="index.html" aria-label="Volver a la aplicación">‹</a>
+ <a class="inf-brand" href="index.html"><span class="inf-shield">⚽</span><span><strong>COMUNIO LAVIANA</strong><small>BASE DE DATOS 2026/27</small></span></a>
+ <span class="inf-live"><i></i> DATOS</span>
+</header>
+<main class="inf-main">
+<section class="inf-hero">
+ <div class="inf-hero-glow"></div>
+ <div class="inf-hero-content">
+  <span class="inf-kicker">⚡ OBSERVATORIO DE JUGADORES</span>
+  <h1>El fútbol en<br><em>tus manos.</em></h1>
+  <p>Explora el rendimiento de Primera División. Cada futbolista, su club, sus puntos y su evolución.</p>
+  <div class="inf-hero-pill"><span class="inf-pulse"></span> Datos de Comuniazo · <span id="infDate">Cargando…</span></div>
+ </div>
+ <div class="inf-hero-ball" aria-hidden="true">⚽</div>
+</section>
+<section class="inf-metrics" aria-label="Resumen de la base de datos">
+ <div><span class="inf-metric-icon">◉</span><strong id="infTotal">—</strong><small>Futbolistas</small></div>
+ <div><span class="inf-metric-icon">⬡</span><strong id="infTeams">—</strong><small>Clubes</small></div>
+ <div><span class="inf-metric-icon">★</span><strong id="infRound">—</strong><small>Jornadas</small></div>
+</section>
+<section class="inf-search-panel" aria-label="Buscador de jugadores">
+ <div class="inf-search-line">
+  <label class="inf-search"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="infSearch" type="search" autocomplete="off" placeholder="Busca un futbolista…" aria-label="Buscar futbolista o equipo"></label>
+  <button class="inf-filter-toggle" id="infFilterBtn" type="button" aria-controls="infFilters" aria-expanded="false">☷ <span>Filtros</span></button>
+ </div>
+ <div class="inf-filters" id="infFilters" hidden>
+  <label>Club<select id="infTeam"><option value="">Todos los clubes</option></select></label>
+  <label>Ordenar por<select id="infSort"><option value="pointsDesc">Más puntos</option><option value="valueDesc">Mayor valor</option><option value="pointsAsc">Menos puntos</option><option value="valueAsc">Menor valor</option><option value="nameAsc">Nombre A-Z</option><option value="nameDesc">Nombre Z-A</option></select></label>
+ </div>
+ <div class="inf-positions" role="group" aria-label="Posición">
+  <button type="button" class="is-active" data-pos="">Todos</button>
+  <button type="button" data-pos="t">🥅 Porteros</button>
+  <button type="button" data-pos="a">🛡️ Defensas</button>
+  <button type="button" data-pos="m">⚙️ Medios</button>
+  <button type="button" data-pos="s">🎯 Delanteros</button>
+ </div>
+</section>
+<div class="inf-results-head"><div><h2>Descubre a los protagonistas</h2><p id="infResultCount" aria-live="polite">Cargando jugadores…</p></div><span class="inf-small-label">TEMP. 26/27</span></div>
+<div class="inf-featured" id="infFeatured" hidden></div>
+<div class="inf-grid" id="infPlayers" aria-live="polite"><div class="inf-loading">Preparando el terreno de juego…</div></div>
+<div class="inf-load-more-wrap"><button id="infMore" type="button" hidden>Ver más jugadores ↓</button></div>
+<p class="inf-footnote">Información de Comuniazo · Se muestran exclusivamente jugadores con club verificado. Los puntos corresponden a Comuniazo y pueden diferir de Comunio.</p>
+</main>
+<div class="inf-overlay" id="infOverlay" hidden>
+ <div class="inf-overlay-bg" id="infOverlayBg"></div>
+ <section class="inf-detail" role="dialog" aria-modal="true" aria-labelledby="infDetailName">
+  <button type="button" id="infClose" class="inf-close" aria-label="Cerrar ficha">✕</button>
+  <div id="infDetailBody"></div>
+ </section>
+</div>
+<script src="informacion.js?v=1"></script>
+</body>
+</html>
