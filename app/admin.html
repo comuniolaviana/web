@@ -32,8 +32,7 @@
     <section class="panel" style="margin-bottom:12px" id="datosComuniazoPanel">
       <details id="czDesplegable">
         <summary style="cursor:pointer;font-weight:700;font-size:1.1rem;padding:8px 0">Datos Comuniazo · jugadores 2026/27 <span style="font-size:.85rem;font-weight:400">— Pulsar para abrir</span></summary>
-        <p><button class="primary" type="button" id="czActualizarTodo">Descargar y actualizar todo</button></p>
-        <p id="czActualizacionMsg" class="message" role="status" aria-live="polite"></p>
+        <p class="muted">Consulta de fichas de Comuniazo. Para actualizar los valores de la liga utiliza «Mercado automático» más abajo.</p>
         <p class="muted" id="czEstado">Abre esta sección para consultar los jugadores.</p>
         <div class="reconcile-controls" style="display:flex;flex-wrap:wrap;gap:8px">
           <input id="czBuscar" type="search" placeholder="Buscar jugador o equipo" aria-label="Buscar en Comuniazo">
@@ -43,6 +42,37 @@
           <select id="czOrden" aria-label="Ordenar jugadores"><option value="puntos-desc">Más puntos</option><option value="puntos-asc">Menos puntos</option><option value="valor-desc">Mayor valor</option><option value="valor-asc">Menor valor</option><option value="nombre-asc">Nombre A-Z</option><option value="nombre-desc">Nombre Z-A</option></select>
         </div>
         <div id="czListado" style="overflow-x:auto;margin-top:12px"></div>
+      </details>
+    </section>
+
+
+    <section class="panel" id="autoMercadoPanel" style="margin-bottom:12px">
+      <details id="maDesplegable">
+        <summary style="cursor:pointer;font-weight:700;font-size:1.1rem;padding:8px 0">Mercado automático · traspasos y cláusulas <span style="font-size:.85rem;font-weight:400">— Pulsar para abrir</span></summary>
+        <p class="muted">Datos principales en Supabase. Al registrar un traspaso se actualizan automáticamente su propietario y la cláusula, usando los 383 tramos del Excel original.</p>
+        <p id="maEstado" class="muted">Abre esta sección para consultar el estado de la base de datos.</p>
+        <p id="maFallos" class="muted"></p>
+        <h3>Registrar traspasos del día</h3>
+        <label for="maFecha">Fecha de los traspasos</label>
+        <input id="maFecha" type="date" style="display:block;margin:6px 0 10px;max-width:220px">
+        <label for="maTexto">Pega los movimientos publicados por Comunio</label>
+        <textarea id="maTexto" rows="7" style="width:100%;box-sizing:border-box;margin-top:7px" placeholder="Yangel Herrera cambia por 2.365.000 de Computer para Adrian.&#10;Daniel Vivian cambia por 1.980.000 de equipomalo para PABLO."></textarea>
+        <div class="reconcile-controls" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+          <button id="maPrevisualizar" type="button">Revisar traspasos</button>
+          <button id="maGuardar" type="button" class="primary" disabled>Guardar y recalcular</button>
+        </div>
+        <p id="maMensaje" class="message" role="status" aria-live="polite"></p>
+        <div id="maVista"></div>
+        <hr style="opacity:.18;margin:18px 0">
+        <h3>Valores de mercado y copia de seguridad</h3>
+        <p class="muted">Aplica los valores de la última descarga de Comuniazo guardada en la web. No realiza una descarga nueva de Internet. Los puntos de Comunio se conservan salvo que lo autorices.</p>
+        <label style="display:block;margin:8px 0 12px"><input type="checkbox" id="maActualizarPuntos"> Actualizar también los puntos de Comuniazo (pueden diferir de los oficiales)</label>
+        <div class="reconcile-controls" style="display:flex;flex-wrap:wrap;gap:8px">
+          <button class="primary" id="maCotizaciones" type="button">Aplicar última descarga</button>
+          <button id="maCopia" type="button">Descargar copia de datos</button>
+        </div>
+        <h3 style="margin-top:18px">Últimos movimientos registrados</h3>
+        <div id="maUltimos"></div>
       </details>
     </section>
 
@@ -81,6 +111,7 @@
 <script src="config.js"></script>
 <script src="../calendario-engine.js"></script>
 <script src="admin.js?v=2"></script>
-<script src="datos-comuniazo.js?v=1"></script>
+<script src="datos-comuniazo.js?v=2"></script>
+<script src="mercado-auto.js?v=1"></script>
 </body>
 </html>
