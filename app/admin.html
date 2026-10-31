@@ -51,7 +51,7 @@
         <p class="muted">Datos principales en Supabase. Al registrar un traspaso se actualizan automáticamente su propietario y la cláusula, usando los 383 tramos del Excel original.</p>
         <p id="maEstado" class="muted">Abre esta sección para consultar el estado de la base de datos.</p>
         <p id="maFallos" class="muted"></p>
-        <h3>Actualización diaria manual</h3><p class="muted">Pega los traspasos de ayer, o deja el campo vacío si no hubo ninguno. Pulsa «Actualizar todo» una vez: guardará movimientos, descargará las 20 plantillas de Comuniazo, actualizará equipos, posiciones verificadas y valores y recalculará cláusulas. Los puntos oficiales de Comunio no se sustituyen por los de Comuniazo.</p>
+        <h3>Actualización diaria manual</h3><p class="muted">Pega los traspasos de ayer, o deja el campo vacío si no hubo ninguno. Pulsa «Actualizar todo» una vez: guardará movimientos, descargará las 20 plantillas de Comuniazo, actualizará equipos, posiciones verificadas y valores y recalculará cláusulas. Las posiciones y los puntos mostrados en Cláusulas y Equipo Malo proceden de Comuniazo; se conserva una copia de los puntos oficiales anteriores.</p>
         <label for="maFecha">Fecha de los traspasos (siempre ayer)</label>
         <input id="maFecha" type="date" readonly aria-readonly="true" style="display:block;margin:6px 0 10px;max-width:220px">
         <label for="maTexto">Pega los movimientos publicados por Comunio</label>
@@ -64,7 +64,7 @@
         <div id="maVista"></div>
         <hr style="opacity:.18;margin:18px 0">
         <h3>Copia de seguridad para Excel</h3>
-        <p class="muted">La actualización diaria descarga los clubes de las 20 plantillas de Comuniazo, además de posiciones verificadas, valores y puntos (conserva por separado los puntos oficiales). El respaldo incluye traspasos, cotizaciones, cláusulas calculadas y los 383 multiplicadores. Se puede importar al Excel original más adelante sin alterar sus fórmulas.</p>
+        <p class="muted">La actualización diaria descarga clubes, posiciones, valores y puntos de Comuniazo. Los puntos oficiales anteriores se han archivado como referencia y no se borran. El respaldo incluye traspasos, cotizaciones, cláusulas calculadas y los 383 multiplicadores. Se puede importar al Excel original más adelante sin alterar sus fórmulas.</p>
         <div class="reconcile-controls" style="display:flex;flex-wrap:wrap;gap:8px">
           <button id="maCopia" type="button">Descargar datos para Excel</button>
         </div>
@@ -109,6 +109,6 @@
 <script src="../calendario-engine.js"></script>
 <script src="admin.js?v=3"></script>
 <script src="datos-comuniazo.js?v=4"></script>
-<script src="mercado-auto.js?v=4"></script>
+<script src="mercado-auto.js?v=5"></script>
 </body>
 </html>
