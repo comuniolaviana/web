@@ -1,5 +1,8 @@
 name: Descargar fichas Comuniazo 2026-27
 on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fichas-comuniazo-2627.yml']
   workflow_dispatch:
   schedule:
     - cron: '45 7 * * *'
