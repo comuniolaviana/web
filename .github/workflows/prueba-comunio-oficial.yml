@@ -1,0 +1,34 @@
+name: Prueba aislada Comunio oficial
+on:
+  push:
+    branches: [experimento-datos-comunio-oficial]
+    paths: ['.github/workflows/prueba-comunio-oficial.yml']
+  workflow_dispatch:
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probar HTTP y estructura sin credenciales
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request, urllib.error, socket, re, html
+          urls = [
+            "https://stats.comunio.es/search.php",
+            "https://www.comunio.es/soapservice.php?wsdl",
+          ]
+          for url in urls:
+              print("\nFUENTE:", url)
+              try:
+                  req=urllib.request.Request(url,headers={"User-Agent":"ComunioLaviana-Research/1.0 (manual test)"})
+                  with urllib.request.urlopen(req,timeout=20) as res:
+                      raw=res.read(300000)
+                      body=raw.decode("utf-8","replace")
+                      print("HTTP:",res.status,"BYTES:",len(raw),"FINAL:",res.url)
+                      print("TABLAS:",len(re.findall(r"<table\\b",body,re.I)))
+                      print("TITULO:",html.unescape(re.sub("<[^>]*>","",re.search(r"<title[^>]*>(.*?)</title>",body,re.I|re.S).group(1)))[:150] if re.search(r"<title[^>]*>(.*?)</title>",body,re.I|re.S) else "sin título")
+                      print("INDICIOS:",{k:bool(re.search(k,body,re.I)) for k in ["valor","puntos","jugador","wsdl"]})
+              except Exception as exc:
+                  print("ERROR:",type(exc).__name__,str(exc)[:350])
+          PY
