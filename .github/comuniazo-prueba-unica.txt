@@ -1,1 +1,3 @@
 Comuniazo, prueba sin traspasos: actualización de nombres visibles y clubes, 31-10-2026.
+
+Prueba final 31-10-2026: perfiles enlazados y equipos verificados por nombre visible.
