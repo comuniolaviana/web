@@ -164,8 +164,8 @@
         message('✓ Actualización completada. '+(data.players_downloaded||'Los')+
           ' jugadores de Comuniazo; '+(data.updated_values||0)+' valores cambiados; '+
           (data.updated_points||0)+' puntuaciones de Comuniazo actualizadas; '+
-          (data.updated_teams||0)+' equipos actualizados a partir de las 20 plantillas oficiales de Comuniazo. '+
-          'Propietarios y cláusulas calculados con los 383 tramos originales. Puntos oficiales conservados.');
+          (data.updated_teams||0)+' equipos y '+(data.updated_positions||0)+' posiciones actualizadas desde Comuniazo. '+
+          'Los puntos visibles también proceden de Comuniazo. Propietarios y cláusulas recalculados con los 383 tramos originales. Copia de puntos anteriores conservada.');
         document.dispatchEvent(new CustomEvent('comuniazo-updated'));
         return;
       }
