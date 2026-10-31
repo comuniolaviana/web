@@ -9,7 +9,7 @@ function render(){
  const q=$("dcBuscar").value.toLocaleLowerCase("es"),p=$("dcPos").value,t=$("dcEquipo").value,o=$("dcOrden").value;
  let shown=rows.filter(x=>(!p||x.posicion_filtro===p)&&(!t||x.equipo===t)&&(!q||(x.jugador+" "+x.equipo).toLocaleLowerCase("es").includes(q)));
  shown.sort((a,b)=>o==="nombre"?a.jugador.localeCompare(b.jugador,"es"):Number(b[o==="valor"?"valor_eur":"puntos"])-Number(a[o==="valor"?"valor_eur":"puntos"]));
- $("datosComunioEstado").textContent=rows.length+" jugadores · "+shown.length+" visibles · "+(rows[0]?.fecha||"")+" · fuente: estadísticas de Comunio (datos experimentales)";
+ $("datosComunioEstado").textContent=rows.length+" jugadores · "+shown.length+" visibles · "+(rows[0]?.fecha||"")+" · temporada completa (jornadas 1-38) · puntos sin validar";
  $("dcListado").innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th>Jugador</th><th>Equipo</th><th>Pos.</th><th>Valor</th><th>Puntos</th></tr></thead><tbody>'+shown.slice(0,550).map(x=>'<tr><td>'+escape(x.jugador)+'</td><td>'+escape(x.equipo)+'</td><td>'+escape(({t:"POR",a:"DEF",m:"MED",s:"DEL"})[x.posicion_filtro])+'</td><td style="text-align:right;white-space:nowrap">'+number(x.valor_eur)+' €</td><td style="text-align:right">'+number(x.puntos)+'</td></tr>').join("")+'</tbody></table>';
 }
 for(const id of ["dcBuscar","dcPos","dcEquipo","dcOrden"])$(id).addEventListener("input",render);
