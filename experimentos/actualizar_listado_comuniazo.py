@@ -28,8 +28,14 @@ def club_roster(link):
  club=heading.get_text(" ",strip=True) if heading else ""
  if not club:raise RuntimeError("No se encontró el nombre del club: "+url)
  keys=set()
- for a in soup.select('a[href]'):
-  p=path_of(a.get("href"))
+ # Solo los enlaces bajo el título 'Jugadores'. Fuera de esa sección hay
+ # noticias sobre fichajes antiguos: sus enlaces NO prueban pertenencia al club.
+ roster_title=next((h for h in soup.select("h2") if norm(h.get_text(" ",strip=True))=="jugadores"),None)
+ if not roster_title:raise RuntimeError("Falta sección Jugadores de "+club)
+ for element in roster_title.next_elements:
+  if getattr(element,"name",None)=="h2":break
+  if getattr(element,"name",None)!="a":continue
+  p=path_of(element.get("href"))
   m=re.fullmatch(r"/comunio-apuestas/jugadores/([a-z0-9-]+)",p)
   if m:keys.add(m.group(1))
  if len(keys)<15:raise RuntimeError("Plantilla incompleta de "+club+": "+str(len(keys))+" jugadores")
