@@ -1,4 +1,4 @@
-name: Extraccion experimental valores y puntos
+name: Extraer tabla de jugadores oficial
 on:
   push:
     branches: [experimento-datos-comunio-oficial]
@@ -8,20 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Descargar tabla oficial y mostrar filas de prueba
-        run: |
+      - run: |
           python -m pip -q install beautifulsoup4
           python - <<'PY'
-          import urllib.request
+          import urllib.request,re
           from bs4 import BeautifulSoup
-          u="https://stats.comunio.es/search.php?lang=es&direc=DESC&endGd=10&orderBy=points&season=2026&startGd=1&startLimit=0"
-          t=urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=20).read().decode("utf-8","replace")
-          s=BeautifulSoup(t,"html.parser")
+          u="https://stats.comunio.es/search.php?lang=es&direc=DESC&endGd=10&orderBy=points&pos%5B%5D=a&season=2026&startGd=1&startLimit=0"
+          s=BeautifulSoup(urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=20).read(),"html.parser")
           for i,table in enumerate(s.find_all("table")):
-            rows=table.find_all("tr")
-            if len(rows)>3:
-              print("TABLA",i,"FILAS",len(rows))
-              for row in rows[:5]:
-                print("CELDAS",[x.get_text(" ",strip=True)[:95] for x in row.find_all(["th","td"])])
-          print("PAGINACION",[a.get("href") for a in s.find_all("a",href=True) if "startLimit" in a.get("href","")][:12])
+            rows=table.find_all("tr",recursive=False)
+            if len(rows)>5:
+              print("TABLE",i,"ROWS",len(rows))
+              for row in rows[:8]:
+                print("ROW",[(x.name,x.get_text(" ",strip=True)[:85]) for x in row.find_all(["th","td"],recursive=False)])
+          print("RESULT LABELS",[(x.get_text(" ",strip=True)[:70]) for x in s.find_all(string=re.compile("resultado|jugador|resultados",re.I))][-15:])
+          print("LINKS",[(a.get_text(" ",strip=True)[:35],a.get("href")) for a in s.find_all("a",href=True) if "search.php" in a.get("href","")][:15])
           PY
