@@ -115,7 +115,7 @@
   // El proceso se inicia SOLO al pulsar el botón.
   const dailyKey='comunio-actualizacion-diaria-2627-v2';
   const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-  const storage=window.localStorage;
+  const storage=(()=>{try {window.localStorage.getItem(dailyKey);return window.localStorage;} catch(_) {return window.sessionStorage;}})();
   function readDaily() {
     try { return JSON.parse(storage.getItem(dailyKey)||'null'); } catch(_) { return null; }
   }
