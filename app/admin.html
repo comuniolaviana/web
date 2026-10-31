@@ -29,7 +29,19 @@
       <p id="syncMsg"></p>
     </div>
 
-    <section class="panel" style="margin-bottom:12px" id="datosComunioPanel">\n      <h2>Datos Comunio · prueba</h2>\n      <p class="muted" id="datosComunioEstado">Consultando archivo oficial de prueba…</p>\n      <div class="reconcile-controls">\n        <input id="dcBuscar" type="search" placeholder="Buscar jugador o equipo" aria-label="Buscar jugador o equipo">\n        <select id="dcPos"><option value="">Todas las posiciones</option><option value="t">Porteros</option><option value="a">Defensas</option><option value="m">Centrocampistas</option><option value="s">Delanteros</option></select>\n        <select id="dcEquipo"><option value="">Todos los equipos</option></select>\n        <select id="dcOrden"><option value="puntos">Más puntos</option><option value="valor">Mayor valor</option><option value="nombre">Nombre</option></select>\n      </div>\n      <div id="dcListado" style="overflow-x:auto;margin-top:12px"></div>\n    </section>\n\n    <section class="panel admin-reconcile" style="margin-bottom:12px">
+    <section class="panel" style="margin-bottom:12px" id="datosComunioPanel">
+      <h2>Datos Comunio · prueba</h2>
+      <p class="muted" id="datosComunioEstado">Consultando archivo oficial de prueba…</p>
+      <div class="reconcile-controls">
+        <input id="dcBuscar" type="search" placeholder="Buscar jugador o equipo" aria-label="Buscar jugador o equipo">
+        <select id="dcPos"><option value="">Todas las posiciones</option><option value="t">Porteros</option><option value="a">Defensas</option><option value="m">Centrocampistas</option><option value="s">Delanteros</option></select>
+        <select id="dcEquipo"><option value="">Todos los equipos</option></select>
+        <select id="dcOrden"><option value="puntos">Más puntos</option><option value="valor">Mayor valor</option><option value="nombre">Nombre</option></select>
+      </div>
+      <div id="dcListado" style="overflow-x:auto;margin-top:12px"></div>
+    </section>
+
+    <section class="panel admin-reconcile" style="margin-bottom:12px">
       <h2>✅ Comprobar operaciones</h2>
       <p class="muted">Compara las operaciones realizadas desde la app con el historial oficial de <b>estadisticas.json</b>, que sale de tu Excel. Las compras y ventas con <b>Computer</b> que solo existen en el Excel no se consideran incidencia.</p>
 
@@ -63,6 +75,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="../calendario-engine.js"></script>
-<script src="admin.js?v=2"></script>\n<script src="datos-comunio.js?v=1"></script>
+<script src="admin.js?v=2"></script>
+<script src="datos-comunio.js?v=1"></script>
 </body>
 </html>
