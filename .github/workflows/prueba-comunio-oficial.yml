@@ -1,4 +1,4 @@
-name: Descargar y guardar datos oficiales Comunio
+name: Auditar puntos Comunio sin publicar cambios
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
@@ -18,16 +18,4 @@ jobs:
           ref: ${{ github.ref_name }}
           persist-credentials: true
       - run: python -m pip -q install beautifulsoup4
-      - run: python experimentos/descargar_comunio.py
-      - name: Publicar datos de prueba en rama aislada
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add datos-comunio-prueba/ultimo.json
-          git diff --cached --quiet || (git commit -m "Actualizar datos oficiales Comunio" && git push)
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: datos-comunio-csv
-          path: datos-comunio-prueba/*.csv
-          if-no-files-found: warn
+      - run: python experimentos/auditar_puntos.py
