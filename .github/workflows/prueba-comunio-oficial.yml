@@ -1,19 +1,30 @@
-name: Descargar datos oficiales hoy
+name: Inspeccionar posiciones equipos y puntos
 on:
   push:
     branches: [experimento-datos-comunio-oficial]
     paths: ['.github/workflows/prueba-comunio-oficial.yml']
 jobs:
-  descarga:
+  inspeccionar:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - run: python -m pip -q install beautifulsoup4
-      - run: python experimentos/descargar_comunio.py
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: datos-comunio-hoy
-          path: datos-comunio-prueba/*.csv
-          if-no-files-found: warn
+      - run: |
+          python -m pip -q install beautifulsoup4
+          python - <<'PY'
+          import urllib.request,urllib.parse,re
+          from bs4 import BeautifulSoup
+          q=urllib.parse.urlencode({"lang":"es","season":"2026","startGd":"1","endGd":"10","pos[]":"a","startLimit":"0"})
+          s=BeautifulSoup(urllib.request.urlopen("https://stats.comunio.es/search.php?"+q,timeout=20).read(),"html.parser")
+          print("POSITION OPTIONS")
+          for e in s.find_all("input"):
+            if "pos" in str(e.get("name","")).lower():print(str(e)[:300])
+          for e in s.find_all("select"):
+            if "pos" in str(e.get("name","")).lower():print(str(e)[:700])
+          for table in s.find_all("table"):
+            h=table.find("tr")
+            if h and "Valor de mercado / Tend." in h.get_text(" ",strip=True):
+              print("HEADER",str(h)[:2500])
+              row=table.find_all("tr",recursive=False)[1]
+              print("ROW_HTML",str(row)[:5000])
+              print("ROW_TDS",[(i,td.get_text(" ",strip=True)) for i,td in enumerate(row.find_all("td",recursive=False))])
+          PY
