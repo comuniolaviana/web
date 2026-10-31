@@ -10,7 +10,8 @@
   const norm = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
   const today = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   let draft = [], busy = false;
-  $('maFecha').value = today();
+  const yesterday = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Date.now()-86400000));
+  $('maFecha').value = yesterday();
 
   function message(value, error=false) {
     $('maMensaje').textContent = value;
@@ -44,7 +45,7 @@
     return {items,errors};
   }
   function renderDraft() {
-    $('maGuardar').disabled = !draft.length || busy;
+    $('maGuardar').disabled = busy;
     if (!draft.length) { $('maVista').innerHTML=''; return; }
     $('maVista').innerHTML = '<div style="overflow-x:auto;margin-top:10px"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th>Fecha</th><th>Jugador</th><th>De → Para</th><th>Precio</th></tr></thead><tbody>'+
       draft.map(x=>`<tr><td>${esc(x.fecha)}</td><td>${esc(x.jugador)}</td><td>${esc(x.vendedor)} → ${esc(x.comprador)}</td><td style="text-align:right;white-space:nowrap">${nf.format(x.precio)} €</td></tr>`).join('')+'</tbody></table></div>';
@@ -88,25 +89,83 @@
     draft = parsed.items;
     renderDraft();
     message(parsed.errors.length ? `${draft.length} reconocidos, ${parsed.errors.length} con errores: ${parsed.errors.slice(0,3).join(' | ')}` : `${draft.length} traspaso(s) preparados. Revísalos antes de guardarlos.`,!!parsed.errors.length);
-    if(parsed.errors.length)$('maGuardar').disabled=true;
+    if(parsed.errors.length)message('Corrige los errores antes de actualizar.',true);
   });
+  // Una sola actualización diaria, iniciada expresamente por el administrador.
+  // El identificador pendiente permite retomar el seguimiento sin repetir la descarga.
+  const dailyKey = 'comunio-daily-update-2627';
+  const pause = ms => new Promise(resolve => setTimeout(resolve,ms));
+  async function comuniazoApi(action, extra={}) {
+    const session=await adminSession();
+    const response=await fetch(cfg.SUPABASE_URL+'/functions/v1/actualizar-comuniazo',{
+      method:'POST',cache:'no-store',
+      headers:{'Content-Type':'application/json',apikey:cfg.SUPABASE_ANON_KEY,Authorization:'Bearer '+session.access_token},
+      body:JSON.stringify({action,...extra})
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||'No se pudo comunicar con la descarga de Comuniazo.');
+    return data;
+  }
+  async function followDaily(requestId) {
+    let errors=0;
+    for(let attempt=0;attempt<170;attempt++){
+      try {
+        const data=await comuniazoApi('status',{request_id:requestId});
+        errors=0;
+        if(data.status==='completed'){
+          sessionStorage.removeItem(dailyKey);
+          if(data.conclusion!=='success')throw new Error(data.message||'Falló la descarga de Comuniazo.');
+          message('✓ Actualización completa: '+(data.players_downloaded||0)+' jugadores descargados, '+(data.updated_values||0)+' valores modificados y cláusulas recalculadas. Puntos oficiales conservados.');
+          document.dispatchEvent(new CustomEvent('comuniazo-updated'));
+          await loadStatus();
+          return;
+        }
+        message('Traspasos guardados. '+(data.message||'Descargando Comuniazo…')+' Se actualizarán los valores y cláusulas al finalizar.');
+      }catch(e){
+        if(++errors>=4)throw e;
+        message('Traspasos guardados. Reintentando comprobar la descarga…');
+      }
+      await pause(7000);
+    }
+    throw new Error('La descarga sigue en curso. Puedes volver a Administración y continuar su seguimiento.');
+  }
   $('maGuardar').addEventListener('click',async() => {
-    if (!draft.length || busy)return;
-    busy=true;$('maGuardar').disabled=true;message('Guardando traspasos y recalculando cláusulas…');
+    if(busy)return;
+    busy=true;renderDraft();
     try {
       await adminSession();
-      let inserted=0,duplicates=0;
-      for(let i=0;i<draft.length;i+=100){
-        const {data,error}=await client.rpc('comunio_register_transfers',{p_items:draft.slice(i,i+100)});
-        if(error)throw error;
-        inserted+=Number(data.insertados)||0;duplicates+=Number(data.duplicados)||0;
+      let requestId=sessionStorage.getItem(dailyKey);
+      if(!requestId){
+        const parsed=parseText($('maTexto').value,$('maFecha').value);
+        if(parsed.errors.length)throw new Error('Revisa los movimientos: '+parsed.errors.slice(0,3).join(' | '));
+        const items=parsed.items;
+        if(!items.length && $('maTexto').value.trim())throw new Error('El texto no contiene traspasos reconocibles. Borra el texto si hoy no hubo movimientos.');
+        if(!items.length && !window.confirm('No hay traspasos. ¿Actualizar igualmente Comuniazo, valores y cláusulas?'))return;
+        message('1/3 · Registrando '+items.length+' traspasos…');
+        let inserted=0,duplicates=0;
+        for(let i=0;i<items.length;i+=100){
+          const {data,error}=await client.rpc('comunio_register_transfers',{p_items:items.slice(i,i+100)});
+          if(error)throw error;
+          inserted+=Number(data.insertados)||0;
+          duplicates+=Number(data.duplicados)||0;
+        }
+        message('2/3 · '+inserted+' traspasos guardados, '+duplicates+' duplicados. Iniciando descarga nueva de Comuniazo…');
+        const started=await comuniazoApi('start');
+        if(!started.request_id)throw new Error('La descarga no devolvió un identificador de seguimiento.');
+        requestId=started.request_id;
+        sessionStorage.setItem(dailyKey,requestId);
+        $('maTexto').value='';draft=[];renderDraft();
+      }else{
+        message('Retomando la descarga iniciada anteriormente…');
       }
-      $('maTexto').value='';draft=[];renderDraft();
-      message(`✓ ${inserted} traspaso(s) guardados, ${duplicates} repetidos ignorados. Propietarios y cláusulas recalculados.`);
-      await loadStatus();
-    } catch(e) { message('No se han guardado todos los movimientos: '+e.message,true);renderDraft(); }
-    finally { busy=false;renderDraft(); }
+      await followDaily(requestId);
+    }catch(e){
+      message('Actualización no completada: '+e.message+' Los traspasos ya registrados no se duplicarán al reintentar.',true);
+    }finally{busy=false;renderDraft();}
   });
+  // Se permite actualizar incluso los días sin traspasos.
+  $('maGuardar').disabled=false;
+  $('maTexto').addEventListener('input',()=>{if(!busy)$('maGuardar').disabled=false;});
 
   $('maCotizaciones').addEventListener('click', async() => {
     if(busy)return;
