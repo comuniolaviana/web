@@ -42,7 +42,7 @@ def club_roster(link):
   # El slug puede diferir del nombre: por ejemplo "Pau Cubarsí" -> "/cubarsi".
   # La ficha de club muestra "Pau Cubarsí 5,4 / 98 / 10.300.000".
   text=element.get_text(" ",strip=True)
-  name_parts=re.split(r"\\s+-?\\d+(?:[.,]\\d+)?\\s*/",text,maxsplit=1)
+  name_parts=re.split(r"\s+-?\d+(?:[.,]\d+)?\s*/",text,maxsplit=1)
   if len(name_parts)==2 and len(name_parts[0].strip())>=2:
    keys.add("name:"+norm(name_parts[0]))
  count_players=sum(key.startswith("slug:") for key in keys)
