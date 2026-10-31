@@ -1,4 +1,4 @@
-name: Investigar fichas Comuniazo
+name: Investigar enlaces fichas Comuniazo
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
