@@ -1,23 +1,57 @@
 name: Descargar fichas Comuniazo 2026-27
+run-name: "Comuniazo · ${{ inputs.request_id || 'manual' }}"
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/fichas-comuniazo-2627.yml']
   workflow_dispatch:
+    inputs:
+      request_id:
+        description: "Identificador de actualización iniciado desde Comunio Laviana"
+        required: false
+        type: string
+
 permissions:
   contents: write
+
+concurrency:
+  group: comuniazo-2627-manual
+  cancel-in-progress: false
+
 jobs:
   fichas:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - run: python -m pip -q install beautifulsoup4
-      - run: python experimentos/actualizar_listado_comuniazo.py
-      - run: python experimentos/descargar_fichas_comuniazo.py
-      - name: Publicar fichas experimentales
+      - name: Preparar dependencias
+        run: python -m pip -q install beautifulsoup4
+      - name: Descargar valores, puntos y jugadores
+        run: python experimentos/actualizar_listado_comuniazo.py
+      - name: Descargar fichas por jornada
+        run: python experimentos/descargar_fichas_comuniazo.py
+      - name: Guardar los dos archivos de manera segura
+        shell: bash
         run: |
+          set -euo pipefail
+          cp datos-comuniazo-prueba/ultimo.json /tmp/comuniazo-ultimo-2627.json
+          cp datos-comuniazo-prueba/fichas-2627.json /tmp/comuniazo-fichas-2627.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add datos-comuniazo-prueba/ultimo.json datos-comuniazo-prueba/fichas-2627.json
-          git diff --cached --quiet || (git commit -m "Actualizar todo Comuniazo 2026-27" && git pull --rebase origin main && git push)
+          for intento in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/comuniazo-ultimo-2627.json datos-comuniazo-prueba/ultimo.json
+            cp /tmp/comuniazo-fichas-2627.json datos-comuniazo-prueba/fichas-2627.json
+            git add datos-comuniazo-prueba/ultimo.json datos-comuniazo-prueba/fichas-2627.json
+            if git diff --cached --quiet; then
+              echo "No hay cambios que publicar."
+              exit 0
+            fi
+            git commit -m "Actualizar Comuniazo 2026-27 (manual)"
+            if git push origin HEAD:main; then
+              echo "Datos y fichas publicados."
+              exit 0
+            fi
+            echo "GitHub recibió otro cambio; reintentando publicación (${intento}/3)."
+            sleep 3
+          done
+          echo "No se pudieron publicar los archivos después de tres intentos."
+          exit 1
