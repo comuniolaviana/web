@@ -1,4 +1,4 @@
-name: Auditar puntos Comunio sin publicar cambios
+name: Auditar puntos Comunio tablas corregidas
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
