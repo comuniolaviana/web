@@ -32,7 +32,6 @@
     <section class="panel" style="margin-bottom:12px" id="datosComuniazoPanel">
       <details id="czDesplegable">
         <summary style="cursor:pointer;font-weight:700;font-size:1.1rem;padding:8px 0">Datos Comuniazo · jugadores 2026/27 <span style="font-size:.85rem;font-weight:400">— Pulsar para abrir</span></summary>
-        <p class="muted"><button id='czActualizarTodo' hidden style='display:none' class='primary' type='button'>Descargar y actualizar todo</button><span id='czActualizacionMsg' role='status'></span></p>
         <p class="muted" id="czEstado">Abre esta sección para consultar los jugadores.</p>
         <div class="reconcile-controls" style="display:flex;flex-wrap:wrap;gap:8px">
           <input id="czBuscar" type="search" placeholder="Buscar jugador o equipo" aria-label="Buscar en Comuniazo">
@@ -52,7 +51,7 @@
         <p class="muted">Datos principales en Supabase. Al registrar un traspaso se actualizan automáticamente su propietario y la cláusula, usando los 383 tramos del Excel original.</p>
         <p id="maEstado" class="muted">Abre esta sección para consultar el estado de la base de datos.</p>
         <p id="maFallos" class="muted"></p>
-        <h3>Actualización diaria manual</h3><p class="muted">Pega los traspasos de ayer, o deja el campo vacío si no hubo ninguno. Pulsa «Actualizar todo» una vez: guardará movimientos, descargará Comuniazo, actualizará valores y recalculará cláusulas. Los puntos oficiales de Comunio no se sustituyen por los de Comuniazo.</p>
+        <h3>Actualización diaria manual</h3><p class="muted">Pega los traspasos de ayer, o deja el campo vacío si no hubo ninguno. Pulsa «Actualizar todo» una vez: guardará movimientos, descargará las 20 plantillas de Comuniazo, actualizará equipos, posiciones verificadas y valores y recalculará cláusulas. Los puntos oficiales de Comunio no se sustituyen por los de Comuniazo.</p>
         <label for="maFecha">Fecha de los traspasos (siempre ayer)</label>
         <input id="maFecha" type="date" readonly aria-readonly="true" style="display:block;margin:6px 0 10px;max-width:220px">
         <label for="maTexto">Pega los movimientos publicados por Comunio</label>
@@ -65,10 +64,8 @@
         <div id="maVista"></div>
         <hr style="opacity:.18;margin:18px 0">
         <h3>Copia de seguridad para Excel</h3>
-        <p class="muted">La actualización diaria descarga valores y puntos de Comuniazo (conserva por separado los puntos oficiales). El respaldo incluye traspasos, cotizaciones, cláusulas calculadas y los 383 multiplicadores. Se puede importar al Excel original más adelante sin alterar sus fórmulas.</p>
-        <label hidden style="display:none"><input type="checkbox" id="maActualizarPuntos"> Actualizar también los puntos de Comuniazo (pueden diferir de los oficiales)</label>
+        <p class="muted">La actualización diaria descarga los clubes de las 20 plantillas de Comuniazo, además de posiciones verificadas, valores y puntos (conserva por separado los puntos oficiales). El respaldo incluye traspasos, cotizaciones, cláusulas calculadas y los 383 multiplicadores. Se puede importar al Excel original más adelante sin alterar sus fórmulas.</p>
         <div class="reconcile-controls" style="display:flex;flex-wrap:wrap;gap:8px">
-          <button hidden style="display:none" class="primary" id="maCotizaciones" type="button">Aplicar última descarga</button>
           <button id="maCopia" type="button">Descargar datos para Excel</button>
         </div>
         <h3 style="margin-top:18px">Últimos movimientos registrados</h3>
@@ -111,7 +108,7 @@
 <script src="config.js"></script>
 <script src="../calendario-engine.js"></script>
 <script src="admin.js?v=3"></script>
-<script src="datos-comuniazo.js?v=3"></script>
-<script src="mercado-auto.js?v=3"></script>
+<script src="datos-comuniazo.js?v=4"></script>
+<script src="mercado-auto.js?v=4"></script>
 </body>
 </html>
