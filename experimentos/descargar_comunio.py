@@ -1,4 +1,4 @@
-import csv,datetime,re,time,urllib.request,urllib.parse
+import csv,json,datetime,re,time,urllib.request,urllib.parse
 from bs4 import BeautifulSoup
 from pathlib import Path
 
@@ -53,3 +53,6 @@ if len(records)<500:raise RuntimeError("Menos de 300 filas verificadas; no se pu
 with (OUT/f"comunio_{TODAY}.csv").open("w",newline="",encoding="utf-8-sig") as f:
     writer=csv.DictWriter(f,fieldnames=list(records[0]));writer.writeheader();writer.writerows(records)
 print("ARCHIVO",OUT/f"comunio_{TODAY}.csv")
+
+with (OUT/"ultimo.json").open("w",encoding="utf-8") as f:
+    json.dump({"fecha":TODAY,"fuente":"https://stats.comunio.es/search.php","temporada":"2026/27","jugadores":records},f,ensure_ascii=False,separators=(",",":"))
