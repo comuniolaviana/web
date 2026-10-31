@@ -1,2 +1,3 @@
 Prueba manual autorizada el 31-10-2026: descarga completa Comuniazo sin registrar traspasos.
 Al finalizar se elimina este disparador y la regla push temporal.
+Segunda prueba real: ignorar enlaces de noticias de fichajes, 31-10-2026.
