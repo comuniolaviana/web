@@ -1,4 +1,4 @@
-name: Probar puntos temporada completa
+name: Inspeccionar fuente Comuniazo
 on:
   push:
     branches: [main, experimento-datos-comunio-oficial]
@@ -18,4 +18,4 @@ jobs:
           ref: ${{ github.ref_name }}
           persist-credentials: true
       - run: python -m pip -q install beautifulsoup4
-      - run: python experimentos/descargar_comunio.py
+      - run: python experimentos/inspeccionar_comuniazo.py
