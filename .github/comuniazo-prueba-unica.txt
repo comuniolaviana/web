@@ -1,0 +1,2 @@
+Prueba manual autorizada el 31-10-2026: descarga completa Comuniazo sin registrar traspasos.
+Al finalizar se elimina este disparador y la regla push temporal.
