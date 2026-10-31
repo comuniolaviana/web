@@ -1,8 +1,8 @@
-const CACHE="comunio-laviana-app-v6-24";
+const CACHE="comunio-laviana-app-v6-25-mercado";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js","./news-feed.js",
-  "./config.js","./app.js","./fairplay.html","./manifest.json","./notification-badge.svg",
+  "./config.js","./app.js","./fairplay.html","./mercado.html","./mercado.js","./manifest.json","./notification-badge.svg",
   "../calendario-engine.js","../calendario-clausulas.json"
 ];
 
