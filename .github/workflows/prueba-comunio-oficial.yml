@@ -1,0 +1,33 @@
+name: Descargar y guardar datos oficiales Comunio
+on:
+  push:
+    branches: [main, experimento-datos-comunio-oficial]
+    paths: ['.github/workflows/prueba-comunio-oficial.yml']
+  workflow_dispatch:
+  schedule:
+    - cron: '25 7 * * *'
+permissions:
+  contents: write
+jobs:
+  descarga:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          persist-credentials: true
+      - run: python -m pip -q install beautifulsoup4
+      - run: python experimentos/descargar_comunio.py
+      - name: Publicar datos de prueba en rama aislada
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datos-comunio-prueba/ultimo.json
+          git diff --cached --quiet || (git commit -m "Actualizar datos oficiales Comunio" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: datos-comunio-csv
+          path: datos-comunio-prueba/*.csv
+          if-no-files-found: warn
