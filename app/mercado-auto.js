@@ -179,6 +179,8 @@
       const day=today();
       let state=readDaily();
       if(state?.status==='pending' && state.request_id){
+        if($('maTexto').value.trim())
+          throw new Error('Hay una descarga anterior pendiente. Borra o conserva aparte el texto nuevo; primero termina de comprobar el proceso anterior.');
         message('Retomando la descarga pendiente del '+state.day+'…');
         await followDaily(state.request_id,state.day);
         return;
