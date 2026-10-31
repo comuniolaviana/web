@@ -16,7 +16,7 @@ for tr in tables[0].find_all("tr")[1:]:
  name=td[0].get_text(" ",strip=True)
  points=td[1].get_text(" ",strip=True)
  value=re.sub(r"[^0-9]","",td[7].get_text(" ",strip=True))
- if not name or not re.fullmatch(r"-?\\d+",points) or not value:continue
+ if not name or not re.fullmatch(r"-?\d+",points) or not value:continue
  previous=lookup.get(normalize(name),{})
  records.append({"jugador":name,"puntos":int(points),"valor_eur":int(value),"equipo":previous.get("equipo",""),"posicion_filtro":previous.get("posicion_filtro",""),"id_jugador":previous.get("id_jugador",""),"fecha":datetime.date.today().isoformat(),"fuente_puntos":"Comuniazo","fuente_equipo_posicion":"Comunio Stats (referencia previa)" if previous else "sin verificar"})
 print("FILAS",len(records),"MATCH_EQUIPOS",sum(bool(x["equipo"]) for x in records))
