@@ -91,7 +91,9 @@ function ensureChrome(){
   }
 
   const admin=proxy("#adminNav");
-  $("v65AdminBottom")?.classList.toggle("hidden",admin?.classList.contains("hidden")!==false);
+  const adminVisible=admin?.classList.contains("hidden")===false;
+  $("v65AdminBottom")?.classList.toggle("hidden",!adminVisible);
+  $("v65BottomNav")?.classList.toggle("admin-visible",adminVisible);
 }
 
 function setActiveNav(name){
