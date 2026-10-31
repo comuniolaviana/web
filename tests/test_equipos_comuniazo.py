@@ -70,7 +70,7 @@ rosters["/comunio-apuestas/equipos/club-2"] = rosters[
     "/comunio-apuestas/equipos/club-2"
 ].replace(
     "<h2>Valor de mercado</h2>",
-    '<a href="/comunio-apuestas/jugadores/jugador-1-1">Conflicto</a>'
+    '<a href="/comunio-apuestas/jugadores/cubarsi">Conflicto</a>'
     "<h2>Valor de mercado</h2>",
 )
 try:
