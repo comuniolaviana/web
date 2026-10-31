@@ -11,6 +11,17 @@ jobs:
       - uses: actions/checkout@v4
       - run: python -m pip -q install beautifulsoup4
       - run: python experimentos/descargar_comunio.py
+      - name: Verificar equipos y muestras de puntuacion
+        run: |
+          python - <<'PY'
+          import csv,glob,collections
+          p=glob.glob('datos-comunio-prueba/*.csv')[0]
+          rows=list(csv.DictReader(open(p,encoding='utf-8-sig')))
+          print('EQUIPOS',collections.Counter(r['equipo'] for r in rows))
+          print('POSICIONES',collections.Counter(r['posicion_filtro'] for r in rows))
+          print('EJEMPLOS',[(r['jugador'],r['equipo'],r['puntos'],r['valor_eur']) for r in rows if r['jugador'] in ('Carlos Romero','Lamine Yamal','Mbappé','Aarón Martín')])
+          print('PUNTOS_RANGO',min(int(r['puntos']) for r in rows),max(int(r['puntos']) for r in rows))
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
