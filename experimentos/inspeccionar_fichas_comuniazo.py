@@ -14,3 +14,7 @@ for slug in ("raphinha","mbappe"):
    m=re.search(key,html,re.I)
    if m:print("KEY",key,BeautifulSoup(html[max(0,m.start()-250):m.start()+500],"html.parser").get_text(" ",strip=True)[:450])
  except Exception as e:print("ERROR",slug,str(e))
+
+  for h in soup.find_all(["h2","h3","h4"]):
+   if any(t in h.get_text(" ",strip=True) for t in ("Historial de puntos","Puntos","Valor de mercado")):
+    print("SECTION",h.get_text(" ",strip=True),str(h.parent)[:9500].replace("\\n"," "))
