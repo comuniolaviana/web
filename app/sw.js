@@ -1,4 +1,4 @@
-const CACHE="comunio-laviana-app-v6-31-administracion-oficial";
+const CACHE="comunio-laviana-app-v6-32-comparador-app-oficial";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js","./news-feed.js",
@@ -36,7 +36,7 @@ self.addEventListener("fetch",e=>{
   // Administración debe abrir siempre la versión del comparador oficial:
   // evita que el antiguo JavaScript marque como correcta una cláusula no ejecutada.
   if(e.request.mode==="navigate" && u.pathname.endsWith("/app/admin.html")){
-    const currentAdmin=new URL("./admin.html?v=6-31",self.registration.scope);
+    const currentAdmin=new URL("./admin.html?v=6-32",self.registration.scope);
     e.respondWith(
       fetch(currentAdmin.href,{cache:"no-store"}).then(async r=>{
         if(!r.ok)throw Error("Administración no disponible");
