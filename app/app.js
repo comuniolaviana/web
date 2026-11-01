@@ -722,7 +722,7 @@ function renderMyTeam(){
   if(!profile)return;
   const list=myTeamPlayers();
   const bad=badTeamAvailability();
-  if(window.ComunioMyTeamInfo)void window.ComunioMyTeamInfo.refreshIfNeeded(lastLeaguePublication);
+  if(currentView==="myteam"&&window.ComunioMyTeamInfo)void window.ComunioMyTeamInfo.refreshIfNeeded(lastLeaguePublication);
   $("myTeamManager").textContent=String(profile.manager_name||"Mi equipo").toUpperCase();
   $("myTeamCount").textContent=list.length;
   const squadCountCard=$("myTeamCount")?.closest("article");

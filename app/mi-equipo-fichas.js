@@ -36,7 +36,7 @@ function statsFor(name){
 function compactStats(name){
  const stats=statsFor(name);
  const display=(icon,key,label)=>'<span class="myteam-stat-pill" title="'+safe(label)+' · Comuniazo '+shortDate(fichasFecha)+'" aria-label="'+safe(label)+': '+(stats?stats[key]:"dato no disponible")+'">'+icon+'<b>'+(stats?stats[key]:"—")+'</b></span>';
- return '<span class="myteam-stat-pills" aria-label="Estadísticas de la temporada">'+
+ return '<span class="myteam-stat-pills'+(fichasFecha!==madridDay()?' is-stale':'')+'" aria-label="Estadísticas de la temporada">'+
   display("⚽","gol","Goles")+display("👟","asistencia","Asistencias")+display("🟨","amarilla","Tarjetas amarillas")+'</span>';
 }
 async function refreshIfNeeded(publication="",force=false){
@@ -145,7 +145,17 @@ async function open(player,publication=""){
   fecha:ficheroFecha||"—",
   url_ficha:row?.url_ficha||""
  };
- let content=details(model).replace('id="infDetailName"','id="myTeamInfoTitle"');
+ const fiche=fichaMap.get(normal(player.name));
+ const verified=loaded&&!sourceMismatch&&fiche&&!fiche.error
+  &&Array.isArray(fiche.jornadas)&&fiche.jornadas.some(w=>Number.isInteger(w.jornada));
+ let content=verified
+  ? details(model).replace('id="infDetailName"','id="myTeamInfoTitle"')
+  : '<div class="inf-detail-hero"><span class="inf-detail-label">✦ FICHA DEL FUTBOLISTA · 2026/27</span>'+
+    '<h2 id="myTeamInfoTitle">'+safe(player.name)+'</h2><p>'+safe(player.team||"")+'</p></div>'+
+    '<div class="inf-detail-stats"><div><strong>'+fmt(player.points)+'</strong><small>PUNTOS TOTALES</small></div>'+
+    '<div><strong>'+compact(player.market_value)+'</strong><small>VALOR ACTUAL</small></div>'+
+    '<div><strong>—</strong><small>MEDIA / JUGADA</small></div></div>'+
+    '<div class="inf-detail-section"><p class="inf-note">El desglose de eventos y jornadas no está disponible para este futbolista en la descarga actual.</p></div>';
  const owner=safe(player.owner_name||"—");
  const market=euros(player.clause_value);
  const notice=!loaded?"No se pudieron cargar las fichas de Comuniazo.":sourceMismatch?

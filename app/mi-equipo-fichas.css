@@ -6,6 +6,7 @@
 .myteam-stat-pills{flex:0 0 auto;display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
 .myteam-stat-pill{display:inline-flex;align-items:center;gap:1px;border-radius:5px;background:#1b3627;color:#d4e7d9;padding:2px 2px;font-size:10px;line-height:1;font-weight:850}
 .myteam-stat-pill b{font-size:10px;font-weight:900;font-variant-numeric:tabular-nums}
+.myteam-stat-pills.is-stale{opacity:.72}
 @media(max-width:390px){
  .myteam-name-line{gap:2px}
  .myteam-stat-pills{gap:1px}
