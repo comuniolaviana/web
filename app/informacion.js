@@ -18,8 +18,8 @@ function card(p) {
   </button>`;
 }
 function filtered(){
- const q=normal($("infSearch").value),team=$("infTeam").value;
- const out=players.filter(p=>(!q||normal(p.jugador+" "+p.equipo).includes(q))&&(!team||p.equipo===team)&&(!pos||p.posicion_filtro===pos));
+ const q=normal($("infSearch").value),team=normal($("infTeam").value);
+ const out=players.filter(p=>(!q||normal(p.jugador+" "+p.equipo).includes(q))&&(!team||normal(p.equipo).includes(team))&&(!pos||p.posicion_filtro===pos));
  out.sort((a,b)=>{
   const result=sort==="nameAsc"?a.jugador.localeCompare(b.jugador,"es"):
    sort==="nameDesc"?b.jugador.localeCompare(a.jugador,"es"):
@@ -94,7 +94,7 @@ async function load(){
  if(responses[1]?.ok){try{const f=await responses[1].json();if(Array.isArray(f.fichas))fichaMap=new Map(f.fichas.map(x=>[normal(x.jugador),x]));}catch(e){console.warn("Fichas Comuniazo no disponibles",e)}}
  $("infDate").textContent=data.fecha?data.fecha.split("-").reverse().join("/"):"Última descarga";
  const teams=[...new Set(players.map(p=>p.equipo))].sort((a,b)=>a.localeCompare(b,"es"));
- $("infTeam").innerHTML='<option value="">Todos los clubes</option>'+teams.map(t=>'<option value="'+safe(t)+'">'+safe(t)+'</option>').join("");
+ $("infTeamOptions").innerHTML=teams.map(t=>'<option value="'+safe(t)+'"></option>').join("");
  $("infTotal").textContent=fmt(players.length);
  $("infTeams").textContent=fmt(teams.length);
  $("infRound").textContent=fmt(Math.max(0,...[...fichaMap.values()].flatMap(f=>(f.jornadas||[]).map(w=>Number(w.jornada)||0))));
@@ -102,7 +102,7 @@ async function load(){
  }catch(e){$("infPlayers").innerHTML='<div class="inf-empty">⚠ '+safe(e.message)+'<br><button id="infRetry" type="button" style="margin-top:12px;padding:12px;border:0;border-radius:12px">Volver a intentar</button></div>';$("infResultCount").textContent="No se pudo cargar la información";}
 }
 $("infSearch").addEventListener("input",()=>{shown=30;render()});
-$("infTeam").addEventListener("change",()=>{shown=30;render()});
+$("infTeam").addEventListener("input",()=>{shown=30;render()});
 $("infSort").addEventListener("change",()=>{sort=$("infSort").value;shown=30;render()});
 $("infFilterBtn").addEventListener("click",()=>{const opened=$("infFilters").hidden;$("infFilters").hidden=!opened;$("infFilterBtn").setAttribute("aria-expanded",String(opened))});
 document.querySelectorAll("[data-pos]").forEach(b=>b.addEventListener("click",()=>{pos=b.dataset.pos;shown=30;document.querySelectorAll("[data-pos]").forEach(x=>x.classList.toggle("is-active",x===b));render()}));
