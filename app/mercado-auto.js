@@ -96,14 +96,15 @@
   async function loadStatus() {
     try {
       await adminSession();
-      const [a,b,c,e] = await Promise.all([
+      const [a,b,c,e,f] = await Promise.all([
         client.from('comunio_transfers').select('id',{count:'exact',head:true}),
         client.from('comunio_market_quotes').select('player_name',{count:'exact',head:true}),
         client.from('comunio_calculated').select('player_name',{count:'exact',head:true}).not('owner_name','is',null),
-        client.from('comunio_sync_errors').select('id',{count:'exact',head:true})
+        client.from('comunio_sync_errors').select('id',{count:'exact',head:true}),
+        client.from('comunio_transfer_confirmations').select('transfer_id',{count:'exact',head:true})
       ]);
-      for (const x of [a,b,c,e]) if(x.error)throw x.error;
-      $('maEstado').textContent=`${nf.format(a.count)} traspasos · ${nf.format(b.count)} cotizaciones · ${nf.format(c.count)} jugadores con propietario`;
+      for (const x of [a,b,c,e,f]) if(x.error)throw x.error;
+      $('maEstado').textContent=`${nf.format(a.count)} traspasos · ${nf.format(b.count)} cotizaciones · ${nf.format(c.count)} jugadores con propietario · ${nf.format(f.count)} confirmaciones oficiales`;
       $('maFallos').textContent=e.count ? `⚠ ${e.count} incidencia(s) de sincronización: revisar antes de confiar en los cambios.` : '✓ Sin incidencias registradas en la sincronización';
       const {data,error}=await client.from('comunio_transfers').select('transfer_date,player_name,price,seller,buyer,source').order('id',{ascending:false}).limit(10);
       if (error)throw error;
@@ -215,15 +216,16 @@
       if(!parsed.items.length && $('maTexto').value.trim())
         throw new Error('No hay traspasos reconocibles. Deja el campo completamente vacío si ayer no hubo ninguno.');
       message('1/3 · Registrando '+parsed.items.length+' traspaso(s) del '+transferDay+'…');
-      let inserted=0,duplicates=0;
+      let inserted=0,duplicates=0,confirmed=0;
       for(let i=0;i<parsed.items.length;i+=100){
         const {data,error}=await client.rpc('comunio_register_transfers',{p_items:parsed.items.slice(i,i+100)});
         if(error)throw error;
         inserted+=Number(data.insertados)||0;
         duplicates+=Number(data.duplicados)||0;
+        confirmed+=Number(data.confirmados)||0;
       }
-      message('1/3 ✓ '+inserted+' registrados, '+duplicates+
-        ' duplicados. 2/3 · Solicitando descarga nueva de Comuniazo…');
+      message('1/3 ✓ '+inserted+' traspasos nuevos, '+confirmed+' confirmaciones oficiales de movimientos de la app, '+
+        (duplicates-confirmed)+' ya registrados. 2/3 · Solicitando descarga nueva de Comuniazo…');
       const started=await comuniazoApi('start');
       if(!started.request_id)throw new Error('GitHub no devolvió el identificador de seguimiento.');
       state={day,status:'pending',request_id:started.request_id,transfer_day:transferDay};
@@ -248,16 +250,18 @@
     busy=true;$('maCopia').disabled=true;message('Preparando copia de seguridad de Supabase…');
     try {
       await adminSession();
-      const [transfers,quotes,tiers,calculated]=await Promise.all([
+      const [transfers,quotes,tiers,calculated,confirmations]=await Promise.all([
         getAll('comunio_transfers'),getAll('comunio_market_quotes','player_name'),
-        getAll('comunio_clause_tiers','tier_index'),getAll('comunio_calculated','player_name')
+        getAll('comunio_clause_tiers','tier_index'),getAll('comunio_calculated','player_name'),
+        getAll('comunio_transfer_confirmations','transfer_id')
       ]);
       const backup={version:'2026/27',exportado_en:new Date().toISOString(),
         origen:'Supabase · Comunio Laviana',uso:'Datos estructurados para respaldo e importación posterior al Excel original',
-        traspasos:transfers,cotizaciones:quotes,clausulas_calculadas:calculated,multiplicadores:tiers};
+        traspasos:transfers,confirmaciones_oficiales:confirmations,
+        cotizaciones:quotes,clausulas_calculadas:calculated,multiplicadores:tiers};
       const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
       const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='comunio-copia-para-excel-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-      message(`✓ Copia preparada: ${transfers.length} traspasos, ${quotes.length} cotizaciones, ${calculated.length} cálculos y ${tiers.length} tramos. El Excel original no se ha modificado.`);
+      message(`✓ Copia preparada: ${transfers.length} traspasos, ${confirmations.length} confirmaciones oficiales, ${quotes.length} cotizaciones, ${calculated.length} cálculos y ${tiers.length} tramos. El Excel original no se ha modificado.`);
     }catch(e){message('No se pudo descargar la copia: '+e.message,true)}
     finally{busy=false;$('maCopia').disabled=false;}
   });
