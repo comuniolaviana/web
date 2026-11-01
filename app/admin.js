@@ -52,6 +52,12 @@ async function boot(){
   $("adminLogin").classList.add("hidden");$("adminMain").classList.remove("hidden");
   $("syncBtn").addEventListener("click",syncPlayers);
   $("syncCalendarBtn").addEventListener("click",syncCalendar);
+  $("reconcileHardReload")?.addEventListener("click",()=>{
+    const u=new URL(location.href);
+    u.searchParams.set("v","631");
+    u.searchParams.set("r",Date.now().toString());
+    location.assign(u.toString());
+  });
   $("reconcileDate").value=localISODate(-1);
   $("reconcileBtn").addEventListener("click",reconcileOperations);
   $("reconcileDate").addEventListener("change",reconcileOperations);
