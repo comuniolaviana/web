@@ -1,4 +1,4 @@
-const CACHE="comunio-laviana-app-v6-28-recarga-y-control-de-fecha";
+const CACHE="comunio-laviana-app-v6-28-entrada-de-pwa-actual";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js","./news-feed.js",
@@ -18,6 +18,21 @@ self.addEventListener("activate",e=>e.waitUntil(
 
 self.addEventListener("fetch",e=>{
   const u=new URL(e.request.url);
+  // Las PWAs instaladas antiguas pueden seguir abriendo index.html?v=5-5:
+  // para navegar a Inicio, solicitar siempre la última entrada versionada.
+  if(e.request.mode==="navigate" && (u.pathname.endsWith("/app/") || u.pathname.endsWith("/app/index.html"))){
+    const currentIndex=new URL("./index.html?v=6-28",self.registration.scope);
+    e.respondWith(
+      fetch(currentIndex.href,{cache:"no-store"}).then(async r=>{
+        if(!r.ok)throw Error("No se pudo recuperar la portada vigente");
+        const copy=r.clone();
+        const cache=await caches.open(CACHE);
+        await cache.put(e.request,copy);
+        return r;
+      }).catch(async()=>await caches.match(e.request)||await caches.match("./index.html"))
+    );
+    return;
+  }
   if(u.pathname.endsWith(".json") || u.hostname.includes("supabase")) return;
   e.respondWith(
     fetch(e.request,{cache:"no-store"})
