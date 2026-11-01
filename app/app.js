@@ -277,9 +277,9 @@ function registerFreshServiceWorker(){
   navigator.serviceWorker.addEventListener("controllerchange",()=>{
     if(reloading||pendingAction)return;
     const url=new URL(window.location.href);
-    if(url.searchParams.get("app_build")==="6-29")return;
+    if(url.searchParams.get("app_build")==="6-30")return;
     reloading=true;
-    url.searchParams.set("app_build","6-29");
+    url.searchParams.set("app_build","6-30");
     window.location.replace(url.href);
   });
   navigator.serviceWorker.register("sw.js",{updateViaCache:"none"})
