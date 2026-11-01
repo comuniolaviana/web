@@ -54,7 +54,11 @@ async function boot(){
   $("syncCalendarBtn").addEventListener("click",syncCalendar);
   $("reconcileDate").value=localISODate(-1);
   $("reconcileBtn").addEventListener("click",reconcileOperations);
+  $("reconcileDate").addEventListener("change",reconcileOperations);
+  // La comparativa se muestra al entrar y se repite tras «Actualizar todo».
+  document.addEventListener("comuniazo-updated",reconcileOperations);
   loadDays();
+  reconcileOperations();
 }
 async function syncPlayers(){
   $("syncBtn").disabled=true;$("syncMsg").textContent="Sincronizando jugadores y Equipo Malo…";
