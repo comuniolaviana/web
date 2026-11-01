@@ -119,6 +119,26 @@ let dataSnapshotMs=0;
 let statsData=null, statsLoading=false;
 let palmaresData=null;
 let schedule=null, pendingAction=null, currentView="home", historyPeriod="today";
+let lastLeaguePublication="",leagueRefreshError="";
+// La actualización del servidor es independiente del caché de la aplicación.
+function leagueStatusText(){
+  if(leagueRefreshError)return "⚠ No se pudo recargar desde Supabase: "+leagueRefreshError;
+  if(!lastLeaguePublication)return "✓ Datos consultados en Supabase · fecha de publicación no disponible";
+  const time=new Date(lastLeaguePublication);
+  if(!Number.isFinite(time.getTime()))return "✓ Datos consultados en Supabase";
+  const label=new Intl.DateTimeFormat("es-ES",{
+    timeZone:CFG.TIMEZONE||"Europe/Madrid",
+    day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"
+  }).format(time);
+  return "✓ Datos de Supabase · Comuniazo "+label;
+}
+function updateLeagueStatus(){
+  ["leagueClausesStatus","leagueBadStatus","leagueMyTeamStatus"].forEach(id=>{
+    const el=$(id);if(!el)return;
+    el.textContent=leagueStatusText();
+    el.style.color=leagueRefreshError?"#ffb2b2":"";
+  });
+}
 
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const euros=n=>Math.round(Number(n)||0).toLocaleString("es-ES")+" €";
@@ -249,8 +269,24 @@ function showToast(msg,bad=false){
   t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),2800);
 }
 
+function registerFreshServiceWorker(){
+  if(!("serviceWorker" in navigator))return;
+  // Una PWA ya instalada puede seguir ejecutando JavaScript anterior durante días.
+  // Cuando tome el control la nueva versión, reabrir el HTML con URL versionada.
+  let reloading=false;
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{
+    if(reloading||pendingAction)return;
+    const url=new URL(window.location.href);
+    if(url.searchParams.get("app_build")==="6-28")return;
+    reloading=true;
+    url.searchParams.set("app_build","6-28");
+    window.location.replace(url.href);
+  });
+  navigator.serviceWorker.register("sw.js",{updateViaCache:"none"})
+    .then(reg=>reg.update()).catch(e=>console.warn("Revisión de versión PWA:",e));
+}
 async function boot(){
-  if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+  registerFreshServiceWorker();
   bindUI();
   try{ motorCalendario=await ComunioCalendario.cargar("../calendario-clausulas.json"); }
   catch(e){ console.error("Calendario oficial:",e); }
@@ -543,18 +579,28 @@ async function syncLeagueData(){
 let leagueDataRequest=0;
 async function loadRealData(){
   const request=++leagueDataRequest, client=supa, userId=session?.user?.id;
-  const [p,b,s,c,m,v]=await Promise.all([
+  const [p,b,s,c,m,v,sync]=await Promise.all([
     supa.from("players").select("*").eq("active",true).order("clause_value",{ascending:false}),
     supa.from("team_malo_players").select("*").eq("available",true).order("clause_value",{ascending:false}),
     supa.from("clause_days").select("*").eq("day",localDate()).maybeSingle(),
     supa.from("clause_executions").select("*").eq("clause_day",localDate()).order("executed_at",{ascending:true}),
     supa.from("team_malo_purchases").select("*").eq("purchase_day",localDate()).order("executed_at",{ascending:true}),
-    supa.from("team_malo_sales").select("*").eq("sale_day",localDate()).order("executed_at",{ascending:true})
+    supa.from("team_malo_sales").select("*").eq("sale_day",localDate()).order("executed_at",{ascending:true}),
+    supa.from("data_sync_state").select("synced_at").eq("source","comuniazo_last_published").maybeSingle()
   ]);
   if(request!==leagueDataRequest||client!==supa||userId!==session?.user?.id)return false;
-  for(const result of [p,b,s,c,m,v])if(result.error)throw result.error;
+  for(const result of [p,b,s,c,m,v]){
+    if(result.error){
+      leagueRefreshError=result.error.message||"error de consulta";
+      updateLeagueStatus();
+      throw result.error;
+    }
+  }
   players=p.data||[];badPlayers=b.data||[];schedule=s.data||null;
   clauseExecutions=c.data||[];badPurchases=m.data||[];badSales=v.data||[];
+  lastLeaguePublication=sync.error?"":(sync.data?.synced_at||"");
+  leagueRefreshError="";
+  updateLeagueStatus();
   return true;
 }
 async function loadDemoData(){
