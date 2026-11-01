@@ -115,7 +115,7 @@ async function reconcileOperations(){
   try{
     const [statsRes,clauses,badBuys,badSales]=await Promise.all([
       isCanonical
-        ? supa.from("comunio_official_transfers").select("official_id,transfer_date,player_name,price,seller,buyer").eq("transfer_date",day).order("official_id")
+        ? supa.from("comunio_official_transfers").select("official_id,transfer_date,player_name,price,seller,buyer").eq("transfer_date",day).order("operation_order")
         : fetch("../estadisticas.json?v="+Date.now(),{cache:"no-store"}),
       supa.from("clause_executions").select("id,clause_day,executed_at,executor_name,target_owner_name,player_name,clause_value").eq("clause_day",day).order("executed_at"),
       supa.from("team_malo_purchases").select("id,purchase_day,executed_at,buyer_name,player_name,clause_value").eq("purchase_day",day).order("executed_at"),
