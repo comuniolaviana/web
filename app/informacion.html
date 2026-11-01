@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071d2c">
 <title>Información · Comunio Laviana</title>
-<link rel="stylesheet" href="informacion.css?v=2">
+<link rel="stylesheet" href="informacion.css?v=3">
 </head>
 <body>
 <header class="inf-header">
@@ -35,10 +35,17 @@
   <button class="inf-filter-toggle" id="infFilterBtn" type="button" aria-controls="infFilters" aria-expanded="false">☷ <span>Filtros</span></button>
  </div>
  <div class="inf-filters" id="infFilters" hidden>
-  <label for="infTeam">Buscar equipo
-    <input id="infTeam" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Escribe un equipo…" aria-label="Buscar futbolistas por equipo">
-  </label>
+  <div class="inf-team-field">
+    <span class="inf-filter-label">Filtrar por equipo</span>
+    <button id="infTeamToggle" class="inf-team-toggle" type="button" aria-expanded="false" aria-controls="infTeamPicker">
+      <span id="infTeamName">Todos los equipos</span><span class="inf-team-arrow" aria-hidden="true">⌄</span>
+    </button>
+  </div>
   <label>Ordenar por<select id="infSort"><option value="pointsDesc">Más puntos</option><option value="valueDesc">Mayor valor</option><option value="pointsAsc">Menos puntos</option><option value="valueAsc">Menor valor</option><option value="nameAsc">Nombre A-Z</option><option value="nameDesc">Nombre Z-A</option></select></label>
+  <div class="inf-team-picker" id="infTeamPicker" hidden>
+    <div class="inf-team-picker-title">⚽ Selecciona un equipo</div>
+    <div class="inf-team-list" id="infTeamList" role="group" aria-label="Equipos de Primera División"></div>
+  </div>
  </div>
  <div class="inf-positions" role="group" aria-label="Posición">
   <button type="button" class="is-active" data-pos="">Todos</button>
@@ -61,6 +68,6 @@
   <div id="infDetailBody"></div>
  </section>
 </div>
-<script src="informacion.js?v=3"></script>
+<script src="informacion.js?v=4"></script>
 </body>
 </html>

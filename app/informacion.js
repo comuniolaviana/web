@@ -7,7 +7,7 @@ const safe = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","
 const normal = s => String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("es").trim();
 const position = {t:"Portero",a:"Defensa",m:"Centrocampista",s:"Delantero"};
 const events = {gol:"⚽ Gol",asistencia:"🎯 Asistencia",amarilla:"🟨 Amarilla",roja:"🟥 Roja","doble-amarilla":"🟨 Doble amarilla",entra:"🔄 Entrada",sale:"🔁 Sustitución",star:"⭐ Destacado",penalty:"🥅 Penalti"};
-let players=[], fichaMap=new Map(), shown=30, pos="", sort="pointsDesc", loaded=false, selected=null, lastFocus=null;
+let players=[], fichaMap=new Map(), shown=30, pos="", team="", sort="pointsDesc", loaded=false, selected=null, lastFocus=null;
 function card(p) {
  const initials=p.jugador.split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join("").toLocaleUpperCase("es");
  return `<button class="inf-player" type="button" data-player="${safe(p.jugador)}" aria-label="Ver ficha completa de ${safe(p.jugador)}">
@@ -18,8 +18,8 @@ function card(p) {
   </button>`;
 }
 function filtered(){
- const q=normal($("infSearch").value),team=normal($("infTeam").value);
- const out=players.filter(p=>(!q||normal(p.jugador+" "+p.equipo).includes(q))&&(!team||normal(p.equipo).includes(team))&&(!pos||p.posicion_filtro===pos));
+ const q=normal($("infSearch").value);
+ const out=players.filter(p=>(!q||normal(p.jugador+" "+p.equipo).includes(q))&&(!team||p.equipo===team)&&(!pos||p.posicion_filtro===pos));
  out.sort((a,b)=>{
   const result=sort==="nameAsc"?a.jugador.localeCompare(b.jugador,"es"):
    sort==="nameDesc"?b.jugador.localeCompare(a.jugador,"es"):
@@ -36,7 +36,7 @@ function render(){
  $("infResultCount").textContent=fmt(list.length)+" jugadores encontrados";
  $("infPlayers").innerHTML=list.length?list.slice(0,shown).map(card).join(""):'<div class="inf-empty">No encontramos futbolistas con esos filtros. Prueba otra búsqueda.</div>';
  $("infMore").hidden=list.length<=shown;
- const useFeatured=!pos&&!$("infSearch").value.trim()&&!$("infTeam").value&&sort==="pointsDesc";
+ const useFeatured=!pos&&!$("infSearch").value.trim()&&!team&&sort==="pointsDesc";
  $("infFeatured").hidden=!useFeatured;
  if(useFeatured){
   $("infFeatured").innerHTML='<div class="inf-featured-head"><span>🏆 LOS MÁS DESTACADOS</span><small>Ranking por puntos</small></div><div class="inf-featured-grid">'+list.slice(0,3).map(card).join("")+'</div>';
@@ -94,6 +94,9 @@ async function load(){
  if(responses[1]?.ok){try{const f=await responses[1].json();if(Array.isArray(f.fichas))fichaMap=new Map(f.fichas.map(x=>[normal(x.jugador),x]));}catch(e){console.warn("Fichas Comuniazo no disponibles",e)}}
  $("infDate").textContent=data.fecha?data.fecha.split("-").reverse().join("/"):"Última descarga";
  const teams=[...new Set(players.map(p=>p.equipo))].sort((a,b)=>a.localeCompare(b,"es"));
+ $("infTeamList").innerHTML=
+   '<button type="button" data-team="" aria-pressed="true" class="is-active">🌍 Todos los equipos</button>'+
+   teams.map(t=>'<button type="button" data-team="'+safe(t)+'" aria-pressed="false">'+safe(t)+'</button>').join("");
  $("infTotal").textContent=fmt(players.length);
  $("infTeams").textContent=fmt(teams.length);
  $("infRound").textContent=fmt(Math.max(0,...[...fichaMap.values()].flatMap(f=>(f.jornadas||[]).map(w=>Number(w.jornada)||0))));
@@ -101,9 +104,30 @@ async function load(){
  }catch(e){$("infPlayers").innerHTML='<div class="inf-empty">⚠ '+safe(e.message)+'<br><button id="infRetry" type="button" style="margin-top:12px;padding:12px;border:0;border-radius:12px">Volver a intentar</button></div>';$("infResultCount").textContent="No se pudo cargar la información";}
 }
 $("infSearch").addEventListener("input",()=>{shown=30;render()});
-$("infTeam").addEventListener("input",()=>{shown=30;render()});
+function toggleTeamPicker(open){
+ $("infTeamPicker").hidden=!open;
+ $("infTeamToggle").setAttribute("aria-expanded",String(open));
+}
+$("infTeamToggle").addEventListener("click",()=>toggleTeamPicker($("infTeamPicker").hidden));
+$("infTeamList").addEventListener("click",e=>{
+ const button=e.target.closest("button[data-team]");
+ if(!button)return;
+ team=button.dataset.team;
+ $("infTeamName").textContent=team||"Todos los equipos";
+ $("infTeamList").querySelectorAll("button[data-team]").forEach(b=>{
+  const active=b.dataset.team===team;
+  b.classList.toggle("is-active",active);
+  b.setAttribute("aria-pressed",String(active));
+ });
+ shown=30;
+ toggleTeamPicker(false);
+ render();
+});
+document.addEventListener("click",e=>{
+ if(!$("infTeamPicker").hidden && !e.target.closest(".inf-team-field") && !e.target.closest("#infTeamPicker"))toggleTeamPicker(false);
+});
 $("infSort").addEventListener("change",()=>{sort=$("infSort").value;shown=30;render()});
-$("infFilterBtn").addEventListener("click",()=>{const opened=$("infFilters").hidden;$("infFilters").hidden=!opened;$("infFilterBtn").setAttribute("aria-expanded",String(opened))});
+$("infFilterBtn").addEventListener("click",()=>{const opened=$("infFilters").hidden;$("infFilters").hidden=!opened;$("infFilterBtn").setAttribute("aria-expanded",String(opened));if(!opened)toggleTeamPicker(false)});
 document.querySelectorAll("[data-pos]").forEach(b=>b.addEventListener("click",()=>{pos=b.dataset.pos;shown=30;document.querySelectorAll("[data-pos]").forEach(x=>x.classList.toggle("is-active",x===b));render()}));
 $("infPlayers").addEventListener("click",e=>{const btn=e.target.closest("[data-player]");if(btn)openPlayer(btn.dataset.player,btn)});
 $("infFeatured").addEventListener("click",e=>{const btn=e.target.closest("[data-player]");if(btn)openPlayer(btn.dataset.player,btn)});
