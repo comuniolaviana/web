@@ -59,7 +59,7 @@
 
     <section class="panel admin-reconcile" style="margin-bottom:12px">
       <h2>✅ Comprobar operaciones</h2>
-      <p class="muted">Comprueba las operaciones de la aplicación contra el registro de Supabase desde el 31/10/2026. Para fechas anteriores conserva la comparación con el histórico exportado del Excel. Este control verifica que los movimientos están registrados, no sustituye la revisión del historial oficial de Comunio.</p>
+      <p class="muted">Compara las cláusulas y operaciones de Equipo Malo realizadas en nuestra aplicación con los traspasos oficiales que pegas de Comunio. Detecta coincidencias, precios distintos, operaciones pendientes en Comunio y traspasos oficiales sin operación en la app. Las compraventas con Computer también aparecen como movimientos solo oficiales, aunque no necesariamente son un error. Hasta el 30/10/2026 usa el histórico anterior importado del Excel.</p>
 
       <div class="reconcile-controls">
         <label>Fecha a comprobar
@@ -71,8 +71,9 @@
       <p id="reconcileMsg" class="message"></p>
 
       <div id="reconcileSummary" class="reconcile-summary hidden">
-        <article><strong id="reconcileAppCount">0</strong><span>En la app</span></article>
-        <article><strong id="reconcileOkCount">0</strong><span>Correctas</span></article>
+        <article><strong id="reconcileAppCount">0</strong><span>Operaciones app</span></article>
+        <article><strong id="reconcileOfficialCount">0</strong><span>Comunio oficial</span></article>
+        <article><strong id="reconcileOkCount">0</strong><span>Coinciden</span></article>
         <article><strong id="reconcileIssueCount">0</strong><span>Incidencias</span></article>
       </div>
 
@@ -91,7 +92,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=6-28"></script>
 <script src="../calendario-engine.js"></script>
-<script src="admin.js?v=3"></script>
+<script src="admin.js?v=4"></script>
 <script src="mercado-auto.js?v=7"></script>
 </body>
 </html>
