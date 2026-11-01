@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="theme-color" content="#07130d">
   <title>Comunio Laviana · Administrador</title>
   <link rel="stylesheet" href="styles.css?v=5-5">
@@ -59,6 +62,7 @@
 
     <section class="panel admin-reconcile" style="margin-bottom:12px">
       <h2>✅ Comprobar operaciones</h2>
+      <p class="muted small" id="reconcileVersion" style="margin:5px 0 10px">Comparador oficial v6.31 · Fuente: Comunio pegado en Administración · <button type="button" id="reconcileHardReload" style="background:none;border:0;padding:0;color:#91e5ad;text-decoration:underline;font:inherit;cursor:pointer">Recargar versión</button></p>
       <p class="muted">Compara las cláusulas y operaciones de Equipo Malo realizadas en nuestra aplicación con los traspasos oficiales que pegas de Comunio. Detecta coincidencias, precios distintos, operaciones pendientes en Comunio y traspasos oficiales sin operación en la app. Las compraventas con Computer también aparecen como movimientos solo oficiales, aunque no necesariamente son un error. Hasta el 30/10/2026 usa el histórico anterior importado del Excel.</p>
 
       <div class="reconcile-controls">
@@ -92,7 +96,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=6-28"></script>
 <script src="../calendario-engine.js"></script>
-<script src="admin.js?v=7"></script>
+<script src="admin.js?v=8"></script>
 <script src="mercado-auto.js?v=8"></script>
 </body>
 </html>
