@@ -31,6 +31,7 @@ function normParty(v){
   const compact=norm(v).replace(/[\s_-]+/g,"");
   if(compact==="equipomalo")return"equipomalo";
   if(compact==="computer")return"computer";
+  if(compact==="carlos1926")return"carlos";
   return compact;
 }
 function money(v){return Math.round(Number(v)||0);}
@@ -107,14 +108,14 @@ async function reconcileOperations(){
   const isCanonical=day>="2026-10-31";
   if(!day){$("reconcileMsg").textContent="Selecciona una fecha.";return;}
   $("reconcileBtn").disabled=true;
-  $("reconcileMsg").textContent="Comparando app con el historial oficial…";
+  $("reconcileMsg").textContent="Comparando las operaciones de la aplicación con Comunio oficial…";
   $("reconcileSummary").classList.add("hidden");
   $("reconcileResult").innerHTML="";
 
   try{
     const [statsRes,clauses,badBuys,badSales]=await Promise.all([
       isCanonical
-        ? supa.from("comunio_transfers").select("transfer_date,player_name,price,seller,buyer").eq("transfer_date",day).order("id")
+        ? supa.from("comunio_official_transfers").select("official_id,transfer_date,player_name,price,seller,buyer").eq("transfer_date",day).order("official_id")
         : fetch("../estadisticas.json?v="+Date.now(),{cache:"no-store"}),
       supa.from("clause_executions").select("id,clause_day,executed_at,executor_name,target_owner_name,player_name,clause_value").eq("clause_day",day).order("executed_at"),
       supa.from("team_malo_purchases").select("id,purchase_day,executed_at,buyer_name,player_name,clause_value").eq("purchase_day",day).order("executed_at"),
@@ -124,7 +125,7 @@ async function reconcileOperations(){
     else if(!statsRes.ok)throw new Error("No se pudo leer estadisticas.json.");
     for(const q of [clauses,badBuys,badSales])if(q.error)throw q.error;
     const stats=isCanonical
-      ? {historial:(statsRes.data||[]).map(x=>({fecha:x.transfer_date,jugador:x.player_name,precio:x.price,vendedor:x.seller,comprador:x.buyer})),actualizado:"Supabase"}
+      ? {historial:(statsRes.data||[]).map(x=>({fecha:x.transfer_date,jugador:x.player_name,precio:x.price,vendedor:x.seller,comprador:x.buyer})),actualizado:"Comunio oficial"}
       : await statsRes.json();
 
     const expected=[
@@ -165,27 +166,27 @@ async function reconcileOperations(){
     }
 
     const ok=results.filter(x=>x.status==="ok").length;
-    const issues=results.length-ok;
     const extras=official.filter((_,i)=>!used.has(i));
+    const issues=results.length-ok+extras.length;
 
     $("reconcileAppCount").textContent=expected.length;
+    $("reconcileOfficialCount").textContent=official.length;
     $("reconcileOkCount").textContent=ok;
     $("reconcileIssueCount").textContent=issues;
     $("reconcileSummary").classList.remove("hidden");
 
-    const updated=isCanonical?" · comprobado contra el registro en Supabase":(stats.actualizado?` · estadísticas actualizadas ${esc(stats.actualizado)}`:"");
-    if(!expected.length){
-      $("reconcileMsg").innerHTML=`No hay operaciones registradas desde la app el <b>${esc(day)}</b>. No hay nada que comprobar${updated}.`;
-      $("reconcileResult").innerHTML=extras.length?`<div class="reconcile-info">El registro contiene ${extras.length} movimiento(s) ese día, pero son informativos y no se marcan como incidencia porque no proceden de la app.</div>`:"";
+    const updated=isCanonical?" · comprobado contra el historial pegado de Comunio oficial":(stats.actualizado?` · estadísticas actualizadas ${esc(stats.actualizado)}`:"");
+    if(!expected.length&&!official.length){
+      $("reconcileMsg").innerHTML=`No hay operaciones registradas ni en la aplicación ni en Comunio el <b>${esc(day)}</b>${updated}.`;
       return;
     }
 
     $("reconcileMsg").innerHTML=issues===0
-      ? `<span class="reconcile-good">🟢 Todo correcto · 0 incidencias</span>${updated}`
-      : `<span class="reconcile-bad">🔴 ${issues} incidencia${issues===1?"":"s"}</span>${updated}`;
+      ? `<span class="reconcile-good">🟢 Todo correcto · ${ok} coincidencias · 0 diferencias</span>${updated}`
+      : `<span class="reconcile-bad">🔴 ${issues} movimiento${issues===1?"":"s"} sin correspondencia o con diferencias · ${ok} coincidentes</span>${updated}`;
 
     $("reconcileResult").innerHTML=results.map(x=>renderReconcileRow(x,isCanonical)).join("")+
-      (extras.length?`<div class="reconcile-info">ℹ️ El registro tiene ${extras.length} movimiento(s) adicional(es) de ese día que no se usan para validar la app. Esto es normal, por ejemplo en compras o ventas con Computer.</div>`:"");
+      extras.map(x=>renderUnmatchedOfficial(x,isCanonical)).join("");
   }catch(e){
     console.error(e);
     $("reconcileMsg").textContent="Error al comprobar: "+e.message;
@@ -203,15 +204,25 @@ function sameOperation(a,b){
 function differenceScore(a,b){return operationDifferences(a,b).length;}
 function operationDifferences(exp,off){
   const out=[];
-  if(normParty(exp.seller)!==normParty(off.seller))out.push(`Vendedor: app “${exp.seller||"—"}” / Excel “${off.seller||"—"}”`);
+  if(normParty(exp.seller)!==normParty(off.seller))out.push(`Vendedor: app “${exp.seller||"—"}” / Comunio “${off.seller||"—"}”`);
   if(normParty(exp.buyer)!==normParty(off.buyer))out.push(`Comprador: app “${exp.buyer||"—"}” / Excel “${off.buyer||"—"}”`);
-  if(money(exp.price)!==money(off.price))out.push(`Precio: app ${moneyES(exp.price)} / Excel ${moneyES(off.price)}`);
+  if(money(exp.price)!==money(off.price))out.push(`Precio: app ${moneyES(exp.price)} / Comunio ${moneyES(off.price)}`);
   return out;
+}
+function renderUnmatchedOfficial(off,isCanonical=false){
+  const source=isCanonical?"Comunio oficial":"Histórico importado";
+  const computer=normParty(off.seller)==="computer"||normParty(off.buyer)==="computer";
+  return `<article class="reconcile-row issue">
+    <div class="reconcile-row-head"><span>🟠 Solo en ${source}</span><small>${computer?"Movimiento con Computer":"Sin operación en la app"}</small></div>
+    <strong class="reconcile-player">${esc(off.player)}</strong>
+    <div class="reconcile-actual"><span>${source}</span><b>${esc(routeText(off))}</b><em>${moneyES(off.price)}</em></div>
+    <p class="muted small">No existe una operación equivalente en nuestra aplicación. ${computer?"Puede ser una compraventa normal que no requiere pasar por la aplicación.":"Revisar si falta registrar el movimiento."}</p>
+  </article>`;
 }
 function renderReconcileRow(r,isCanonical=false){
   const ok=r.status==="ok";
-  const title=ok?"🟢 Correcta":r.status==="missing"?"🔴 No encontrada":"🔴 Diferencia";
-  const actual=r.official?`<div class="reconcile-actual"><span>${isCanonical?"Supabase":"Excel"}</span><b>${esc(routeText(r.official))}</b><em>${moneyES(r.official.price)}</em></div>`:"";
+  const title=ok?"🟢 Coincide con Comunio":r.status==="missing"?"🔴 Solo en la app · falta en Comunio":"🔴 Diferencias con Comunio";
+  const actual=r.official?`<div class="reconcile-actual"><span>${isCanonical?"Comunio oficial":"Histórico importado"}</span><b>${esc(routeText(r.official))}</b><em>${moneyES(r.official.price)}</em></div>`:"";
   const diffs=r.issues.length?`<ul>${r.issues.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"";
   return `<article class="reconcile-row ${ok?"ok":"issue"}">
     <div class="reconcile-row-head"><span>${title}</span><small>${esc(r.expected.kind)}</small></div>
