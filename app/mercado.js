@@ -62,8 +62,8 @@ async function getAllTransfers(){
  const rows=[];
  for(let i=0;i<15000;i+=500){
    const {data,error}=await client.from('comunio_official_transfers')
-     .select('official_id,transfer_date,player_name,price,seller,buyer,official_source')
-     .order('transfer_date',{ascending:true}).order('official_id',{ascending:true}).range(i,i+499);
+     .select('official_id,transfer_date,player_name,price,seller,buyer,official_source,operation_order')
+     .order('transfer_date',{ascending:true}).order('operation_order',{ascending:true}).range(i,i+499);
    if(error)throw error;
    rows.push(...(data||[]));
    if(!data||data.length<500)return rows;
