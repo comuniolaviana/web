@@ -54,7 +54,7 @@ async function boot(){
   $("syncCalendarBtn").addEventListener("click",syncCalendar);
   $("reconcileHardReload")?.addEventListener("click",()=>{
     const u=new URL(location.href);
-    u.searchParams.set("v","631");
+    u.searchParams.set("v","632");
     u.searchParams.set("r",Date.now().toString());
     location.assign(u.toString());
   });
