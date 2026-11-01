@@ -34,7 +34,7 @@ function init(d){
   ['Propietarios',teams.length],
   ['Jugadores en equipos',teams.reduce((n,x)=>n+(Number(x.jugadores)||0),0)]
  ].map(([label,num])=>'<div class="market-kpi"><b>'+nf.format(num)+'</b><span>'+esc(label)+'</span></div>').join('');
- $('marketUpdated').textContent='Histórico desde '+df(d.fechaInicio)+' · Última actualización de Comuniazo: '+esc(d.actualizado||'sin fecha')+'.';
+ $('marketUpdated').textContent='Histórico oficial desde '+df(d.fechaInicio)+' · Datos de jugadores publicados desde Comuniazo: '+esc(d.actualizado||'sin fecha')+'.';
  $('marketOwner').innerHTML='<option value="">Todos los propietarios</option>'+teams.map(x=>'<option value="'+esc(x.propietario)+'">'+esc(x.propietario)+'</option>').join('');
  $('marketOwners').innerHTML=teams.slice().sort((a,b)=>b.movimientos-a.movimientos).map(x=>'<tr><td><button type="button" data-owner="'+esc(x.propietario)+'" class="market-clear">'+esc(x.propietario)+'</button></td><td class="num">'+nf.format(x.movimientos)+'</td><td class="num">'+nf.format(x.jugadores)+'</td></tr>').join('');
  $('marketPlayers').innerHTML=players.map(x=>'<tr><td><button type="button" data-player="'+esc(x.jugador)+'" class="market-clear">'+esc(x.jugador)+'</button></td><td class="num">'+nf.format(x.traspasos)+'</td></tr>').join('');
@@ -46,8 +46,8 @@ $('marketPrev').addEventListener('click',()=>{if(page>0){page--;render()}});
 $('marketNext').addEventListener('click',()=>{if((page+1)*pageSize<filtered.length){page++;render()}});
 $('marketOwners').addEventListener('click',e=>{const b=e.target.closest('[data-owner]');if(b)filterOnOwner(b.dataset.owner)});
 $('marketPlayers').addEventListener('click',e=>{const b=e.target.closest('[data-player]');if(b)filterOnPlayer(b.dataset.player)});
-// El mercado usa la misma fuente que Cláusulas y Equipo Malo: Supabase.
-// estadisticas.json era una fotografía antigua del Excel, no la liga actual.
+// Mercado = traspasos CONFIRMADOS por Comunio: tabla oficial separada.
+// Las cláusulas internas solo entran al mercado si tienen confirmación oficial.
 const cfg=window.COMUNIO_CONFIG;
 const client=cfg&&window.supabase?.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);
 let loading=false,lastLoaded=0;
@@ -86,25 +86,26 @@ async function loadCurrentMarket(){
  try{
    const {data:{session},error:authError}=await client.auth.getSession();
    if(authError||!session)throw Error('Inicia sesión en la aplicación para consultar el mercado actualizado.');
-   const [transfers,p,sync]=await Promise.all([
+   const [transfers,sync]=await Promise.all([
      getAllTransfers(),
-     client.from('players').select('name,owner_name').eq('active',true).range(0,499),
      client.from('data_sync_state').select('synced_at').eq('source','comuniazo_last_published').maybeSingle()
    ]);
-   if(p.error)throw p.error;
    if(sync.error)throw sync.error;
    const owners=new Map(managers.map(name=>[name,{propietario:name,movimientos:0,jugadores:0}]));
    const playerCounts=new Map();
+   // Los propietarios del Mercado se deducen exclusivamente del último
+   // traspaso oficial de cada jugador, nunca del propietario provisional de la app.
+   const lastOfficialOwner=new Map();
    const history=transfers.map(x=>{
      const seller=managerName(x.seller),buyer=managerName(x.buyer);
      if(owners.has(seller))owners.get(seller).movimientos++;
      if(owners.has(buyer))owners.get(buyer).movimientos++;
      const player=String(x.player_name||'').trim();
      playerCounts.set(player,(playerCounts.get(player)||0)+1);
+     lastOfficialOwner.set(norm(player),buyer);
      return {fecha:x.transfer_date,jugador:player,precio:Number(x.price),vendedor:seller,comprador:buyer};
    });
-   for(const x of p.data||[]){
-     const manager=managerName(x.owner_name);
+   for(const manager of lastOfficialOwner.values()){
      if(owners.has(manager))owners.get(manager).jugadores++;
    }
    const earliest=history.reduce((v,x)=>!v||x.fecha<v?x.fecha:v,'');
@@ -119,7 +120,7 @@ async function loadCurrentMarket(){
      equipos:[...owners.values()],
      jugadoresMasTraspasados:topPlayers
    });
-   $('marketSource').textContent='Mercado: únicamente movimientos oficiales de Comunio. Hasta el 30/10/2026, histórico importado del Excel; desde el 31/10, traspasos pegados por Administración y confirmaciones oficiales. Las operaciones solo realizadas en la app NO aparecen aquí.';
+   $('marketSource').textContent='Mercado: únicamente traspasos oficiales de Comunio. Hasta el 30/10/2026, histórico importado del Excel; desde el 31/10, traspasos pegados por Administración y confirmaciones oficiales. Los propietarios y movimientos del Mercado también se calculan solo desde el historial oficial. Las operaciones provisionales de la app no se incluyen.';
    lastLoaded=Date.now();
  }catch(e){
    $('marketKPIs').textContent='No se pudo cargar el mercado actualizado: '+e.message;
