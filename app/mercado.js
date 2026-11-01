@@ -82,6 +82,7 @@ function madridTimestamp(value){
 async function loadCurrentMarket(){
  if(loading||!client)return;
  loading=true;
+ $('marketUpdated').textContent='Consultando mercado actualizado en Supabase…';
  try{
    const {data:{session},error:authError}=await client.auth.getSession();
    if(authError||!session)throw Error('Inicia sesión en la aplicación para consultar el mercado actualizado.');
@@ -126,6 +127,9 @@ async function loadCurrentMarket(){
  }finally{loading=false;}
 }
 loadCurrentMarket();
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastLoaded>30000)loadCurrentMarket();});
-window.addEventListener('focus',()=>{if(Date.now()-lastLoaded>30000)loadCurrentMarket();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadCurrentMarket();});
+window.addEventListener('focus',()=>loadCurrentMarket());
+window.addEventListener('pageshow',()=>loadCurrentMarket());
+document.addEventListener('comuniazo-updated',()=>loadCurrentMarket());
+$('marketRefresh')?.addEventListener('click',()=>loadCurrentMarket());
 })();
