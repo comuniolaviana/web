@@ -1067,7 +1067,7 @@ function showView(name){
   document.querySelectorAll(".main-nav [data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
   $("pageTitle").textContent=name==="home"?"Inicio":name==="myteam"?"Mi equipo":name==="news"?"Noticias":name==="badteam"?"Equipo Malo":name==="stats"?"Estadísticas":name==="honours"?"Palmarés":name==="rules"?"Normas":"Cláusulas";
   if(name==="myteam")renderMyTeam();
-  if(["clauses","myteam","badteam"].includes(name))refreshOpenLists();
+  if(["home","clauses","myteam","badteam"].includes(name))refreshOpenLists(name==="home");
   if(name==="news")loadNews();
   if(name==="stats")loadStatsData();
   if(name==="honours")renderHonours();
@@ -1078,8 +1078,11 @@ function formatDate(iso){const[y,m,d]=iso.split("-");return`${d}/${m}/${y}`;}
 
 
 let openListsRefreshing=false, openListsSignature="";
-async function refreshOpenLists(){
-  const visibleList=()=>["clauses","myteam","badteam"].includes(currentView);
+async function refreshOpenLists(forceHome=false){
+  // También refrescar Inicio al recuperar la app del segundo plano, pero
+  // mantener el sondeo frecuente solo para pantallas operativas.
+  const visibleList=()=>["clauses","myteam","badteam"].includes(currentView)
+    || (forceHome===true&&currentView==="home");
   if(openListsRefreshing||document.hidden||!visibleList()||!isConfigured()||!supa||!session||!profile)return;
   // Do not interfere with an operation that the user is confirming.
   if(pendingAction&&$("confirmExecuteBtn")?.disabled)return;
@@ -1107,9 +1110,11 @@ async function refreshOpenLists(){
     openListsRefreshing=false;
   }
 }
-document.addEventListener("visibilitychange",refreshOpenLists);
-window.addEventListener("focus",refreshOpenLists);
-setInterval(refreshOpenLists,5000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshOpenLists(true);});
+window.addEventListener("focus",()=>refreshOpenLists(true));
+window.addEventListener("pageshow",()=>refreshOpenLists(true));
+document.addEventListener("comuniazo-updated",()=>refreshOpenLists(true));
+setInterval(()=>refreshOpenLists(false),5000);
 
 function refreshVisibleNews(){
   if(currentView==="news"&&profile&&!document.hidden)loadNews();
