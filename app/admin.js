@@ -181,18 +181,18 @@ async function reconcileOperations(){
     }
 
     const ok=results.filter(x=>x.status==="ok").length;
-    const extras=official.filter((_,i)=>!used.has(i));
-    const issues=results.length-ok+extras.length;
+    // Solo se validan operaciones ejecutadas en nuestra aplicación.
+    // Las compraventas ordinarias de Comunio quedan fuera del comparador.
+    const issues=results.length-ok;
 
     $("reconcileAppCount").textContent=expected.length;
-    $("reconcileOfficialCount").textContent=official.length;
     $("reconcileOkCount").textContent=ok;
     $("reconcileIssueCount").textContent=issues;
     $("reconcileSummary").classList.remove("hidden");
 
     const updated=isCanonical?" · comprobado contra el historial pegado de Comunio oficial":(stats.actualizado?` · estadísticas actualizadas ${esc(stats.actualizado)}`:"");
-    if(!expected.length&&!official.length){
-      $("reconcileMsg").innerHTML=`No hay operaciones registradas ni en la aplicación ni en Comunio el <b>${esc(day)}</b>${updated}.`;
+    if(!expected.length){
+      $("reconcileMsg").innerHTML=`No hay operaciones de nuestra aplicación registradas el <b>${esc(day)}</b> para comparar${updated}.`;
       return;
     }
 
@@ -200,8 +200,7 @@ async function reconcileOperations(){
       ? `<span class="reconcile-good">🟢 Todo correcto · ${ok} coincidencias · 0 diferencias</span>${updated}`
       : `<span class="reconcile-bad">🔴 ${issues} movimiento${issues===1?"":"s"} sin correspondencia o con diferencias · ${ok} coincidentes</span>${updated}`;
 
-    $("reconcileResult").innerHTML=results.map(x=>renderReconcileRow(x,isCanonical)).join("")+
-      extras.map(x=>renderUnmatchedOfficial(x,isCanonical)).join("");
+    $("reconcileResult").innerHTML=results.map(x=>renderReconcileRow(x,isCanonical)).join("");
   }catch(e){
     console.error(e);
     $("reconcileMsg").textContent="Error al comprobar: "+e.message;
@@ -223,16 +222,6 @@ function operationDifferences(exp,off){
   if(normParty(exp.buyer)!==normParty(off.buyer))out.push(`Comprador: app “${exp.buyer||"—"}” / Comunio “${off.buyer||"—"}”`);
   if(money(exp.price)!==money(off.price))out.push(`Precio: app ${moneyES(exp.price)} / Comunio ${moneyES(off.price)}`);
   return out;
-}
-function renderUnmatchedOfficial(off,isCanonical=false){
-  const source=isCanonical?"Comunio oficial":"Histórico importado";
-  const computer=normParty(off.seller)==="computer"||normParty(off.buyer)==="computer";
-  return `<article class="reconcile-row extra">
-    <div class="reconcile-row-head"><span>🟠 Solo en ${source}</span><small>${computer?"Movimiento con Computer":"Sin operación en la app"}</small></div>
-    <strong class="reconcile-player">${esc(off.player)}</strong>
-    <div class="reconcile-actual"><span>${source}</span><b>${esc(routeText(off))}</b><em>${moneyES(off.price)}</em></div>
-    <p class="muted small">No existe una operación equivalente en nuestra aplicación. ${computer?"Puede ser una compraventa normal que no requiere pasar por la aplicación.":"Revisar si falta registrar el movimiento."}</p>
-  </article>`;
 }
 function renderReconcileRow(r,isCanonical=false){
   const ok=r.status==="ok";
