@@ -1,4 +1,4 @@
-const CACHE="comunio-laviana-app-v6-28-entrada-de-pwa-actual";
+const CACHE="comunio-laviana-app-v6-29-mercado-oficial-comparador";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js","./news-feed.js",
@@ -21,7 +21,7 @@ self.addEventListener("fetch",e=>{
   // Las PWAs instaladas antiguas pueden seguir abriendo index.html?v=5-5:
   // para navegar a Inicio, solicitar siempre la última entrada versionada.
   if(e.request.mode==="navigate" && (u.pathname.endsWith("/app/") || u.pathname.endsWith("/app/index.html"))){
-    const currentIndex=new URL("./index.html?v=6-28",self.registration.scope);
+    const currentIndex=new URL("./index.html?v=6-29",self.registration.scope);
     e.respondWith(
       fetch(currentIndex.href,{cache:"no-store"}).then(async r=>{
         if(!r.ok)throw Error("No se pudo recuperar la portada vigente");
