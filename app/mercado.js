@@ -29,7 +29,7 @@ function init(d){
  entries=(d.historial||[]).filter(x=>x&&x.fecha).sort((a,b)=>b.fecha.localeCompare(a.fecha));
  const teams=d.equipos||[],players=d.jugadoresMasTraspasados||[];
  $('marketKPIs').innerHTML=[
-  ['Movimientos del histórico',d.totalMovimientosUsuarios??entries.length],
+  ['Traspasos oficiales',d.totalMovimientosUsuarios??entries.length],
   ['Futbolistas distintos',d.totalJugadores??new Set(entries.map(x=>x.jugador)).size],
   ['Propietarios',teams.length],
   ['Jugadores en equipos',teams.reduce((n,x)=>n+(Number(x.jugadores)||0),0)]
@@ -61,9 +61,9 @@ function managerName(v){
 async function getAllTransfers(){
  const rows=[];
  for(let i=0;i<15000;i+=500){
-   const {data,error}=await client.from('comunio_transfers')
-     .select('id,transfer_date,player_name,price,seller,buyer')
-     .order('id',{ascending:true}).range(i,i+499);
+   const {data,error}=await client.from('comunio_official_transfers')
+     .select('official_id,transfer_date,player_name,price,seller,buyer,official_source')
+     .order('transfer_date',{ascending:true}).order('official_id',{ascending:true}).range(i,i+499);
    if(error)throw error;
    rows.push(...(data||[]));
    if(!data||data.length<500)return rows;
@@ -119,11 +119,11 @@ async function loadCurrentMarket(){
      equipos:[...owners.values()],
      jugadoresMasTraspasados:topPlayers
    });
-   $('marketSource').textContent='Fuente: traspasos y propietarios actuales de Supabase. Las cláusulas ejecutadas desde la aplicación cuentan una sola vez, aunque Comunio haya confirmado el mismo movimiento.';
+   $('marketSource').textContent='Mercado: únicamente movimientos oficiales de Comunio. Hasta el 30/10/2026, histórico importado del Excel; desde el 31/10, traspasos pegados por Administración y confirmaciones oficiales. Las operaciones solo realizadas en la app NO aparecen aquí.';
    lastLoaded=Date.now();
  }catch(e){
    $('marketKPIs').textContent='No se pudo cargar el mercado actualizado: '+e.message;
-   $('marketFound').textContent='No se ha recurrido al archivo antiguo de Excel.';
+   $('marketFound').textContent='No se mostrarán operaciones de la app como si fueran oficiales.';
  }finally{loading=false;}
 }
 loadCurrentMarket();
