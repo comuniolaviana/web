@@ -21,6 +21,18 @@ function localTime(){
 }
 function sourceDate(v){ return String(v||"").trim().slice(0,10); }
 function isFresh(v){ return sourceDate(v)===localDate(); }
+// Mostrar la fecha real de publicación de Comuniazo en horario de Madrid,
+// no las marcas antiguas de importaciones manuales del Excel.
+function publicationTimeMadrid(value){
+  if(!value)return "";
+  const date=new Date(value);
+  if(!Number.isFinite(date.getTime()))return "";
+  return new Intl.DateTimeFormat("sv-SE",{
+    timeZone:CFG.TIMEZONE||"Europe/Madrid",
+    year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",hour12:false
+  }).format(date);
+}
 function displayUpdate(v){
   const s=String(v||"").trim();
   if(!s) return "Sin fecha de actualización";
@@ -200,13 +212,14 @@ async function loadStatus(){
   const day=localDate();
   const [sched,sync]=await Promise.all([
     client.from("clause_days").select("*").eq("day",day).maybeSingle(),
-    client.from("data_sync_state").select("source,source_updated").in("source",["clauses","team_malo"])
+    client.from("data_sync_state").select("source,synced_at").eq("source","comuniazo_last_published").maybeSingle()
   ]);
   if(!sched.error) schedule=sched.data||null;
   if(!sync.error){
-    const map=Object.fromEntries((sync.data||[]).map(x=>[x.source,x.source_updated||""]));
-    freshness.clauses={sourceUpdated:map.clauses||"",updated:isFresh(map.clauses)};
-    freshness.team_malo={sourceUpdated:map.team_malo||"",updated:isFresh(map.team_malo)};
+    const published=publicationTimeMadrid(sync.data?.synced_at);
+    const status={sourceUpdated:published,updated:isFresh(published)};
+    freshness.clauses={...status};
+    freshness.team_malo={...status};
   }
 }
 
@@ -297,6 +310,8 @@ function init(){
   const warm=setInterval(()=>{ensureChrome();ensureHome();applyLocks();if(++n>=12)clearInterval(warm);},1000);
   setInterval(()=>refresh(false),60000);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh(true);});
+  window.addEventListener("focus",()=>refresh(true));
+  document.addEventListener("comuniazo-updated",()=>refresh(true));
   client.auth.onAuthStateChange((_e,s)=>{if(s)setTimeout(()=>refresh(true),250);});
 }
 
