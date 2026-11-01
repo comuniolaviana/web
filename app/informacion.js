@@ -94,7 +94,6 @@ async function load(){
  if(responses[1]?.ok){try{const f=await responses[1].json();if(Array.isArray(f.fichas))fichaMap=new Map(f.fichas.map(x=>[normal(x.jugador),x]));}catch(e){console.warn("Fichas Comuniazo no disponibles",e)}}
  $("infDate").textContent=data.fecha?data.fecha.split("-").reverse().join("/"):"Última descarga";
  const teams=[...new Set(players.map(p=>p.equipo))].sort((a,b)=>a.localeCompare(b,"es"));
- $("infTeamOptions").innerHTML=teams.map(t=>'<option value="'+safe(t)+'"></option>').join("");
  $("infTotal").textContent=fmt(players.length);
  $("infTeams").textContent=fmt(teams.length);
  $("infRound").textContent=fmt(Math.max(0,...[...fichaMap.values()].flatMap(f=>(f.jornadas||[]).map(w=>Number(w.jornada)||0))));
