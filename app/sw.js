@@ -1,4 +1,4 @@
-const CACHE="comunio-laviana-app-v6-25-mercado";
+const CACHE="comunio-laviana-app-v6-27-supabase-diario";
 const STATIC=[
   "./","./index.html","./styles.css","./notifications.css","./notifications.js",
   "./home-v63.css","./home-v63.js","./news-feed.js",
