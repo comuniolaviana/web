@@ -3,7 +3,7 @@
 .reconcile-controls label{font-size:11px;font-weight:900;color:#aab6ae}
 .reconcile-controls input{display:block;width:100%;margin-top:6px;padding:11px 12px;border:1px solid #304438;border-radius:12px;background:#101a14;color:#eef4f0;color-scheme:dark}
 .reconcile-controls button{min-height:43px}
-.reconcile-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0}
+.reconcile-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0}
 .reconcile-summary article{background:#101a14;border:1px solid #273a2e;border-radius:14px;padding:10px;text-align:center}
 .reconcile-summary strong{display:block;color:#91e5ad;font-size:21px}
 .reconcile-summary span{display:block;color:#7f8d84;font-size:9px;margin-top:3px}
