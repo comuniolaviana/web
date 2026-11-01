@@ -722,6 +722,7 @@ function renderMyTeam(){
   if(!profile)return;
   const list=myTeamPlayers();
   const bad=badTeamAvailability();
+  if(window.ComunioMyTeamInfo)void window.ComunioMyTeamInfo.refreshIfNeeded(lastLeaguePublication);
   $("myTeamManager").textContent=String(profile.manager_name||"Mi equipo").toUpperCase();
   $("myTeamCount").textContent=list.length;
   const squadCountCard=$("myTeamCount")?.closest("article");
@@ -754,12 +755,13 @@ function renderMyTeam(){
       row.className="myteam-row";
       row.innerHTML=`
         <div>
-          <div class="player-name">${escapeHtml(p.name)}</div>
+          <div class="myteam-name-line"><button type="button" class="player-name myteam-player-open" title="Ver la ficha completa de ${escapeHtml(p.name)}" aria-label="Ver estadísticas de ${escapeHtml(p.name)}">${escapeHtml(p.name)}</button>${window.ComunioMyTeamInfo?.compactStats(p.name)||""}</div>
           <div class="player-meta">${escapeHtml(p.team||"Sin equipo")}</div>
           <div class="player-extra">${Number(p.points)||0} pts · Cláusula ${euros(p.clause_value)}</div>
         </div>
         <div class="myteam-value"><span>VALOR</span><b>${euros(p.market_value)}</b></div>
         <button class="sell-bad-btn" ${!bad.open?"disabled":""}>${bad.open?"VENDER":"CERRADO"}<small>AL 💀</small></button>`;
+      row.querySelector(".myteam-player-open").addEventListener("click",()=>window.ComunioMyTeamInfo?.open(p,lastLeaguePublication));
       row.querySelector(".sell-bad-btn").addEventListener("click",()=>openAction("badsale",p));
       section.appendChild(row);
     });
@@ -767,6 +769,8 @@ function renderMyTeam(){
   });
   renderMyHonours();
 }
+
+document.addEventListener("mi-equipo-fichas-cargadas",()=>{if(profile&&currentView==="myteam")renderMyTeam();});
 
 function renderPlayers(){
   if(!profile)return;
