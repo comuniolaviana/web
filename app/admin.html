@@ -62,8 +62,8 @@
 
     <section class="panel admin-reconcile" style="margin-bottom:12px">
       <h2>✅ Comprobar operaciones</h2>
-      <p class="muted small" id="reconcileVersion" style="margin:5px 0 10px">Comparador oficial v6.31 · Fuente: Comunio pegado en Administración · <button type="button" id="reconcileHardReload" style="background:none;border:0;padding:0;color:#91e5ad;text-decoration:underline;font:inherit;cursor:pointer">Recargar versión</button></p>
-      <p class="muted">Compara las cláusulas y operaciones de Equipo Malo realizadas en nuestra aplicación con los traspasos oficiales que pegas de Comunio. Detecta coincidencias, precios distintos, operaciones pendientes en Comunio y traspasos oficiales sin operación en la app. Las compraventas con Computer también aparecen como movimientos solo oficiales, aunque no necesariamente son un error. Hasta el 30/10/2026 usa el histórico anterior importado del Excel.</p>
+      <p class="muted small" id="reconcileVersion" style="margin:5px 0 10px">Comparador oficial v6.32 · Fuente: Comunio pegado en Administración · <button type="button" id="reconcileHardReload" style="background:none;border:0;padding:0;color:#91e5ad;text-decoration:underline;font:inherit;cursor:pointer">Recargar versión</button></p>
+      <p class="muted">Compara únicamente las cláusulas y operaciones de Equipo Malo realizadas en nuestra aplicación con los traspasos oficiales que pegas de Comunio. Marca las que coinciden, las que faltan en Comunio y las diferencias de importe, vendedor o comprador. Las compraventas normales que solo figuran en Comunio no se muestran ni cuentan como incidencia. Hasta el 30/10/2026 se utiliza el histórico importado del Excel.</p>
 
       <div class="reconcile-controls">
         <label>Fecha a comprobar
@@ -76,7 +76,6 @@
 
       <div id="reconcileSummary" class="reconcile-summary hidden">
         <article><strong id="reconcileAppCount">0</strong><span>Operaciones app</span></article>
-        <article><strong id="reconcileOfficialCount">0</strong><span>Comunio oficial</span></article>
         <article><strong id="reconcileOkCount">0</strong><span>Coinciden</span></article>
         <article><strong id="reconcileIssueCount">0</strong><span>Incidencias</span></article>
       </div>
@@ -96,7 +95,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=6-28"></script>
 <script src="../calendario-engine.js"></script>
-<script src="admin.js?v=8"></script>
+<script src="admin.js?v=9"></script>
 <script src="mercado-auto.js?v=8"></script>
 </body>
 </html>
