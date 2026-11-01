@@ -45,6 +45,20 @@
         date = defaultDate; pending = ''; continue;
       }
       if (/^(editado|transferencias|computer|noticias)\s*:?\s*$/i.test(line) || /^editado\s*:/i.test(line)) { pending=''; continue; }
+      // También admitir las cuatro columnas que se copian de una tabla:
+      // jugador [TAB] importe [TAB] vendedor [TAB] comprador.
+      if (line.includes('\t')) {
+        const cols=line.replace(/^[\"“]/,'').replace(/[\"”]$/,'').split(/\t+/).map(s=>s.trim());
+        if (cols.length!==4 || cols.some(s=>!s)) {
+          errors.push('Fila de columnas incompleta: '+line); pending=''; continue;
+        }
+        const price=parseMoney(cols[1]);
+        if (!Number.isFinite(price)) {
+          errors.push('Importe incorrecto: '+line); pending=''; continue;
+        }
+        items.push({fecha:date,jugador:cols[0],precio:price,vendedor:cols[2],comprador:cols[3]});
+        pending=''; continue;
+      }
       if (!/\bcambia\s+por\b/i.test(line)) { pending = line; continue; }
       const full = /^cambia\b/i.test(line) ? `${pending} ${line}` : line;
       const match = full.match(/^(.+?)\s+cambia\s+por\s+([\d.,]+)\s+de\s+(.+?)\s+para\s+(.+?)\.?\s*$/i);
