@@ -138,31 +138,36 @@ async function reconcileOperations(){
       .filter(x=>x.fecha===day)
       .map(x=>({player:x.jugador,seller:x.vendedor,buyer:x.comprador,price:money(x.precio),raw:x}));
 
+    // Primero casar TODAS las operaciones exactas. Así una divergencia de
+    // importe no consume por error otra transacción del mismo jugador.
     const used=new Set();
-    const results=[];
+    const results=new Array(expected.length).fill(null);
+    for(let j=0;j<expected.length;j++){
+      const exp=expected[j];
+      const idx=official.findIndex((off,i)=>!used.has(i)&&sameOperation(exp,off));
+      if(idx<0)continue;
+      used.add(idx);
+      results[j]={status:"ok",expected:exp,official:official[idx],issues:[]};
+    }
 
-    for(const exp of expected){
-      let idx=official.findIndex((off,i)=>!used.has(i)&&sameOperation(exp,off));
-      if(idx>=0){
-        used.add(idx);
-        results.push({status:"ok",expected:exp,official:official[idx],issues:[]});
-        continue;
-      }
-
+    // Después buscar diferencias de comprador, vendedor o importe en el
+    // mismo jugador. Dejar visiblemente sin pareja lo que no exista.
+    for(let j=0;j<expected.length;j++){
+      if(results[j])continue;
+      const exp=expected[j];
       const candidates=official
         .map((off,i)=>({off,i}))
         .filter(x=>!used.has(x.i)&&norm(x.off.player)===norm(exp.player));
-
       if(!candidates.length){
-        results.push({status:"missing",expected:exp,official:null,issues:["No aparece este jugador en el historial oficial de ese día."]});
+        results[j]={status:"missing",expected:exp,official:null,
+          issues:["Operación ejecutada en la aplicación que no aparece en Comunio oficial."]};
         continue;
       }
-
       candidates.sort((a,b)=>differenceScore(exp,a.off)-differenceScore(exp,b.off));
       const chosen=candidates[0];
       used.add(chosen.i);
       const issues=operationDifferences(exp,chosen.off);
-      results.push({status:issues.length?"different":"ok",expected:exp,official:chosen.off,issues});
+      results[j]={status:issues.length?"different":"ok",expected:exp,official:chosen.off,issues};
     }
 
     const ok=results.filter(x=>x.status==="ok").length;
@@ -205,14 +210,14 @@ function differenceScore(a,b){return operationDifferences(a,b).length;}
 function operationDifferences(exp,off){
   const out=[];
   if(normParty(exp.seller)!==normParty(off.seller))out.push(`Vendedor: app “${exp.seller||"—"}” / Comunio “${off.seller||"—"}”`);
-  if(normParty(exp.buyer)!==normParty(off.buyer))out.push(`Comprador: app “${exp.buyer||"—"}” / Excel “${off.buyer||"—"}”`);
+  if(normParty(exp.buyer)!==normParty(off.buyer))out.push(`Comprador: app “${exp.buyer||"—"}” / Comunio “${off.buyer||"—"}”`);
   if(money(exp.price)!==money(off.price))out.push(`Precio: app ${moneyES(exp.price)} / Comunio ${moneyES(off.price)}`);
   return out;
 }
 function renderUnmatchedOfficial(off,isCanonical=false){
   const source=isCanonical?"Comunio oficial":"Histórico importado";
   const computer=normParty(off.seller)==="computer"||normParty(off.buyer)==="computer";
-  return `<article class="reconcile-row issue">
+  return `<article class="reconcile-row extra">
     <div class="reconcile-row-head"><span>🟠 Solo en ${source}</span><small>${computer?"Movimiento con Computer":"Sin operación en la app"}</small></div>
     <strong class="reconcile-player">${esc(off.player)}</strong>
     <div class="reconcile-actual"><span>${source}</span><b>${esc(routeText(off))}</b><em>${moneyES(off.price)}</em></div>
