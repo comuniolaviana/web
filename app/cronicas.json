@@ -2,6 +2,20 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-11-provisional",
+      "title": "🔥 Enol pisa el acelerador, Ubaldo saca a Lamine y Laureano busca el recibo",
+      "url": "cronica-jornada-11-provisional.html",
+      "round": 11,
+      "kind": "cronica",
+      "status": "provisional",
+      "provisional": true,
+      "provisionalGeneral": true,
+      "eyebrow": "LA REDACCIÓN · JORNADA 11 · PROVISIONAL",
+      "excerpt": "Enol lidera con 66 puntos, Ubaldo persigue con 51 y Jesús suma 41. Quedan cinco partidos y todas las remontadas siguen abiertas.",
+      "published_at": "2026-11-01T10:22:41.082Z",
+      "consulted_at": "2026-11-01T11:17:00+01:00"
+    },
+    {
       "id": "previa-jornada-11-2026-10-30",
       "url": "previa-jornada-11-2026-10-30.html",
       "round": 11,
