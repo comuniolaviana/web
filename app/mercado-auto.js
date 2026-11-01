@@ -96,15 +96,16 @@
   async function loadStatus() {
     try {
       await adminSession();
-      const [a,b,c,e,f] = await Promise.all([
+      const [a,b,c,e,f,g] = await Promise.all([
         client.from('comunio_transfers').select('id',{count:'exact',head:true}),
         client.from('comunio_market_quotes').select('player_name',{count:'exact',head:true}),
         client.from('comunio_calculated').select('player_name',{count:'exact',head:true}).not('owner_name','is',null),
         client.from('comunio_sync_errors').select('id',{count:'exact',head:true}),
-        client.from('comunio_transfer_confirmations').select('transfer_id',{count:'exact',head:true})
+        client.from('comunio_transfer_confirmations').select('transfer_id',{count:'exact',head:true}),
+        client.from('comunio_official_transfers').select('official_id',{count:'exact',head:true})
       ]);
-      for (const x of [a,b,c,e,f]) if(x.error)throw x.error;
-      $('maEstado').textContent=`${nf.format(a.count)} traspasos · ${nf.format(b.count)} cotizaciones · ${nf.format(c.count)} jugadores con propietario · ${nf.format(f.count)} confirmaciones oficiales`;
+      for (const x of [a,b,c,e,f,g]) if(x.error)throw x.error;
+      $('maEstado').textContent=`${nf.format(g.count)} traspasos oficiales en Mercado · ${nf.format(a.count)} movimientos en registro conjunto · ${nf.format(b.count)} cotizaciones · ${nf.format(c.count)} jugadores con propietario · ${nf.format(f.count)} confirmaciones oficiales`;
       $('maFallos').textContent=e.count ? `⚠ ${e.count} incidencia(s) de sincronización: revisar antes de confiar en los cambios.` : '✓ Sin incidencias registradas en la sincronización';
       const {data,error}=await client.from('comunio_transfers').select('transfer_date,player_name,price,seller,buyer,source').order('id',{ascending:false}).limit(10);
       if (error)throw error;
@@ -250,18 +251,19 @@
     busy=true;$('maCopia').disabled=true;message('Preparando copia de seguridad de Supabase…');
     try {
       await adminSession();
-      const [transfers,quotes,tiers,calculated,confirmations]=await Promise.all([
+      const [transfers,quotes,tiers,calculated,confirmations,officialTransfers]=await Promise.all([
         getAll('comunio_transfers'),getAll('comunio_market_quotes','player_name'),
         getAll('comunio_clause_tiers','tier_index'),getAll('comunio_calculated','player_name'),
-        getAll('comunio_transfer_confirmations','transfer_id')
+        getAll('comunio_transfer_confirmations','transfer_id'),
+        getAll('comunio_official_transfers','operation_order')
       ]);
       const backup={version:'2026/27',exportado_en:new Date().toISOString(),
         origen:'Supabase · Comunio Laviana',uso:'Datos estructurados para respaldo e importación posterior al Excel original',
-        traspasos:transfers,confirmaciones_oficiales:confirmations,
+        traspasos:transfers,traspasos_oficiales:officialTransfers,confirmaciones_oficiales:confirmations,
         cotizaciones:quotes,clausulas_calculadas:calculated,multiplicadores:tiers};
       const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
       const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='comunio-copia-para-excel-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-      message(`✓ Copia preparada: ${transfers.length} traspasos, ${confirmations.length} confirmaciones oficiales, ${quotes.length} cotizaciones, ${calculated.length} cálculos y ${tiers.length} tramos. El Excel original no se ha modificado.`);
+      message(`✓ Copia preparada: ${transfers.length} movimientos totales, ${officialTransfers.length} traspasos oficiales, ${confirmations.length} confirmaciones oficiales, ${quotes.length} cotizaciones, ${calculated.length} cálculos y ${tiers.length} tramos. El Excel original no se ha modificado.`);
     }catch(e){message('No se pudo descargar la copia: '+e.message,true)}
     finally{busy=false;$('maCopia').disabled=false;}
   });
