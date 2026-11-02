@@ -2,6 +2,20 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-11-lunes-provisional",
+      "title": "🔥 Enol aparca 92 puntos en la puerta; el resto busca un milagro en el Deportivo–Osasuna",
+      "url": "cronica-jornada-11-lunes-provisional.html",
+      "round": 11,
+      "kind": "cronica",
+      "status": "provisional",
+      "provisional": true,
+      "provisionalGeneral": true,
+      "eyebrow": "LA REDACCIÓN · JORNADA 11 · PROVISIONAL DEL LUNES",
+      "excerpt": "Enol cierra su once con 92 puntos. Ubaldo suma 66, Jorge 65 y Nazaré 64; el Deportivo–Osasuna decidirá las últimas remontadas.",
+      "published_at": "2026-11-02T08:50:52.621Z",
+      "consulted_at": "2026-11-02T09:44:00+01:00"
+    },
+    {
       "id": "cronica-jornada-11-provisional",
       "title": "🔥 Enol pisa el acelerador, Ubaldo saca a Lamine y Laureano busca el recibo",
       "url": "cronica-jornada-11-provisional.html",
