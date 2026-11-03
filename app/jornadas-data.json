@@ -1592,6 +1592,122 @@
           "value": 42180000
         }
       ]
+    },
+    {
+      "round": 11,
+      "order": 14,
+      "status": "final",
+      "source": "Tres capturas de clasificación oficial de Comunio",
+      "results": [
+        {
+          "id": "Ubaldo",
+          "position": 1,
+          "points": 70,
+          "value": 76800000
+        },
+        {
+          "id": "Enol",
+          "position": 2,
+          "points": 92,
+          "value": 74180000
+        },
+        {
+          "id": "Laureano",
+          "position": 3,
+          "points": 36,
+          "value": 85060000
+        },
+        {
+          "id": "Carlos",
+          "position": 4,
+          "points": 72,
+          "value": 85000000
+        },
+        {
+          "id": "Eduardo",
+          "position": 5,
+          "points": 46,
+          "value": 59650000
+        },
+        {
+          "id": "Jesus",
+          "position": 6,
+          "points": 75,
+          "value": 55140000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 7,
+          "points": 59,
+          "value": 41940000
+        },
+        {
+          "id": "Nazaré",
+          "position": 8,
+          "points": 69,
+          "value": 56600000
+        },
+        {
+          "id": "Dani",
+          "position": 9,
+          "points": 55,
+          "value": 49810000
+        },
+        {
+          "id": "Adrian",
+          "position": 10,
+          "points": 49,
+          "value": 56870000
+        },
+        {
+          "id": "PABLO",
+          "position": 11,
+          "points": 48,
+          "value": 78530000
+        },
+        {
+          "id": "Efren",
+          "position": 12,
+          "points": 48,
+          "value": 70790000
+        },
+        {
+          "id": "Jonatan",
+          "position": 13,
+          "points": 45,
+          "value": 59180000
+        },
+        {
+          "id": "David",
+          "position": 14,
+          "points": 48,
+          "value": 52680000
+        },
+        {
+          "id": "Jorge",
+          "position": 15,
+          "points": 65,
+          "value": 45110000
+        },
+        {
+          "id": "Ordieres",
+          "position": 16,
+          "points": 43,
+          "value": 34670000
+        },
+        {
+          "id": "Borja",
+          "position": 17,
+          "points": 69,
+          "value": 63930000
+        },
+        {
+          "id": "Juanin",
+          "position": 18,
+          "points": 55,
+          "value": 49790000
+        }
+      ]
     }
   ]
 }
