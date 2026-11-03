@@ -2,12 +2,23 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-11",
+      "title": "¡Enol lanza el guante! 92 puntos, Ubaldo bajo presión y cambio de guardia en el farolillo rojo",
+      "eyebrow": "CRÓNICA · JORNADA 11 · FINAL",
+      "excerpt": "Enol arrasa con 92 puntos y recorta a 50 su distancia de Ubaldo. Jesús suma 75, Carlos 72 y Borja entrega el farolillo rojo a Juanín.",
+      "url": "cronica-jornada-11.html",
+      "round": 11,
+      "status": "final",
+      "provisionalGeneral": true,
+      "published_at": "2026-11-03T05:20:37.415Z"
+    },
+    {
       "id": "cronica-jornada-11-lunes-provisional",
       "title": "🔥 Enol aparca 92 puntos en la puerta; el resto busca un milagro en el Deportivo–Osasuna",
       "url": "cronica-jornada-11-lunes-provisional.html",
       "round": 11,
       "kind": "cronica",
-      "status": "provisional",
+      "status": "archived-provisional",
       "provisional": true,
       "provisionalGeneral": true,
       "eyebrow": "LA REDACCIÓN · JORNADA 11 · PROVISIONAL DEL LUNES",
@@ -21,7 +32,7 @@
       "url": "cronica-jornada-11-provisional.html",
       "round": 11,
       "kind": "cronica",
-      "status": "provisional",
+      "status": "archived-provisional",
       "provisional": true,
       "provisionalGeneral": true,
       "eyebrow": "LA REDACCIÓN · JORNADA 11 · PROVISIONAL",
