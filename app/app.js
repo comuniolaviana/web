@@ -896,8 +896,16 @@ async function executePending(){
   }finally{$("confirmExecuteBtn").disabled=false;}
 }
 async function executeRealClause(p){
-  const {error}=await supa.from("clause_executions").insert({player_name:p.name});
+  const {data,error}=await supa.from("clause_executions").insert({player_name:p.name}).select("id").single();
   if(error)throw error;
+  // Respaldo del webhook de BD: el servidor evita duplicados por operacion y dispositivo.
+  if(data?.id){
+    supa.functions.invoke("notify-operation",{body:{type:"clause",id:data.id}})
+      .then(({error:pushError})=>{
+        if(pushError)console.warn("Respaldo de aviso de clausula:",pushError);
+      })
+      .catch(e=>console.warn("Respaldo de aviso de clausula:",e));
+  }
 }
 async function executeRealBadPurchase(p){
   const {error}=await supa.from("team_malo_purchases").insert({player_name:p.name});
