@@ -2,6 +2,20 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-12-provisional",
+      "title": "🔥 Nazaré pone 62 sobre la mesa; Ubaldo todavía no ha abierto el maletín",
+      "url": "cronica-jornada-12-provisional.html",
+      "round": 12,
+      "kind": "cronica",
+      "status": "provisional",
+      "provisional": true,
+      "provisionalGeneral": true,
+      "eyebrow": "LA REDACCIÓN · JORNADA 12 · PROVISIONAL",
+      "excerpt": "Nazaré lidera con 62 puntos, Jonatan persigue con 43 y Enol suma 40. Ubaldo conserva diez pendientes y quedan los cinco partidos del domingo.",
+      "published_at": "2026-11-08T08:21:31.924Z",
+      "consulted_at": "2026-11-08T09:16:00+01:00"
+    },
+    {
       "id": "previa-jornada-12-2026-11-06",
       "url": "previa-jornada-12-2026-11-06.html",
       "round": 12,
