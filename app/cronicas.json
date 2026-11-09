@@ -2,12 +2,23 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-12",
+      "title": "¡Jonatan da el golpe! Gana por un punto, Vizcaíno asalta la zona alta y Ubaldo agranda su ventaja",
+      "eyebrow": "CRÓNICA · JORNADA 12 · FINAL",
+      "excerpt": "Jonatan gana con 80, Nazaré se queda a uno y Vizcaíno suma 72. Jorge, Dani y David reciben los premios de compensación previstos.",
+      "url": "cronica-jornada-12.html",
+      "round": 12,
+      "status": "final",
+      "provisionalGeneral": true,
+      "published_at": "2026-11-09T08:53:39.669Z"
+    },
+    {
       "id": "cronica-jornada-12-provisional",
       "title": "🔥 Nazaré pone 62 sobre la mesa; Ubaldo todavía no ha abierto el maletín",
       "url": "cronica-jornada-12-provisional.html",
       "round": 12,
       "kind": "cronica",
-      "status": "provisional",
+      "status": "archived-provisional",
       "provisional": true,
       "provisionalGeneral": true,
       "eyebrow": "LA REDACCIÓN · JORNADA 12 · PROVISIONAL",
