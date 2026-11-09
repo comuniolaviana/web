@@ -152,12 +152,13 @@
     if(error)throw new Error('No se pudo comprobar la publicación en la web: '+error.message);
     if(count)throw new Error('Hay '+count+' incidencia(s) de publicación en Supabase. Revisa el panel; no se certifica éxito.');
   }
-  async function followDaily(id,day) {
+  async function followDaily(id,day,initialStatus=null) {
     let connectionFailures=0;
     for(let attempt=0;attempt<175;attempt++){
       let data;
       try {
-        data=await comuniazoApi('status',{request_id:id});
+        data=initialStatus || await comuniazoApi('status',{request_id:id});
+        initialStatus=null;
         connectionFailures=0;
       } catch(e) {
         connectionFailures++;
@@ -198,11 +199,23 @@
       const day=today();
       let state=readDaily();
       if(state?.status==='pending' && state.request_id){
-        if($('maTexto').value.trim())
-          throw new Error('Hay una descarga anterior pendiente. Borra o conserva aparte el texto nuevo; primero termina de comprobar el proceso anterior.');
-        message('Retomando la descarga pendiente del '+state.day+'…');
-        await followDaily(state.request_id,state.day);
-        return;
+        // No dar por pendiente una descarga antigua sin consultar al servidor.
+        // El texto nuevo nunca se borra al comprobar el trabajo anterior.
+        message('Comprobando la descarga anterior del '+state.day+'…');
+        const previous=await comuniazoApi('status',{request_id:state.request_id});
+        if(previous.status==='completed'){
+          // Mantener las comprobaciones habituales de GitHub y Supabase.
+          await followDaily(state.request_id,state.day,previous);
+          state=readDaily();
+          if(!$('maTexto').value.trim())return;
+          message('✓ Descarga anterior comprobada. Continuando con los nuevos traspasos…');
+        }else{
+          if($('maTexto').value.trim())
+            throw new Error('La descarga del '+state.day+' sigue pendiente. Se ha conservado el texto nuevo; vuelve a intentarlo cuando termine.');
+          message('Retomando la descarga pendiente del '+state.day+'…');
+          await followDaily(state.request_id,state.day,previous);
+          return;
+        }
       }
       if(state?.status==='completed' && state.day===day &&
         !window.confirm('La actualización de hoy ya se completó. ¿Quieres realizar otra actualización manual?')) {
