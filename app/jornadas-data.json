@@ -1766,8 +1766,9 @@
         {
           "id": "Carlos",
           "position": 9,
-          "points": 57,
-          "value": 91820000
+          "points": 58,
+          "value": 91820000,
+          "correction_note": "Hancko +1 (Sofascore Atlético–Barcelona; alineado por Carlos antes de traspaso a Eduardo)"
         },
         {
           "id": "Efren",
@@ -1822,6 +1823,14 @@
           "position": 18,
           "points": 48,
           "value": 55760000
+        }
+      ],
+      "corrections": [
+        {
+          "manager": "Carlos",
+          "player": "Hancko",
+          "delta": 1,
+          "reason": "Corrección oficial de Comunio tras jornada 12; alineado por Carlos"
         }
       ]
     }
