@@ -1783,16 +1783,17 @@
           "value": 36510000
         },
         {
-          "id": "Enol",
+          "id": "Jesus",
           "position": 12,
           "points": 55,
-          "value": 86020000
+          "value": 53260000
         },
         {
-          "id": "Jesus",
+          "id": "Enol",
           "position": 13,
-          "points": 55,
-          "value": 53260000
+          "points": 54,
+          "value": 86020000,
+          "correction_note": "Álex Baena -1 (Sofascore Atlético–Barcelona; alineado por Enol en jornada 12)"
         },
         {
           "id": "Juanin",
@@ -1831,6 +1832,12 @@
           "player": "Hancko",
           "delta": 1,
           "reason": "Corrección oficial de Comunio tras jornada 12; alineado por Carlos"
+        },
+        {
+          "manager": "Enol",
+          "player": "Álex Baena",
+          "delta": -1,
+          "reason": "Corrección oficial de Comunio tras jornada 12; alineado por Enol"
         }
       ]
     }
