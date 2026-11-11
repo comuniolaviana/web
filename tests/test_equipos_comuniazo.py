@@ -45,6 +45,7 @@ def fake_fetch(url):
     return BeautifulSoup(html, "html.parser")
 
 context["fetch_html"] = fake_fetch
+context["CLUB_PATHS_2627"] = tuple(rosters.keys())
 mapping, clubs = context["teams_from_comuniazo"]()
 assert clubs == 20 and len(mapping) == 500, (clubs, len(mapping))
 assert mapping["slug:jugador-1-1"] == "Club 1"
@@ -52,6 +53,18 @@ assert mapping["slug:jugador-20-25"] == "Club 20"
 assert context["slug"]("Álex Berenguer") == "alex-berenguer"
 assert context["path_of"]("https://www.otraweb.com/comunio-apuestas/jugadores/falso") == ""
 print("OK: 20 clubes y 500 jugadores, coincidencias y bloqueo de enlaces externos")
+
+# Si el índice LaLiga no ofrece enlaces, seguir descargando las fichas
+# de los 20 clubes sin atribuir jugadores por información antigua.
+def missing_index(url):
+    if urlparse(url).path == "/laliga":
+        return BeautifulSoup("<h1>LaLiga sin enlaces</h1>", "html.parser")
+    return fake_fetch(url)
+context["fetch_html"] = missing_index
+mapping, clubs = context["teams_from_comuniazo"]()
+assert clubs == 20 and len(mapping) == 500
+print("OK: índice vacío, plantillas actuales verificadas y 20 clubes correctos")
+context["fetch_html"] = fake_fetch
 
 # Los nombres de fichero de Comuniazo no siempre coinciden con el nombre.
 # El club se debe identificar con el nombre visible en la plantilla.
