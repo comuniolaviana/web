@@ -66,13 +66,13 @@ def teams_from_comuniazo():
    if re.fullmatch(r"/comunio-apuestas/equipos/[a-z0-9-]+",p):links.add(p)
  except Exception as error:
   print("Índice LaLiga temporalmente inaccesible:",str(error))
- if len(links)!=20:
-  # El índice puede entregarse vacío o cambiar su HTML. Seguir consultando
-  # en vivo las 20 plantillas conocidas de la temporada; nunca copiar clubes
-  # de ayer ni publicar si alguna plantilla actual falla las validaciones.
-  print("Índice LaLiga contiene",len(links),"clubes. Verificando directamente los 20 de 2026/27.")
+ if not links:
+  # El índice puede entregarse vacío o ser bloqueado temporalmente. Seguir
+  # consultando en vivo las 20 plantillas conocidas de esta temporada;
+  # nunca copiar jugadores de ayer ni publicar si falla alguna plantilla.
+  print("Índice LaLiga vacío: verificando directamente los 20 clubes de 2026/27.")
   links=set(CLUB_PATHS_2627)
- if len(links)!=20:raise RuntimeError("No están definidos los 20 clubes de 2026/27")
+ if len(links)!=20:raise RuntimeError("LaLiga no devuelve 20 clubes: "+str(len(links)))
  mapping={}
  clubs=set()
  with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
