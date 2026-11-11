@@ -10,6 +10,15 @@ def norm(s):
 old={norm(p["jugador"]):p for p in previous["jugadores"]}
 BASE="https://www.comuniazo.com"
 TEAM_INDEX=BASE+"/laliga"
+# Temporada 2026/27: 20 rutas de las fichas de clubes de Comuniazo.
+# Solo se usan como índice alternativo: los jugadores se comprueban
+# SIEMPRE en las plantillas actuales, nunca en archivos antiguos.
+CLUB_PATHS_2627=tuple("/comunio-apuestas/equipos/"+club for club in (
+ "alaves","athletic","atletico","barcelona","betis","celta",
+ "deportivo","elche","espanyol","getafe","levante","malaga",
+ "osasuna","racing","rayo-vallecano","real-madrid","real-sociedad",
+ "sevilla","valencia","villarreal"
+))
 def slug(s):
  return re.sub(r"(^-|-$)","",re.sub(r"[^a-z0-9]+","-",unicodedata.normalize("NFKD",str(s)).encode("ascii","ignore").decode().lower()))
 def fetch_html(url):
@@ -49,12 +58,21 @@ def club_roster(link):
  if count_players<15:raise RuntimeError("Plantilla incompleta de "+club+": "+str(count_players)+" jugadores")
  return club,keys
 def teams_from_comuniazo():
- league=fetch_html(TEAM_INDEX)
  links=set()
- for a in league.select("a[href]"):
-  p=path_of(a.get("href"))
-  if re.fullmatch(r"/comunio-apuestas/equipos/[a-z0-9-]+",p):links.add(p)
- if len(links)!=20:raise RuntimeError("LaLiga no devuelve 20 clubes: "+str(len(links)))
+ try:
+  league=fetch_html(TEAM_INDEX)
+  for a in league.select("a[href]"):
+   p=path_of(a.get("href"))
+   if re.fullmatch(r"/comunio-apuestas/equipos/[a-z0-9-]+",p):links.add(p)
+ except Exception as error:
+  print("Índice LaLiga temporalmente inaccesible:",str(error))
+ if len(links)!=20:
+  # El índice puede entregarse vacío o cambiar su HTML. Seguir consultando
+  # en vivo las 20 plantillas conocidas de la temporada; nunca copiar clubes
+  # de ayer ni publicar si alguna plantilla actual falla las validaciones.
+  print("Índice LaLiga contiene",len(links),"clubes. Verificando directamente los 20 de 2026/27.")
+  links=set(CLUB_PATHS_2627)
+ if len(links)!=20:raise RuntimeError("No están definidos los 20 clubes de 2026/27")
  mapping={}
  clubs=set()
  with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
