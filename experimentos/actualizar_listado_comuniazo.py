@@ -22,7 +22,7 @@ CLUB_PATHS_2627=tuple("/comunio-apuestas/equipos/"+club for club in (
 def slug(s):
  return re.sub(r"(^-|-$)","",re.sub(r"[^a-z0-9]+","-",unicodedata.normalize("NFKD",str(s)).encode("ascii","ignore").decode().lower()))
 def fetch_html(url):
- req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 (compatible; ComunioLaviana/1.0)"})
+ req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0","Accept":"text/html,application/xhtml+xml","Accept-Language":"es-ES,es;q=0.9"})
  with urllib.request.urlopen(req,timeout=40) as response:
   if urlparse(response.geturl()).hostname!="www.comuniazo.com":raise RuntimeError("Redirección externa no admitida")
   return BeautifulSoup(response.read(),"html.parser")
