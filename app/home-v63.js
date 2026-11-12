@@ -253,7 +253,12 @@ async function loadHomeNews(){
   const box=$("homeNewsList");if(!box)return;
   const request=++newsRequest;
   try{
-    const arr=await window.ComunioNews.load({client,limit:2});
+    const recent=await window.ComunioNews.load({client,limit:100});
+    // Reserve one of the two home slots for the latest editorial of today,
+    // so a last-minute clause cannot immediately hide an important announcement.
+    const editorial=recent.find(x=>x._type==="editorial"&&
+      new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x._time))===localDate());
+    const arr=editorial?[editorial,...recent.filter(x=>x!==editorial)].slice(0,2):recent.slice(0,2);
     if(request!==newsRequest)return;
     box.innerHTML=arr.length?arr.map(newsRow).join(""):'<div class="v65-empty">Todavía no hay noticias.</div>';
     box.querySelectorAll(".v65-news-row").forEach((node,i)=>node.addEventListener("click",()=>{
