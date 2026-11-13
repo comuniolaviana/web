@@ -236,7 +236,7 @@ function newsRow(e){
   const ago=relativeTime(e._time);
   let icon="🔨",cls="clause",title="",detail="";
   if(e._type==="editorial"){
-    icon=e.kind==="cronica"?"🎙️":"🦊";cls="editorial";title=escapeHtml(e.title);
+    icon=e.kind==="cronica"?"🎙️":e.kind==="comunicado"?"📣":"🦊";cls="editorial";title=escapeHtml(e.title);
   }else if(e._type==="fairplay"){
     icon="🟨";cls="fairplay";title=`${escapeHtml(e.manager_name)} recibe ${e.card_count===2?"dos tarjetas amarillas":"una tarjeta amarilla"}: ${escapeHtml(e.reason)}`;
   }else if(e._type==="badteam"){
@@ -254,11 +254,9 @@ async function loadHomeNews(){
   const request=++newsRequest;
   try{
     const recent=await window.ComunioNews.load({client,limit:100});
-    // Reserve one of the two home slots for the latest editorial of today,
-    // so a last-minute clause cannot immediately hide an important announcement.
-    const editorial=recent.find(x=>x._type==="editorial"&&
-      new Intl.DateTimeFormat("sv-SE",{timeZone:"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x._time))===localDate());
-    const arr=editorial?[editorial,...recent.filter(x=>x!==editorial)].slice(0,2):recent.slice(0,2);
+    // Todas las noticias compiten por antigüedad: ninguna publicación editorial
+    // permanece fijada cuando llega una cláusula u otro movimiento más reciente.
+    const arr=recent.slice(0,2);
     if(request!==newsRequest)return;
     box.innerHTML=arr.length?arr.map(newsRow).join(""):'<div class="v65-empty">Todavía no hay noticias.</div>';
     box.querySelectorAll(".v65-news-row").forEach((node,i)=>node.addEventListener("click",()=>{
