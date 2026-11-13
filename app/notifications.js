@@ -237,6 +237,67 @@ async function onSignedOut(){
   } catch {}
 }
 
+
+let personalClauseChecking = false;
+async function refreshPersonalClauseAlert(){
+  if(personalClauseChecking) return;
+  const uid = currentSession?.user?.id;
+  const oldAlert = document.getElementById("personalClauseAlert");
+  if(!uid){ oldAlert?.remove(); return; }
+  personalClauseChecking=true;
+  try{
+    const {data:profile,error:profileError}=await client.from("profiles")
+      .select("manager_name").eq("id",uid).maybeSingle();
+    if(profileError || !profile?.manager_name) return;
+    const since=new Date(Date.now()-48*60*60*1000).toISOString();
+    const {data:clauses,error:clauseError}=await client.from("clause_executions")
+      .select("id,executed_at,executor_name,player_name,clause_value")
+      .eq("target_owner_name",profile.manager_name)
+      .gte("executed_at",since)
+      .order("executed_at",{ascending:false})
+      .limit(12);
+    if(clauseError || currentSession?.user?.id!==uid) return;
+    const key="comunio-clausulas-vistas-"+uid;
+    let seen=[];
+    try{ seen=JSON.parse(localStorage.getItem(key)||"[]"); }catch{}
+    if(!Array.isArray(seen)) seen=[];
+    const unseen=(clauses||[]).filter(x=>!seen.includes(x.id));
+    oldAlert?.remove();
+    if(!unseen.length) return;
+    const home=document.getElementById("homeView");
+    if(!home) return;
+    const first=unseen[0];
+    const alert=document.createElement("section");
+    alert.id="personalClauseAlert";
+    alert.className="personal-clause-alert";
+    alert.setAttribute("role","alert");
+    const heading=document.createElement("strong");
+    heading.textContent="🚨 ¡ATENCIÓN! TE HAN PAGADO UNA CLÁUSULA";
+    const description=document.createElement("p");
+    const amount=Math.round(Number(first.clause_value)||0).toLocaleString("es-ES")+" €";
+    const when=new Date(first.executed_at).toLocaleString("es-ES",{dateStyle:"short",timeStyle:"short"});
+    description.textContent=first.executor_name+" ha fichado a "+first.player_name+" por "+amount+" ("+when+")."+(unseen.length>1?" Tienes "+unseen.length+" avisos de cláusulas pendientes de revisar.":"");
+    const actions=document.createElement("div");
+    actions.className="personal-clause-actions";
+    const acknowledge=document.createElement("button");
+    acknowledge.type="button";
+    acknowledge.textContent="He visto el aviso";
+    acknowledge.addEventListener("click",()=>{
+      const ids=unseen.map(x=>x.id);
+      const updated=[...new Set([...seen,...ids])].slice(-150);
+      try{localStorage.setItem(key,JSON.stringify(updated));}catch{}
+      alert.remove();
+    });
+    actions.appendChild(acknowledge);
+    alert.append(heading,description,actions);
+    home.prepend(alert);
+  }catch(error){
+    console.warn("Aviso personal de cláusula:",error);
+  }finally{
+    personalClauseChecking=false;
+  }
+}
+
 async function init(){
   ensureUI();
   const { data:{ session } } = await client.auth.getSession();
@@ -245,6 +306,11 @@ async function init(){
     try { await syncExistingSubscription(); } catch(e){ console.error(e); }
   }
   await refreshState();
+  await refreshPersonalClauseAlert();
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden) refreshPersonalClauseAlert();
+  });
+  window.addEventListener("focus",refreshPersonalClauseAlert);
 
   client.auth.onAuthStateChange(async (event, session) => {
     currentSession = session;
@@ -254,6 +320,7 @@ async function init(){
       try { await syncExistingSubscription(); } catch(e){ console.error(e); }
     }
     await refreshState();
+    await refreshPersonalClauseAlert();
   });
 }
 
