@@ -11,7 +11,7 @@ async function editorials(){
   const results=await Promise.allSettled(["cronicas.json","zorro-publicaciones.json"].map(async path=>{
    const r=await fetch(path+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error(path);
    const data=await r.json();if(!Array.isArray(data.articles))throw Error(path);
-   catalogs[path]=data.articles.map(x=>({...x,kind:path==="cronicas.json"?"cronica":"zorro"}));
+   catalogs[path]=data.articles.map(x=>({...x,kind:x.kind==="comunicado"?"comunicado":path==="cronicas.json"?"cronica":"zorro"}));
   }));
   if(results.every(x=>x.status==="rejected")&&!Object.keys(catalogs).length)throw Error("Catálogo de noticias no disponible");
   if(results.every(x=>x.status==="fulfilled"))catalogAt=Date.now();
@@ -37,7 +37,7 @@ async function load({client,day=null,limit=100,demoEvents=[]}={}){
 }
 function articleHtml(x){
  const time=x.published_at?new Intl.DateTimeFormat("es-ES",{timeZone:"Europe/Madrid",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}).format(new Date(x.published_at)):"Archivo";
- return '<article class="history-item"><div class="history-time">'+safe(time)+'</div><div><span class="news-type">'+(x.kind==="cronica"?"🎙️ CRÓNICA DE JORNADA":"🦊 VIEJO ZORRO")+'</span><div class="history-main">'+safe(x.title)+'</div><div class="history-sub">'+safe(x.excerpt||"")+'</div><a href="'+link(x.url)+'" class="fairplay-news-link">Leer publicación completa →</a></div></article>';
+ return '<article class="history-item"><div class="history-time">'+safe(time)+'</div><div><span class="news-type">'+(x.kind==="comunicado"?"📣 REDACCIÓN · COMUNICADO OFICIAL":x.kind==="cronica"?"🎙️ CRÓNICA DE JORNADA":"🦊 VIEJO ZORRO")+'</span><div class="history-main">'+safe(x.title)+'</div><div class="history-sub">'+safe(x.excerpt||"")+'</div><a href="'+link(x.url)+'" class="fairplay-news-link">Leer publicación completa →</a></div></article>';
 }
 window.ComunioNews={load,editorials,link,articleHtml};
 })();
