@@ -77,3 +77,37 @@
   background:rgba(255,255,255,.08);color:#dce7df;font-size:14px;font-weight:900;
 }
 .notification-card .notif-actions{padding-right:30px}
+
+/* Aviso visible al abrir la aplicación tras perder un jugador por cláusula */
+.personal-clause-alert{
+  padding:15px 16px;
+  margin:10px 0 16px;
+  border-radius:15px;
+  border:2px solid #e5a252;
+  background:linear-gradient(135deg,#4b1f17,#26130f);
+  box-shadow:0 6px 18px rgba(0,0,0,.22);
+  color:#fff3e2;
+}
+.personal-clause-alert strong{
+  display:block;
+  color:#ffdd87;
+  font-size:14px;
+  line-height:1.4;
+  letter-spacing:.3px;
+}
+.personal-clause-alert p{
+  margin:9px 0 12px;
+  color:#fff3e2;
+  font-size:13px;
+  line-height:1.5;
+}
+.personal-clause-actions{display:flex;justify-content:flex-end}
+.personal-clause-actions button{
+  padding:10px 14px;
+  border:1px solid #f5d094;
+  border-radius:9px;
+  background:#e5a252;
+  color:#30140b;
+  font-weight:800;
+  cursor:pointer;
+}
