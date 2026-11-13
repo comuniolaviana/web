@@ -238,39 +238,73 @@ async function onSignedOut(){
 }
 
 
+// El recordatorio interno solo anuncia cláusulas ocurridas después de activar esta función.
+// Las anteriores ya tuvieron sus avisos normales: no deben reaparecer como nuevas.
+const PERSONAL_CLAUSE_ALERT_SINCE = Date.parse("2026-11-13T10:05:00Z");
+const personalClauseSeenInMemory = new Set();
 let personalClauseChecking = false;
+
+function readPersonalClauseSeen(userId){
+  const key="comunio-clausulas-vistas-"+userId;
+  const seen=new Set();
+  for(const store of [localStorage,sessionStorage]){
+    try{
+      const items=JSON.parse(store.getItem(key)||"[]");
+      if(Array.isArray(items))items.forEach(id=>{
+        if(typeof id==="string")seen.add(id);
+      });
+    }catch{}
+  }
+  for(const item of personalClauseSeenInMemory){
+    const prefix=userId+":";
+    if(item.startsWith(prefix))seen.add(item.slice(prefix.length));
+  }
+  return seen;
+}
+
+function acknowledgePersonalClauses(userId,ids){
+  const key="comunio-clausulas-vistas-"+userId;
+  const seen=readPersonalClauseSeen(userId);
+  ids.forEach(id=>{seen.add(id);personalClauseSeenInMemory.add(userId+":"+id);});
+  const list=[...seen].slice(-150);
+  for(const store of [localStorage,sessionStorage]){
+    try{store.setItem(key,JSON.stringify(list));}catch{}
+  }
+}
+
 async function refreshPersonalClauseAlert(){
-  if(personalClauseChecking) return;
-  const uid = currentSession?.user?.id;
-  const oldAlert = document.getElementById("personalClauseAlert");
-  if(!uid){ oldAlert?.remove(); return; }
+  if(personalClauseChecking)return;
+  const uid=currentSession?.user?.id;
+  const oldAlert=document.getElementById("personalClauseAlert");
+  if(!uid){oldAlert?.remove();return;}
   personalClauseChecking=true;
   try{
     const {data:profile,error:profileError}=await client.from("profiles")
       .select("manager_name").eq("id",uid).maybeSingle();
-    if(profileError || !profile?.manager_name) return;
-    const since=new Date(Date.now()-48*60*60*1000).toISOString();
+    if(profileError || !profile?.manager_name)return;
+    const since=new Date(Math.max(Date.now()-48*60*60*1000,PERSONAL_CLAUSE_ALERT_SINCE)).toISOString();
     const {data:clauses,error:clauseError}=await client.from("clause_executions")
       .select("id,executed_at,executor_name,player_name,clause_value")
       .eq("target_owner_name",profile.manager_name)
       .gte("executed_at",since)
       .order("executed_at",{ascending:false})
       .limit(12);
-    if(clauseError || currentSession?.user?.id!==uid) return;
-    const key="comunio-clausulas-vistas-"+uid;
-    let seen=[];
-    try{ seen=JSON.parse(localStorage.getItem(key)||"[]"); }catch{}
-    if(!Array.isArray(seen)) seen=[];
-    const unseen=(clauses||[]).filter(x=>!seen.includes(x.id));
-    oldAlert?.remove();
-    if(!unseen.length) return;
+    if(clauseError || currentSession?.user?.id!==uid)return;
+    const seen=readPersonalClauseSeen(uid);
+    const unseen=(clauses||[]).filter(x=>!seen.has(x.id));
+    const existing=document.getElementById("personalClauseAlert");
+    if(!unseen.length){existing?.remove();return;}
     const home=document.getElementById("homeView");
-    if(!home) return;
+    if(!home)return;
     const first=unseen[0];
-    const alert=document.createElement("section");
-    alert.id="personalClauseAlert";
-    alert.className="personal-clause-alert";
-    alert.setAttribute("role","alert");
+    // No recrear una alerta ya visible cuando la aplicación recupera el foco.
+    if(existing?.dataset.clauseEventId===first.id)return;
+    existing?.remove();
+    const panel=document.createElement("section");
+    panel.id="personalClauseAlert";
+    panel.dataset.clauseEventId=first.id;
+    panel.className="personal-clause-alert";
+    panel.setAttribute("role","alert");
     const heading=document.createElement("strong");
     heading.textContent="🚨 ¡ATENCIÓN! TE HAN PAGADO UNA CLÁUSULA";
     const description=document.createElement("p");
@@ -281,16 +315,15 @@ async function refreshPersonalClauseAlert(){
     actions.className="personal-clause-actions";
     const acknowledge=document.createElement("button");
     acknowledge.type="button";
-    acknowledge.textContent="He visto el aviso";
+    acknowledge.textContent=unseen.length>1?"He visto estos avisos":"He visto el aviso";
     acknowledge.addEventListener("click",()=>{
-      const ids=unseen.map(x=>x.id);
-      const updated=[...new Set([...seen,...ids])].slice(-150);
-      try{localStorage.setItem(key,JSON.stringify(updated));}catch{}
-      alert.remove();
-    });
+      acknowledge.disabled=true;
+      acknowledgePersonalClauses(uid,unseen.map(x=>x.id));
+      panel.remove();
+    },{once:true});
     actions.appendChild(acknowledge);
-    alert.append(heading,description,actions);
-    home.prepend(alert);
+    panel.append(heading,description,actions);
+    home.prepend(panel);
   }catch(error){
     console.warn("Aviso personal de cláusula:",error);
   }finally{
