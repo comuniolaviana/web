@@ -3,7 +3,7 @@
   "participants": [
     {
       "name": "Jorge",
-      "hens": 1
+      "hens": 2
     },
     {
       "name": "Borja",
@@ -28,10 +28,6 @@
     {
       "name": "Jesús",
       "hens": 2
-    },
-    {
-      "name": "Ubaldo",
-      "hens": 1
     }
   ]
 }
