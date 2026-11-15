@@ -588,7 +588,7 @@ async function loadRealData(){
     supa.from("team_malo_purchases").select("*").eq("purchase_day",localDate()).order("executed_at",{ascending:true}),
     supa.from("team_malo_sales").select("*").eq("sale_day",localDate()).order("executed_at",{ascending:true}),
     supa.from("data_sync_state").select("synced_at").eq("source","comuniazo_last_published").maybeSingle(),
-    supa.from("clause_player_blocks").select("player_name,block_day,reason").eq("block_day",localDate())
+    supa.from("clause_player_blocks").select("player_name,block_day,reason,created_at,expires_at").gte("block_day",localDate(-1))
   ]);
   if(request!==leagueDataRequest||client!==supa||userId!==session?.user?.id)return false;
   for(const result of [p,b,s,c,m,v,blocks]){
@@ -659,12 +659,17 @@ function badTeamAvailability(){
 const executorUsed=()=>clauseExecutions.some(e=>sameManager(e.executor_name,profile?.manager_name));
 const blockedOwners=()=>clauseExecutions.map(e=>e.target_owner_name).filter(Boolean);
 const playerClausedToday=name=>clauseExecutions.some(e=>String(e.player_name||"").trim().toLowerCase()===String(name||"").trim().toLowerCase());
-const playerClauseBlock=name=>clausePlayerBlocks.find(b=>norm(b.player_name)===norm(name));
+const playerClauseBlock=name=>clausePlayerBlocks.find(b=>norm(b.player_name)===norm(name)&&(
+    b.expires_at
+      ? (Date.now()>=Date.parse(b.created_at)&&Date.now()<Date.parse(b.expires_at))
+      : b.block_day===localDate()
+  ));
 function availablePlayers(){
   const blocked=blockedOwners();
   return effectiveLeaguePlayers().filter(p=>
     p.active!==false &&
     !playerClausedToday(p.name) &&
+    !playerClauseBlock(p.name) &&
     !sameManager(p.owner_name,profile?.manager_name) &&
     !sameManager(p.owner_name,"Equipo Malo") &&
     !blocked.some(o=>sameManager(o,p.owner_name))
@@ -839,7 +844,7 @@ function renderChips(id,arr){
 
 function openAction(type,p){
   if(type==="clause"){
-    if(playerClauseBlock(p.name)){showToast("Este jugador está bloqueado solo hoy por una cláusula sin confirmar en Comunio.",true);return;}
+    if(playerClauseBlock(p.name)){showToast("Este jugador está bloqueado temporalmente por una cláusula sin confirmar en Comunio.",true);return;}
     if(playerClausedToday(p.name)){showToast("Ese jugador ya ha recibido una cláusula y no está disponible hoy.",true);return;}
     if(executorUsed()){showToast("Ya has utilizado tu cláusula de hoy.",true);return;}
     if(!clauseAvailability().open){showToast("Las cláusulas están cerradas.",true);return;}
@@ -1163,7 +1168,7 @@ async function refreshOpenLists(forceHome=false){
     const loaded=await loadRealData();
     if(loaded===false||!session||session.user.id!==userId||!profile||document.hidden||!visibleList())return;
     if(pendingAction&&$("confirmExecuteBtn")?.disabled)return;
-    const signature=JSON.stringify([players,badPlayers,schedule,clauseExecutions,badPurchases,badSales,clausePlayerBlocks,clauseAvailability().open,badTeamAvailability().open]);
+    const signature=JSON.stringify([players,badPlayers,schedule,clauseExecutions,badPurchases,badSales,clausePlayerBlocks.map(b=>[b.player_name,Boolean(playerClauseBlock(b.player_name))]),clauseAvailability().open,badTeamAvailability().open]);
     if(signature===openListsSignature)return;
     const owner=$("ownerFilter").value;
     fillFilters();
