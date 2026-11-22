@@ -2,6 +2,20 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-13-provisional",
+      "title": "🔥 Enol levanta un muro con 51 puntos; Nazaré y Ubaldo preparan la respuesta",
+      "url": "cronica-jornada-13-provisional.html",
+      "round": 13,
+      "kind": "cronica",
+      "status": "provisional",
+      "provisional": true,
+      "provisionalGeneral": true,
+      "eyebrow": "LA REDACCIÓN · JORNADA 13 · PROVISIONAL DEL DOMINGO",
+      "excerpt": "Enol manda con 51, Borja persigue con 41 y Nazaré suma 34 con siete pendientes. Ubaldo conserva siete y Jonatan ocho; la jornada sigue abierta.",
+      "published_at": "2026-11-22T09:55:16.983Z",
+      "consulted_at": "2026-11-22T10:49:00+01:00"
+    },
+    {
       "id": "previa-jornada-13-2026-11-20",
       "title": "🔥 Laviana vuelve del parón: Juanín prepara a Mbappé y Laureano desembarca en San Mamés",
       "url": "previa-jornada-13-2026-11-20.html",
