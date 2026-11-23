@@ -2,6 +2,20 @@
   "season": "2026/27",
   "articles": [
     {
+      "id": "cronica-jornada-13-lunes-provisional",
+      "title": "🔥 Enol aparca 83 puntos en la puerta: Borja necesita un milagro y Jonatan aún guarda dos cartas",
+      "url": "cronica-jornada-13-lunes-provisional.html",
+      "round": 13,
+      "kind": "cronica",
+      "status": "provisional",
+      "provisional": true,
+      "provisionalGeneral": true,
+      "eyebrow": "LA REDACCIÓN · JORNADA 13 · PROVISIONAL DEL LUNES",
+      "excerpt": "Enol cierra su once con 83 puntos. Borja suma 63 y espera a Dituro; Jonatan lleva 59 y conserva a Lucas Cepeda y Buba Sangaré para el Levante–Elche.",
+      "published_at": "2026-11-23T08:49:39.590Z",
+      "consulted_at": "2026-11-23T09:43:00+01:00"
+    },
+    {
       "id": "cronica-jornada-13-provisional",
       "title": "🔥 Enol levanta un muro con 51 puntos; Nazaré y Ubaldo preparan la respuesta",
       "url": "cronica-jornada-13-provisional.html",
