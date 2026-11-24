@@ -1840,6 +1840,122 @@
           "reason": "Corrección oficial de Comunio tras jornada 12; alineado por Enol"
         }
       ]
+    },
+    {
+      "round": 13,
+      "order": 16,
+      "status": "final",
+      "source": "Tres capturas oficiales de Comunio facilitadas el 24 de noviembre de 2026",
+      "results": [
+        {
+          "id": "Enol",
+          "position": 1,
+          "points": 83,
+          "value": 72290000
+        },
+        {
+          "id": "Nazaré",
+          "position": 2,
+          "points": 71,
+          "value": 62480000
+        },
+        {
+          "id": "Jonatan",
+          "position": 3,
+          "points": 67,
+          "value": 60530000
+        },
+        {
+          "id": "Borja",
+          "position": 4,
+          "points": 66,
+          "value": 62180000
+        },
+        {
+          "id": "Juanin",
+          "position": 5,
+          "points": 60,
+          "value": 49240000
+        },
+        {
+          "id": "Jorge",
+          "position": 6,
+          "points": 56,
+          "value": 52640000
+        },
+        {
+          "id": "Laureano",
+          "position": 7,
+          "points": 54,
+          "value": 86610000
+        },
+        {
+          "id": "David",
+          "position": 8,
+          "points": 54,
+          "value": 57440000
+        },
+        {
+          "id": "Jesus",
+          "position": 9,
+          "points": 52,
+          "value": 56740000
+        },
+        {
+          "id": "PABLO",
+          "position": 10,
+          "points": 52,
+          "value": 73920000
+        },
+        {
+          "id": "Ubaldo",
+          "position": 11,
+          "points": 49,
+          "value": 80610000
+        },
+        {
+          "id": "Dani",
+          "position": 12,
+          "points": 46,
+          "value": 46110000
+        },
+        {
+          "id": "Adrian",
+          "position": 13,
+          "points": 44,
+          "value": 49700000
+        },
+        {
+          "id": "Eduardo",
+          "position": 14,
+          "points": 42,
+          "value": 59870000
+        },
+        {
+          "id": "Efren",
+          "position": 15,
+          "points": 42,
+          "value": 52510000
+        },
+        {
+          "id": "Ordieres",
+          "position": 16,
+          "points": 41,
+          "value": 39270000
+        },
+        {
+          "id": "Vizcaino",
+          "position": 17,
+          "points": 34,
+          "value": 52070000
+        },
+        {
+          "id": "Carlos",
+          "position": 18,
+          "points": 29,
+          "value": 76240000
+        }
+      ]
     }
   ]
 }
