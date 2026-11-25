@@ -4,14 +4,15 @@
     {
       "id": "cronica-jornada-13",
       "kind": "cronica",
-      "title": "¡Enol aprieta el campeonato! 83 puntos, Ubaldo a tiro y Nazaré vuela hacia el podio",
+      "title": "¡Enol aprieta el campeonato! 84 puntos, Ubaldo a tiro y Nazaré vuela hacia el podio",
       "eyebrow": "🎙️ REDACCIÓN COMUNIO · JORNADA 13 · FINAL",
-      "excerpt": "Enol gana con 83 y reduce a 30 puntos la ventaja de Ubaldo. Nazaré firma 71 y Jonatan 67. Carlos, Vizcaíno y Ordieres reciben las compensaciones previstas.",
+      "excerpt": "Tras la corrección oficial, Enol gana con 84 y queda a 29 puntos de Ubaldo. Nazaré suma 71 y Jonatan 67; Carlos, Vizcaíno y Ordieres conservan las compensaciones previstas.",
       "url": "cronica-jornada-13.html",
       "round": 13,
       "status": "final",
       "provisionalGeneral": true,
-      "published_at": "2026-11-24T05:20:41.579Z"
+      "published_at": "2026-11-24T05:20:41.579Z",
+      "corrected_at": "2026-11-25"
     },
     {
       "id": "cronica-jornada-13-lunes-provisional",
