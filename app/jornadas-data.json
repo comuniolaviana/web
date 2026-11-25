@@ -1850,8 +1850,9 @@
         {
           "id": "Enol",
           "position": 1,
-          "points": 83,
-          "value": 72290000
+          "points": 84,
+          "value": 72290000,
+          "correction_note": "Comunio corrigió puntuaciones de Athletic–Espanyol tras cierre de jornada 13; contrastado con nueva clasificación oficial del 25/11/2026"
         },
         {
           "id": "Nazaré",
@@ -1946,14 +1947,33 @@
         {
           "id": "Vizcaino",
           "position": 17,
-          "points": 34,
-          "value": 52070000
+          "points": 35,
+          "value": 52070000,
+          "correction_note": "Comunio corrigió puntuaciones de Athletic–Espanyol tras cierre de jornada 13; contrastado con nueva clasificación oficial del 25/11/2026"
         },
         {
           "id": "Carlos",
           "position": 18,
-          "points": 29,
-          "value": 76240000
+          "points": 30,
+          "value": 76240000,
+          "correction_note": "Comunio corrigió puntuaciones de Athletic–Espanyol tras cierre de jornada 13; contrastado con nueva clasificación oficial del 25/11/2026"
+        }
+      ],
+      "corrections": [
+        {
+          "manager": "Enol",
+          "delta": 1,
+          "reason": "Corrección oficial de Comunio: notas Athletic–Espanyol; nueva clasificación 25/11/2026"
+        },
+        {
+          "manager": "Vizcaino",
+          "delta": 1,
+          "reason": "Corrección oficial de Comunio: notas Athletic–Espanyol; nueva clasificación 25/11/2026"
+        },
+        {
+          "manager": "Carlos",
+          "delta": 1,
+          "reason": "Corrección oficial de Comunio: notas Athletic–Espanyol; nueva clasificación 25/11/2026"
         }
       ]
     }
